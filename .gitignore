@@ -2,9 +2,15 @@
 node_modules/
 server/node_modules/
 
-# Environment variables
+# Environment variables & secrets
 .env
+.env.*
 server/.env
+server/.env.*
+*.env
+*_tokens.json
+server/*_tokens.json
+server/uploads/
 
 # System files
 .DS_Store

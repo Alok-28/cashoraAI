@@ -316,12 +316,27 @@
         .conn-toggle.off { background: #222; }
         .conn-toggle.off::after { right: auto; left: 2px; }
 
-        .schedule-list { display: flex; flex-direction: column; gap: 8px; }
-        .sched-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); }
-        .sched-time { font-size: 12px; font-weight: 600; color: var(--muted); min-width: 54px; }
-        .sched-body { flex: 1; }
-        .sched-title  { font-size: 13px; font-weight: 600; color: var(--light); }
-        .sched-plats  { font-size: 11px; color: var(--muted); margin-top: 2px; }
+        .schedule-grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+        @media (max-width: 900px) { .schedule-grid-layout { grid-template-columns: 1fr; } }
+        .schedule-list { display: flex; flex-direction: column; gap: 10px; }
+        .sched-card { display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: 9px; border: 1px solid var(--border); background: #0e0e0e; transition: border-color .15s; }
+        .sched-card:hover { border-color: #2a2a2a; }
+        .sched-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+        .sched-card-info { flex: 1; min-width: 0; }
+        .sched-title { font-size: 13.5px; font-weight: 600; color: var(--light); line-height: 1.4; word-break: break-word; }
+        .sched-meta { display: flex; align-items: center; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+        .sched-time-pill { font-size: 11.5px; font-weight: 500; color: #8899ff; display: inline-flex; align-items: center; gap: 4px; }
+        .sched-plats-row { display: flex; align-items: center; gap: 4px; }
+        .sched-card-actions { display: flex; align-items: center; gap: 8px; margin-top: 4px; padding-top: 10px; border-top: 1px solid var(--border); }
+        .sched-action-btn { background: #161616; border: 1px solid var(--border); color: var(--light); font-size: 11.5px; font-weight: 500; padding: 5px 10px; border-radius: 6px; cursor: pointer; transition: all .15s; display: inline-flex; align-items: center; gap: 5px; }
+        .sched-action-btn:hover { background: #222; border-color: #333; }
+        .sched-action-btn.trigger { background: #13183a; border-color: #232c66; color: #8899ff; }
+        .sched-action-btn.trigger:hover { background: #1c245c; }
+        .sched-action-btn.cancel { color: #ff6666; }
+        .sched-action-btn.cancel:hover { background: #2a1111; border-color: #441818; }
+        .pulse-dot { width: 6px; height: 6px; border-radius: 50%; background: #6677ff; display: inline-block; animation: pulseGlow 1.8s infinite; }
+        @keyframes pulseGlow { 0% { opacity: 0.4; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1.2); } 100% { opacity: 0.4; transform: scale(0.9); } }
+        .spin-dot { width: 10px; height: 10px; border: 2px solid rgba(255,170,0,0.3); border-top-color: #ffaa00; border-radius: 50%; display: inline-block; animation: spin 0.8s linear infinite; }
 
         /* ══════════════════════════════
            SETTINGS PAGE
@@ -381,6 +396,10 @@
         <button class="nav-item" onclick="showPage('library', this)">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
             Library
+        </button>
+        <button class="nav-item" onclick="showPage('schedule', this)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Schedule
         </button>
         <button class="nav-item" onclick="showPage('distribution', this)">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
@@ -560,61 +579,19 @@
                                 <div style="font-size:13.5px;font-weight:600;color:var(--light);margin-bottom:4px;">Drop your video here</div>
                                 <div style="font-size:12px;color:var(--muted);">or click to browse — MP4, MOV, AVI up to 2GB</div>
                             </div>
-                            <div id="filePreview" style="display:none;margin-top:10px;padding:12px 14px;background:#141414;border:1px solid var(--border);border-radius:8px;display:none;align-items:center;gap:10px;">
+                            <div id="filePreview" style="display:none;margin-top:10px;padding:12px 14px;background:#141414;border:1px solid var(--border);border-radius:8px;align-items:center;gap:10px;">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4a7fa5" stroke-width="1.8"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
                                 <span id="fileName" style="font-size:13px;color:var(--light);flex:1;"></span>
                                 <span id="fileSize" style="font-size:11px;color:var(--muted);"></span>
-                                <button onclick="clearFile()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;line-height:1;">×</button>
+                                <button type="button" onclick="clearFile()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;line-height:1;">×</button>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Enhancement Options</label>
-                            <div style="display:flex;flex-direction:column;gap:8px;">
-                                <label style="display:flex;align-items:center;gap:9px;padding:10px 12px;border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:13px;color:var(--light);">
-                                    <input type="checkbox" checked style="accent-color:var(--blue);width:14px;height:14px;"> Add AI voiceover
-                                </label>
-                                <label style="display:flex;align-items:center;gap:9px;padding:10px 12px;border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:13px;color:var(--light);">
-                                    <input type="checkbox" checked style="accent-color:var(--blue);width:14px;height:14px;"> Auto-generate captions
-                                </label>
-                                <label style="display:flex;align-items:center;gap:9px;padding:10px 12px;border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:13px;color:var(--light);">
-                                    <input type="checkbox" style="accent-color:var(--blue);width:14px;height:14px;"> Create platform variants (Reel, Short, etc.)
-                                </label>
-                                <label style="display:flex;align-items:center;gap:9px;padding:10px 12px;border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:13px;color:var(--light);">
-                                    <input type="checkbox" style="accent-color:var(--blue);width:14px;height:14px;"> AI thumbnail generation
-                                </label>
+                            <label class="form-label">Post Caption / Title <span style="font-weight:400;color:var(--muted);">(Optional)</span></label>
+                            <div class="prompt-wrap">
+                                <textarea class="prompt-input" id="uploadCaptionInput" style="min-height:70px;" placeholder="Add a caption, title, or hashtags for your social media posts..."></textarea>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Upload tab -->
-                    <div id="createUploadTab" style="display:none;">
-                        <div class="form-group">
-                            <label class="form-label">Upload Video</label>
-                            <div id="dropZone" onclick="document.getElementById('fileInput').click()" ondragover="event.preventDefault();this.style.borderColor='#3344ff'" ondragleave="this.style.borderColor='var(--border)'" ondrop="handleDrop(event)"
-                                style="border:1.5px dashed var(--border);border-radius:10px;padding:36px 20px;text-align:center;cursor:pointer;transition:border-color .2s;background:#0e0e0e;">
-                                <input type="file" id="fileInput" accept="video/mp4,video/*" style="display:none;" onchange="handleFileSelect(this)">
-                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--muted2)" stroke-width="1.5" style="margin:0 auto 10px;display:block;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                                <div style="font-size:13.5px;font-weight:600;color:var(--light);margin-bottom:4px;">Drop your video here</div>
-                                <div style="font-size:12px;color:var(--muted);">or click to browse — MP4, MOV, AVI up to 2GB</div>
-                            </div>
-                            <div id="filePreview" style="display:none;margin-top:10px;padding:12px 14px;background:#141414;border:1px solid var(--border);border-radius:8px;display:none;align-items:center;gap:10px;">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4a7fa5" stroke-width="1.8"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
-                                <span id="fileName" style="font-size:13px;color:var(--light);flex:1;"></span>
-                                <span id="fileSize" style="font-size:11px;color:var(--muted);"></span>
-                                <button onclick="clearFile()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;line-height:1;">×</button>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Enhancement Options</label>
-                            <div style="display:flex;flex-direction:column;gap:8px;">
-                                <label style="display:flex;align-items:center;gap:9px;padding:10px 12px;border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:13px;color:var(--light);">
-                                    <input type="checkbox" checked style="accent-color:var(--blue);width:14px;height:14px;"> Add AI voiceover
-                                </label>
-                                <label style="display:flex;align-items:center;gap:9px;padding:10px 12px;border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:13px;color:var(--light);">
-                                    <input type="checkbox" checked style="accent-color:var(--blue);width:14px;height:14px;"> Auto-generate captions
-                                </label>
-                             </div>
-                         </div>
                     </div>
 
                     <!-- Common sections for all tabs -->
@@ -650,8 +627,8 @@
                             </div>
                         </div>
 
-                        <div class="toggle-row">
-                            <div class="form-group" style="margin-bottom:0">
+                        <div class="toggle-row" id="generationStyleRow">
+                            <div class="form-group" id="aspectRatioGroup" style="margin-bottom:0">
                                 <label class="form-label">Aspect Ratio</label>
                                 <select class="select-input">
                                     <option>Auto (Platform Optimized)</option>
@@ -673,7 +650,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" id="videoLengthGroup">
                             <label class="form-label">Video Length</label>
                             <select class="select-input">
                                 <option>Short (15–30s)</option>
@@ -682,10 +659,14 @@
                             </select>
                         </div>
 
-                        <div style="margin-top:20px;">
+                        <div style="margin-top:20px; display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
                             <button class="generate-btn" id="generateBtn" onclick="startGenerate()">
                                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                                 <span id="generateBtnText">Generate Video</span>
+                            </button>
+                            <button type="button" class="generate-btn" id="scheduleFromCreateBtn" onclick="goToScheduleFromCreate()" style="background:#13183a; border:1px solid #2a3575; color:#8899ff; display:inline-flex; align-items:center; gap:8px;">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                <span>Schedule Post</span>
                             </button>
                         </div>
                     </div>
@@ -751,7 +732,8 @@
                     <h3>Content Ready</h3>
                     <p>Your video has been generated and is ready to publish to your selected platforms.</p>
                     <div class="done-actions">
-                        <button class="done-btn primary" onclick="showPage('library', document.querySelectorAll('.nav-item')[2])">View in Library</button>
+                        <button class="done-btn primary" onclick="showPage('library')">View in Library</button>
+                        <button class="done-btn" onclick="scheduleCurrentGeneratedVideo()" style="background:#13183a; border:1px solid #2a3575; color:#8899ff;">Schedule Post</button>
                         <button class="done-btn secondary" onclick="resetCreate()">Create Another</button>
                     </div>
                 </div>
@@ -791,7 +773,6 @@
             <div class="lib-filters">
                 <button class="filter-btn active" onclick="filterLib(this,'all')">All</button>
                 <button class="filter-btn" onclick="filterLib(this,'published')">Published</button>
-                <button class="filter-btn" onclick="filterLib(this,'rendering')">Rendering</button>
                 <button class="filter-btn" onclick="filterLib(this,'draft')">Draft</button>
             </div>
             <button class="lib-new-btn" onclick="showPage('create', document.querySelectorAll('.nav-item')[1])">
@@ -800,149 +781,167 @@
             </button>
         </div>
 
-        <div class="video-grid">
-            <!-- Card 1 -->
-            <div class="video-card">
-                <div class="video-thumb" style="background:linear-gradient(135deg,#0e1024,#13183a);">
-                    <div class="thumb-play"><svg width="12" height="12" viewBox="0 0 24 24" fill="#fff"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
-                </div>
-                <div class="video-body">
-                    <div class="video-title">5 AI Tools Every Marketer Needs in 2026</div>
-                    <div class="video-meta">
-                        <span class="video-date">Aug 27, 2026</span>
-                        <div style="display:flex;align-items:center;gap:6px;">
-                            <span class="badge green">Published</span>
-                            <div class="platform-icons">
-                                <div class="p-icon"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#4a7fa5" stroke-width="1.8"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
-                                <div class="p-icon"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#9b59b6" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/></svg></div>
-                                <div class="p-icon"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#e94057" stroke-width="1.8"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.77-.39 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.22 8.22 0 004.87 1.6V6.84a4.85 4.85 0 01-1.1-.15z"/></svg></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="video-actions">
-                        <button class="v-btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Edit</button>
-                        <button class="v-btn publish"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Republish</button>
-                        <button class="v-btn del"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg> Delete</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 2 -->
-            <div class="video-card">
-                <div class="video-thumb" style="background:linear-gradient(135deg,#1a0820,#2d0a3a);">
-                    <div class="thumb-play"><svg width="12" height="12" viewBox="0 0 24 24" fill="#fff"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
-                </div>
-                <div class="video-body">
-                    <div class="video-title">How to Turn Your Idea Into Income</div>
-                    <div class="video-meta">
-                        <span class="video-date">Aug 27, 2026</span>
-                        <div style="display:flex;align-items:center;gap:6px;">
-                            <span class="badge blue">Trending</span>
-                            <div class="platform-icons">
-                                <div class="p-icon"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#e94057" stroke-width="1.8"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.77-.39 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.22 8.22 0 004.87 1.6V6.84a4.85 4.85 0 01-1.1-.15z"/></svg></div>
-                                <div class="p-icon"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#9b59b6" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/></svg></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="video-actions">
-                        <button class="v-btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Edit</button>
-                        <button class="v-btn publish"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Publish</button>
-                        <button class="v-btn del"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg> Delete</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 3 -->
-            <div class="video-card">
-                <div class="video-thumb" style="background:linear-gradient(135deg,#0a1a0e,#122010);">
-                    <div class="thumb-play"><svg width="12" height="12" viewBox="0 0 24 24" fill="#fff"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
-                </div>
-                <div class="video-body">
-                    <div class="video-title">Prompt-to-Profit: Beginner's Guide</div>
-                    <div class="video-meta">
-                        <span class="video-date">Aug 26, 2026</span>
-                        <div style="display:flex;align-items:center;gap:6px;">
-                            <span class="badge green">Published</span>
-                            <div class="platform-icons">
-                                <div class="p-icon"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#4a7fa5" stroke-width="1.8"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="video-actions">
-                        <button class="v-btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Edit</button>
-                        <button class="v-btn publish"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Republish</button>
-                        <button class="v-btn del"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg> Delete</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 4 - Rendering -->
-            <div class="video-card">
-                <div class="video-thumb" style="background:linear-gradient(135deg,#1a1208,#2a1e08);">
-                    <div class="thumb-play" style="opacity:0.4;"><svg width="12" height="12" viewBox="0 0 24 24" fill="#fff"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
-                    <div style="position:absolute;bottom:8px;left:8px;"><span class="badge amber">Rendering 64%</span></div>
-                </div>
-                <div class="video-body">
-                    <div class="video-title">3 Mistakes Every New Creator Makes</div>
-                    <div class="video-meta">
-                        <span class="video-date">Aug 27, 2026</span>
-                        <div style="display:flex;align-items:center;gap:6px;">
-                            <span class="badge amber">Rendering</span>
-                        </div>
-                    </div>
-                    <div class="video-actions">
-                        <button class="v-btn" disabled style="opacity:0.4;cursor:not-allowed;">Edit</button>
-                        <button class="v-btn" disabled style="opacity:0.4;cursor:not-allowed;">Publish</button>
-                        <button class="v-btn del"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg> Cancel</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 5 - Draft -->
-            <div class="video-card">
-                <div class="video-thumb" style="background:#0e0e0e;">
-                    <div class="thumb-play" style="opacity:0.3;"><svg width="12" height="12" viewBox="0 0 24 24" fill="#fff"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
-                </div>
-                <div class="video-body">
-                    <div class="video-title">Why Cashora is Different from Other AI Tools</div>
-                    <div class="video-meta">
-                        <span class="video-date">Aug 25, 2026</span>
-                        <div style="display:flex;align-items:center;gap:6px;">
-                            <span class="badge muted">Draft</span>
-                        </div>
-                    </div>
-                    <div class="video-actions">
-                        <button class="v-btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Edit</button>
-                        <button class="v-btn publish"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Publish</button>
-                        <button class="v-btn del"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg> Delete</button>
-                    </div>
-                </div>
-            </div>
+        <div class="video-grid" id="libraryGrid">
+            <!-- Dynamically populated -->
         </div>
     </div>
 
     <!-- ══════════════ PAGE: DISTRIBUTION ══════════════ -->
     <div class="page" id="page-distribution">
         <div class="page-title">Distribution</div>
-        <div class="page-sub">Manage connected platforms and scheduled posts</div>
-        <div class="dist-grid">
+        <div class="page-sub">Manage your connected social platforms</div>
+        <div class="dist-grid" style="grid-template-columns:1fr;">
             <div class="dist-card">
-                <div class="dist-card-header"><div class="dist-card-title">Connected Platforms</div><button class="lib-new-btn" style="font-size:12px;padding:6px 12px;">+ Add</button></div>
+                <div class="dist-card-header"><div class="dist-card-title">Connected Platforms</div><button class="lib-new-btn" style="font-size:12px;padding:6px 12px;">+ Add Platform</button></div>
                 <div class="conn-list">
-                    <div class="conn-item"><div class="conn-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4a7fa5" stroke-width="1.8"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div><div class="conn-info"><div class="conn-name">YouTube</div><div class="conn-handle">@cashora.tech</div></div><div class="conn-toggle"></div></div>
-                    <div class="conn-item"><div class="conn-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9b59b6" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#9b59b6"/></svg></div><div class="conn-info"><div class="conn-name">Instagram</div><div class="conn-handle">@cashora</div></div><div class="conn-toggle"></div></div>
+                    <div class="conn-item" id="dist-yt-item">
+                        <div class="conn-icon" style="background:#191012;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ff0033" stroke-width="1.8"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+                        <div class="conn-info">
+                            <div class="conn-name">YouTube</div>
+                            <div class="conn-handle" id="distYtHandle">Checking connection...</div>
+                        </div>
+                        <div id="distYtAction">
+                            <div class="conn-toggle off" id="distYtToggle" onclick="handleYouTubeToggle()" title="Connect / Disconnect YouTube"></div>
+                        </div>
+                    </div>
+                    <div class="conn-item" id="dist-ig-item">
+                        <div class="conn-icon" style="background:#191012;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9b59b6" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#9b59b6"/></svg></div>
+                        <div class="conn-info">
+                            <div class="conn-name">Instagram</div>
+                            <div class="conn-handle" id="distIgHandle">@vaibhav.tf7 (Connected)</div>
+                        </div>
+                        <div class="conn-toggle"></div>
+                    </div>
+                    <div class="conn-item" id="dist-threads-item">
+                        <div class="conn-icon" style="background:#141414;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/></svg></div>
+                        <div class="conn-info">
+                            <div class="conn-name">Threads</div>
+                            <div class="conn-handle" id="distThreadsHandle">Checking connection...</div>
+                        </div>
+                        <div id="distThreadsAction">
+                            <div class="conn-toggle off" id="distThreadsToggle"></div>
+                        </div>
+                    </div>
                     <div class="conn-item"><div class="conn-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e94057" stroke-width="1.8"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.77-.39 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.22 8.22 0 004.87 1.6V6.84a4.85 4.85 0 01-1.1-.15z"/></svg></div><div class="conn-info"><div class="conn-name">TikTok</div><div class="conn-handle">@cashora.ai</div></div><div class="conn-toggle"></div></div>
                     <div class="conn-item"><div class="conn-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.8"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.259 5.622z"/></svg></div><div class="conn-info"><div class="conn-name">Twitter / X</div><div class="conn-handle">Not connected</div></div><div class="conn-toggle off"></div></div>
                     <div class="conn-item"><div class="conn-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2867b2" stroke-width="1.8"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></div><div class="conn-info"><div class="conn-name">LinkedIn</div><div class="conn-handle">Not connected</div></div><div class="conn-toggle off"></div></div>
                 </div>
             </div>
-            <div class="dist-card">
-                <div class="dist-card-header"><div class="dist-card-title">Scheduled Posts</div><span class="badge blue">4 upcoming</span></div>
-                <div class="schedule-list">
-                    <div class="sched-item"><div class="sched-time">Today 6PM</div><div class="sched-body"><div class="sched-title">5 AI Tools Every Marketer Needs</div><div class="sched-plats">YouTube, Instagram, TikTok</div></div><span class="badge green">Ready</span></div>
-                    <div class="sched-item"><div class="sched-time">Tomorrow 9AM</div><div class="sched-body"><div class="sched-title">How to Turn Your Idea Into Income</div><div class="sched-plats">TikTok, Instagram</div></div><span class="badge amber">Rendering</span></div>
-                    <div class="sched-item"><div class="sched-time">Aug 29 12PM</div><div class="sched-body"><div class="sched-title">Prompt-to-Profit: Beginner's Guide</div><div class="sched-plats">YouTube</div></div><span class="badge green">Ready</span></div>
-                    <div class="sched-item"><div class="sched-time">Aug 30 8AM</div><div class="sched-body"><div class="sched-title">3 Mistakes New Creators Make</div><div class="sched-plats">All platforms</div></div><span class="badge muted">Draft</span></div>
+        </div>
+        <div style="margin-top:18px;padding:16px 18px;background:#0e0e0e;border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+            <div>
+                <div style="font-size:13.5px;font-weight:600;color:var(--light);">Schedule posts for specific times?</div>
+                <div style="font-size:12px;color:var(--muted);margin-top:3px;">Go to the Schedule page to queue posts on a date and time, and we'll auto-publish them.</div>
+            </div>
+            <button class="lib-new-btn" onclick="showPage('schedule')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                Go to Schedule
+            </button>
+        </div>
+    </div>
+
+    <!-- ══════════════ PAGE: SCHEDULE ══════════════ -->
+    <div class="page" id="page-schedule">
+        <div class="page-title">Schedule</div>
+        <div class="page-sub">Queue posts to be published automatically at your chosen date & time</div>
+
+        <div class="schedule-grid-layout">
+            <!-- LEFT: Schedule new post form -->
+            <div>
+                <div class="dist-card" style="margin-bottom:0;">
+                    <div class="dist-card-header" style="margin-bottom:18px;">
+                        <div class="dist-card-title">Schedule a Post</div>
+                        <span class="badge" style="background:#13183a;color:#8899ff;font-size:11px;">Auto-publish</span>
+                    </div>
+
+                    <!-- Video / content preview -->
+                    <div class="form-group">
+                        <label class="form-label">Content</label>
+                        <div id="scheduleVideoInfo" style="padding:12px 14px;background:#141414;border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;gap:10px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="1.8"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+                            <span id="scheduleVideoLabel" style="font-size:13px;color:var(--muted);flex:1;">No video selected — upload or generate content first, then click Schedule Post</span>
+                        </div>
+                        <!-- Fallback file upload for direct scheduling -->
+                        <div style="margin-top:8px;">
+                            <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:6px;">Or upload a video file directly:</label>
+                            <input type="file" id="scheduleVideoFile" accept="video/*" onchange="handleScheduleVideoFile(this)" style="font-size:12px;color:var(--muted);background:#141414;border:1px solid var(--border);border-radius:7px;padding:6px 10px;width:100%;box-sizing:border-box;">
+                        </div>
+                    </div>
+
+                    <!-- Caption -->
+                    <div class="form-group">
+                        <label class="form-label">Caption / Title</label>
+                        <textarea class="prompt-input" id="scheduleCaptionInput" style="min-height:70px;" placeholder="Add a caption, hashtags, or description for this post..."></textarea>
+                    </div>
+
+                    <!-- Platforms -->
+                    <div class="form-group">
+                        <label class="form-label">Target Platforms</label>
+                        <div class="platform-grid" id="schedulePlatformGrid">
+                            <div class="platform-toggle selected" onclick="togglePlatform(this)">
+                                <div class="pt-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+                                <span class="pt-name">YouTube</span>
+                            </div>
+                            <div class="platform-toggle selected" onclick="togglePlatform(this)">
+                                <div class="pt-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></div>
+                                <span class="pt-name">Instagram</span>
+                            </div>
+                            <div class="platform-toggle selected" onclick="togglePlatform(this)">
+                                <div class="pt-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.22 8.22 0 004.87 1.6V6.84a4.85 4.85 0 01-1.1-.15z"/></svg></div>
+                                <span class="pt-name">TikTok</span>
+                            </div>
+                            <div class="platform-toggle" onclick="togglePlatform(this)">
+                                <div class="pt-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.259 5.622z"/></svg></div>
+                                <span class="pt-name">Twitter / X</span>
+                            </div>
+                            <div class="platform-toggle" onclick="togglePlatform(this)">
+                                <div class="pt-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></div>
+                                <span class="pt-name">LinkedIn</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Date & Time -->
+                    <div class="form-group">
+                        <label class="form-label">Publish Date & Time</label>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                            <div>
+                                <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px;">Date</label>
+                                <input type="date" id="scheduleDate" class="select-input" style="width:100%;box-sizing:border-box;">
+                            </div>
+                            <div>
+                                <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px;">Time</label>
+                                <input type="time" id="scheduleTime" class="select-input" style="width:100%;box-sizing:border-box;">
+                            </div>
+                        </div>
+                        <!-- Quick presets -->
+                        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+                            <button type="button" class="sched-action-btn" onclick="applySchedulePreset('5min')">+5 min</button>
+                            <button type="button" class="sched-action-btn" onclick="applySchedulePreset('1hr')">+1 hour</button>
+                            <button type="button" class="sched-action-btn" onclick="applySchedulePreset('tmr9')">Tomorrow 9AM</button>
+                            <button type="button" class="sched-action-btn" onclick="applySchedulePreset('tmr6')">Tomorrow 6PM</button>
+                        </div>
+                    </div>
+
+                    <button class="generate-btn" id="scheduleSubmitBtn" onclick="handleScheduleSubmit()" style="width:100%;justify-content:center;margin-top:6px;">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        <span id="scheduleSubmitText">Schedule Post</span>
+                    </button>
+                    <div id="scheduleFormMsg" style="margin-top:10px;font-size:12.5px;text-align:center;display:none;"></div>
+                </div>
+            </div>
+
+            <!-- RIGHT: Upcoming scheduled posts list -->
+            <div>
+                <div class="dist-card-header" style="margin-bottom:14px;">
+                    <div class="dist-card-title" style="font-size:15px;font-weight:700;color:var(--white);">Upcoming Posts</div>
+                    <button class="sched-action-btn" onclick="renderScheduledPosts()" style="font-size:11px;">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                        Refresh
+                    </button>
+                </div>
+                <div class="schedule-list" id="scheduledPostsList">
+                    <div style="text-align:center;padding:40px 20px;color:var(--muted);font-size:13px;">Loading...</div>
                 </div>
             </div>
         </div>
@@ -974,6 +973,7 @@
             <select class="select-input" id="platformSelector" onchange="switchPlatform(this.value)" style="max-width:300px;">
                 <option value="youtube">YouTube</option>
                 <option value="instagram">Instagram</option>
+                <option value="threads">Threads</option>
                 <option value="tiktok">TikTok</option>
                 <option value="twitter">Twitter / X</option>
             </select>
@@ -981,26 +981,67 @@
 
         <!-- YouTube Analytics -->
         <div class="platform-analytics" id="platform-youtube">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
-                <div style="width:32px;height:32px;border-radius:7px;background:#141414;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4a7fa5" stroke-width="1.8"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+            <!-- Connection status banner -->
+            <div id="ytConnectBanner" style="display:none;margin-bottom:18px;padding:16px 20px;background:linear-gradient(135deg, rgba(255,0,51,0.08) 0%, rgba(20,20,30,0.6) 100%);border:1px solid rgba(255,60,60,0.25);border-radius:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <div style="width:36px;height:36px;border-radius:8px;background:rgba(255,0,51,0.15);border:1px solid rgba(255,0,51,0.3);display:flex;align-items:center;justify-content:center;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="#ff0033"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                    </div>
+                    <div>
+                        <div style="font-size:13.5px;font-weight:600;color:var(--white);">Connect YouTube Channel</div>
+                        <div style="font-size:12px;color:var(--muted);margin-top:2px;">Authorize your channel to pull real-time views, subscriber growth, and analytics.</div>
+                    </div>
                 </div>
-                <div><div style="font-size:16px;font-weight:700;color:var(--white);">YouTube Analytics</div><div style="font-size:12px;color:var(--muted);">@cashora.tech</div></div>
+                <a href="/auth/youtube" style="display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:#ff0033;color:#fff;border-radius:8px;font-weight:600;font-size:12.5px;text-decoration:none;box-shadow:0 0 15px rgba(255,0,51,0.35);">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                    Connect with Google
+                </a>
+            </div>
+
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <div id="ytChannelAvatarContainer" style="width:36px;height:36px;border-radius:8px;background:#141414;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff0033" stroke-width="1.8"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+                    </div>
+                    <div>
+                        <div id="ytChannelTitle" style="font-size:16px;font-weight:700;color:var(--white);">YouTube Analytics</div>
+                        <div id="ytChannelHandle" style="font-size:12px;color:var(--muted);">Checking status...</div>
+                    </div>
+                </div>
+                <div id="ytHeaderActions" style="display:flex;align-items:center;gap:10px;">
+                    <!-- Dynamically injected: Live badge & Refresh button -->
+                </div>
             </div>
 
             <!-- YouTube stats row -->
             <div class="stats-grid" style="margin-bottom:20px;">
-                <div class="stat-card"><div class="stat-row"><span class="stat-label">Views</span></div><div class="stat-value">21,400</div><div class="stat-change up"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+14%</div></div>
-                <div class="stat-card"><div class="stat-row"><span class="stat-label">Watch Time</span></div><div class="stat-value">1,240 h</div><div class="stat-change up"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+11%</div></div>
-                <div class="stat-card"><div class="stat-row"><span class="stat-label">Subscribers</span></div><div class="stat-value">+982</div><div class="stat-change up"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+8%</div></div>
-                <div class="stat-card"><div class="stat-row"><span class="stat-label">Avg. CTR</span></div><div class="stat-value">5.3%</div><div class="stat-change up"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+0.4pp</div></div>
+                <div class="stat-card">
+                    <div class="stat-row"><span class="stat-label">Total Views</span></div>
+                    <div class="stat-value" id="ytStatViews">21,400</div>
+                    <div class="stat-change up" id="ytChangeViews"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg><span id="ytBadgeViews">Live</span></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-row"><span class="stat-label">Watch Time</span></div>
+                    <div class="stat-value" id="ytStatWatchTime">1,240 h</div>
+                    <div class="stat-change up" id="ytChangeWatchTime"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg><span id="ytBadgeWatchTime">Live</span></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-row"><span class="stat-label">Subscribers</span></div>
+                    <div class="stat-value" id="ytStatSubs">+982</div>
+                    <div class="stat-change up" id="ytChangeSubs"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg><span id="ytBadgeSubs">Live</span></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-row"><span class="stat-label" id="ytStatCTRLabel">Videos Published</span></div>
+                    <div class="stat-value" id="ytStatCTR">--</div>
+                    <div class="stat-change up" id="ytChangeCTR"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg><span id="ytBadgeCTR">Live</span></div>
+                </div>
             </div>
 
             <!-- YouTube charts -->
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
                 <div class="chart-card">
                     <div class="chart-title">Views by Day</div>
-                    <div class="chart-sub">Last 7 days</div>
+                    <div class="chart-sub" id="ytViewsChartSub">Recent daily performance</div>
                     <div id="youtube-views-chart" style="height:140px;margin-top:12px;"></div>
                 </div>
                 <div class="chart-card">
@@ -1013,7 +1054,7 @@
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
                 <div class="chart-card">
                     <div class="chart-title">Subscriber Growth</div>
-                    <div class="chart-sub">New subscribers over time</div>
+                    <div class="chart-sub" id="ytSubsChartSub">New subscribers over time</div>
                     <div id="youtube-subscribers-chart" style="height:140px;margin-top:12px;"></div>
                 </div>
                 <div class="chart-card">
@@ -1025,32 +1066,35 @@
 
             <div class="chart-card">
                 <div class="chart-title">Top Performing Videos</div>
-                <div class="chart-sub">This month on YouTube</div>
+                <div class="chart-sub" id="ytTopVideosSub">Recent uploads and top views on YouTube</div>
                 <div style="display:flex;flex-direction:column;gap:0;margin-top:12px;">
                     <div style="display:grid;grid-template-columns:1fr 80px 70px 70px;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2);font-size:10.5px;font-weight:600;color:var(--muted2);text-transform:uppercase;letter-spacing:.05em;">
-                        <span>Video Title</span><span style="text-align:right;">Views</span><span style="text-align:right;">Watch Time</span><span style="text-align:right;">CTR</span>
+                        <span>Video Title</span><span style="text-align:right;">Views</span><span style="text-align:right;">Watch Time</span><span style="text-align:right;">CTR / Likes</span>
                     </div>
-                    <div style="display:grid;grid-template-columns:1fr 80px 70px 70px;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2);align-items:center;">
-                        <span style="font-size:13px;color:var(--light);">5 AI Tools Every Marketer Needs</span>
-                        <span style="font-size:13px;font-weight:600;color:var(--white);text-align:right;">12,400</span>
-                        <span style="font-size:13px;color:var(--muted);text-align:right;">680 h</span>
-                        <span style="font-size:13px;color:var(--muted);text-align:right;">5.9%</span>
-                    </div>
-                    <div style="display:grid;grid-template-columns:1fr 80px 70px 70px;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2);align-items:center;">
-                        <span style="font-size:13px;color:var(--light);">Prompt-to-Profit Guide</span>
-                        <span style="font-size:13px;font-weight:600;color:var(--white);text-align:right;">6,200</span>
-                        <span style="font-size:13px;color:var(--muted);text-align:right;">380 h</span>
-                        <span style="font-size:13px;color:var(--muted);text-align:right;">4.2%</span>
-                    </div>
-                    <div style="display:grid;grid-template-columns:1fr 80px 70px 70px;gap:10px;padding:10px 0;align-items:center;">
-                        <span style="font-size:13px;color:var(--light);">3 Common Creator Mistakes</span>
-                        <span style="font-size:13px;font-weight:600;color:var(--white);text-align:right;">2,800</span>
-                        <span style="font-size:13px;color:var(--muted);text-align:right;">180 h</span>
-                        <span style="font-size:13px;color:var(--muted);text-align:right;">3.8%</span>
+                    <div id="ytTopVideosList">
+                        <div style="display:grid;grid-template-columns:1fr 80px 70px 70px;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2);align-items:center;">
+                            <span style="font-size:13px;color:var(--light);">5 AI Tools Every Marketer Needs</span>
+                            <span style="font-size:13px;font-weight:600;color:var(--white);text-align:right;">12,400</span>
+                            <span style="font-size:13px;color:var(--muted);text-align:right;">680 h</span>
+                            <span style="font-size:13px;color:var(--muted);text-align:right;">5.9%</span>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 80px 70px 70px;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2);align-items:center;">
+                            <span style="font-size:13px;color:var(--light);">Prompt-to-Profit Guide</span>
+                            <span style="font-size:13px;font-weight:600;color:var(--white);text-align:right;">6,200</span>
+                            <span style="font-size:13px;color:var(--muted);text-align:right;">380 h</span>
+                            <span style="font-size:13px;color:var(--muted);text-align:right;">4.2%</span>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 80px 70px 70px;gap:10px;padding:10px 0;align-items:center;">
+                            <span style="font-size:13px;color:var(--light);">3 Common Creator Mistakes</span>
+                            <span style="font-size:13px;font-weight:600;color:var(--white);text-align:right;">2,800</span>
+                            <span style="font-size:13px;color:var(--muted);text-align:right;">180 h</span>
+                            <span style="font-size:13px;color:var(--muted);text-align:right;">3.8%</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
 
         <!-- Instagram Analytics -->
         <div class="platform-analytics" id="platform-instagram" style="display:none;">
@@ -1058,15 +1102,16 @@
                 <div style="width:32px;height:32px;border-radius:7px;background:#141414;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9b59b6" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#9b59b6"/></svg>
                 </div>
-                <div><div style="font-size:16px;font-weight:700;color:var(--white);">Instagram Analytics</div><div style="font-size:12px;color:var(--muted);">@cashora</div></div>
+                <div><div id="igHeaderTitle" style="font-size:16px;font-weight:700;color:var(--white);">Instagram Analytics</div><div id="igHeaderHandle" style="font-size:12px;color:var(--muted);">@vaibhav.tf7</div></div>
+                <div id="igHeaderActions" style="display:flex;align-items:center;gap:10px;margin-left:auto;"></div>
             </div>
 
             <!-- Instagram stats row -->
             <div class="stats-grid" style="margin-bottom:20px;">
-                <div class="stat-card"><div class="stat-row"><span class="stat-label">Reach</span></div><div class="stat-value">14,200</div><div class="stat-change up"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+18%</div></div>
-                <div class="stat-card"><div class="stat-row"><span class="stat-label">Engagements</span></div><div class="stat-value">1,840</div><div class="stat-change up"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+22%</div></div>
-                <div class="stat-card"><div class="stat-row"><span class="stat-label">Followers</span></div><div class="stat-value">+584</div><div class="stat-change up"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+9%</div></div>
-                <div class="stat-card"><div class="stat-row"><span class="stat-label">Saves</span></div><div class="stat-value">420</div><div class="stat-change up"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+15%</div></div>
+                <div class="stat-card"><div class="stat-row"><span class="stat-label">Reach</span><span id="igBadgeReach" style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;background:rgba(155,89,182,0.12);color:#9b59b6;border:1px solid rgba(155,89,182,0.25);">Live</span></div><div id="igStatReach" class="stat-value">—</div><div class="stat-change up"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg><span id="igBadgeReachTrend"></span></div></div>
+                <div class="stat-card"><div class="stat-row"><span class="stat-label">Engagements</span><span id="igBadgeEng" style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;background:rgba(155,89,182,0.12);color:#9b59b6;border:1px solid rgba(155,89,182,0.25);">Live</span></div><div id="igStatEng" class="stat-value">—</div><div class="stat-change up"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg><span id="igBadgeEngTrend"></span></div></div>
+                <div class="stat-card"><div class="stat-row"><span class="stat-label">Media Count</span><span id="igBadgeMedia" style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;background:rgba(155,89,182,0.12);color:#9b59b6;border:1px solid rgba(155,89,182,0.25);">Live</span></div><div id="igStatMedia" class="stat-value">—</div><div class="stat-change up"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg><span id="igBadgeMediaTrend"></span></div></div>
+                <div class="stat-card"><div class="stat-row"><span class="stat-label">Saves</span><span id="igBadgeSaves" style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;background:rgba(155,89,182,0.12);color:#9b59b6;border:1px solid rgba(155,89,182,0.25);">Live</span></div><div id="igStatSaves" class="stat-value">—</div><div class="stat-change up"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg><span id="igBadgeSavesTrend"></span></div></div>
             </div>
 
             <!-- Instagram charts -->
@@ -1098,28 +1143,13 @@
 
             <div class="chart-card">
                 <div class="chart-title">Top Performing Posts</div>
-                <div class="chart-sub">This month on Instagram</div>
+                <div class="chart-sub">Live from Instagram</div>
                 <div style="display:flex;flex-direction:column;gap:0;margin-top:12px;">
                     <div style="display:grid;grid-template-columns:1fr 80px 80px 70px;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2);font-size:10.5px;font-weight:600;color:var(--muted2);text-transform:uppercase;letter-spacing:.05em;">
                         <span>Post</span><span style="text-align:right;">Reach</span><span style="text-align:right;">Likes</span><span style="text-align:right;">Saves</span>
                     </div>
-                    <div style="display:grid;grid-template-columns:1fr 80px 80px 70px;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2);align-items:center;">
-                        <span style="font-size:13px;color:var(--light);">AI Tools for Marketers (Reel)</span>
-                        <span style="font-size:13px;font-weight:600;color:var(--white);text-align:right;">8,400</span>
-                        <span style="font-size:13px;color:var(--muted);text-align:right;">1,120</span>
-                        <span style="font-size:13px;color:var(--muted);text-align:right;">280</span>
-                    </div>
-                    <div style="display:grid;grid-template-columns:1fr 80px 80px 70px;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2);align-items:center;">
-                        <span style="font-size:13px;color:var(--light);">Turn Ideas Into Income</span>
-                        <span style="font-size:13px;font-weight:600;color:var(--white);text-align:right;">3,800</span>
-                        <span style="font-size:13px;color:var(--muted);text-align:right;">480</span>
-                        <span style="font-size:13px;color:var(--muted);text-align:right;">90</span>
-                    </div>
-                    <div style="display:grid;grid-template-columns:1fr 80px 80px 70px;gap:10px;padding:10px 0;align-items:center;">
-                        <span style="font-size:13px;color:var(--light);">Creator Mistakes Carousel</span>
-                        <span style="font-size:13px;font-weight:600;color:var(--white);text-align:right;">2,000</span>
-                        <span style="font-size:13px;color:var(--muted);text-align:right;">240</span>
-                        <span style="font-size:13px;color:var(--muted);text-align:right;">50</span>
+                    <div id="igTopPostsList">
+                        <div style="padding:20px 0;text-align:center;color:var(--muted);font-size:12px;">Loading posts...</div>
                     </div>
                 </div>
             </div>
@@ -1202,17 +1232,61 @@
         <div class="platform-analytics" id="platform-twitter" style="display:none;">
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
                 <div style="width:32px;height:32px;border-radius:7px;background:#141414;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.8"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.259 5.622z"/></svg>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1d9bf0" stroke-width="1.8"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.259 5.622z"/></svg>
                 </div>
-                <div><div style="font-size:16px;font-weight:700;color:var(--white);">Twitter / X Analytics</div><div style="font-size:12px;color:var(--muted);">@cashora_tech</div></div>
+                <div>
+                    <div id="twHeaderTitle" style="font-size:16px;font-weight:700;color:var(--white);">Twitter / X Analytics</div>
+                    <div id="twHeaderHandle" style="font-size:12px;color:var(--muted);">@vaibhav_tf7</div>
+                </div>
+                <div id="twHeaderActions" style="display:flex;align-items:center;gap:10px;margin-left:auto;"></div>
             </div>
 
             <!-- Twitter stats row -->
             <div class="stats-grid" style="margin-bottom:20px;">
-                <div class="stat-card"><div class="stat-row"><span class="stat-label">Impressions</span></div><div class="stat-value">2,882</div><div class="stat-change up"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+6%</div></div>
-                <div class="stat-card"><div class="stat-row"><span class="stat-label">Engagements</span></div><div class="stat-value">184</div><div class="stat-change up"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+8%</div></div>
-                <div class="stat-card"><div class="stat-row"><span class="stat-label">Retweets</span></div><div class="stat-value">42</div><div class="stat-change up"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+12%</div></div>
-                <div class="stat-card"><div class="stat-row"><span class="stat-label">Followers</span></div><div class="stat-value">+61</div><div class="stat-change up"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+4%</div></div>
+                <div class="stat-card">
+                    <div class="stat-row">
+                        <span class="stat-label">Impressions</span>
+                        <span id="twBadgeImp" style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;background:rgba(29,155,240,0.12);color:#1d9bf0;border:1px solid rgba(29,155,240,0.25);">Live</span>
+                    </div>
+                    <div id="twStatImpressions" class="stat-value">—</div>
+                    <div class="stat-change up">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                        <span id="twTrendImp">+6%</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-row">
+                        <span class="stat-label">Likes</span>
+                        <span id="twBadgeLikes" style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;background:rgba(29,155,240,0.12);color:#1d9bf0;border:1px solid rgba(29,155,240,0.25);">Live</span>
+                    </div>
+                    <div id="twStatLikes" class="stat-value">—</div>
+                    <div class="stat-change up">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                        <span id="twTrendLikes">+8%</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-row">
+                        <span class="stat-label">Retweets</span>
+                        <span id="twBadgeRT" style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;background:rgba(29,155,240,0.12);color:#1d9bf0;border:1px solid rgba(29,155,240,0.25);">Live</span>
+                    </div>
+                    <div id="twStatRetweets" class="stat-value">—</div>
+                    <div class="stat-change up">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                        <span id="twTrendRT">+12%</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-row">
+                        <span class="stat-label">Followers</span>
+                        <span id="twBadgeFol" style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;background:rgba(29,155,240,0.12);color:#1d9bf0;border:1px solid rgba(29,155,240,0.25);">Live</span>
+                    </div>
+                    <div id="twStatFollowers" class="stat-value">—</div>
+                    <div class="stat-change up">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                        <span id="twTrendFol">+4%</span>
+                    </div>
+                </div>
             </div>
 
             <!-- Twitter charts -->
@@ -1224,48 +1298,138 @@
                 </div>
                 <div class="chart-card">
                     <div class="chart-title">Engagement Rate</div>
-                    <div class="chart-sub">Interactions per impression</div>
+                    <div class="chart-sub">Interactions per impression (%)</div>
                     <div id="twitter-engagement-chart" style="height:140px;margin-top:12px;"></div>
                 </div>
             </div>
 
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
                 <div class="chart-card">
-                    <div class="chart-title">Tweet Types Performance</div>
-                    <div class="chart-sub">Avg. engagement by type</div>
+                    <div class="chart-title">Tweet Types</div>
+                    <div class="chart-sub">Breakdown by content format</div>
                     <div id="twitter-tweet-types-chart" style="height:140px;margin-top:12px;"></div>
                 </div>
                 <div class="chart-card">
-                    <div class="chart-title">Link Clicks vs Likes</div>
+                    <div class="chart-title">Likes vs Retweets</div>
                     <div class="chart-sub">Action comparison over time</div>
                     <div id="twitter-actions-chart" style="height:140px;margin-top:12px;"></div>
                 </div>
             </div>
 
             <div class="chart-card">
-                <div class="chart-title">Top Performing Posts</div>
-                <div class="chart-sub">This month on Twitter/X</div>
+                <div class="chart-title">Top Performing Tweets</div>
+                <div id="twChartSub" class="chart-sub">This week on Twitter / X</div>
                 <div style="display:flex;flex-direction:column;gap:0;margin-top:12px;">
                     <div style="display:grid;grid-template-columns:1fr 90px 70px 70px;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2);font-size:10.5px;font-weight:600;color:var(--muted2);text-transform:uppercase;letter-spacing:.05em;">
-                        <span>Post</span><span style="text-align:right;">Impressions</span><span style="text-align:right;">Likes</span><span style="text-align:right;">Retweets</span>
+                        <span>Tweet</span><span style="text-align:right;">Impressions</span><span style="text-align:right;">Likes</span><span style="text-align:right;">RT</span>
                     </div>
-                    <div style="display:grid;grid-template-columns:1fr 90px 70px 70px;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2);align-items:center;">
-                        <span style="font-size:13px;color:var(--light);">5 AI Tools Thread</span>
-                        <span style="font-size:13px;font-weight:600;color:var(--white);text-align:right;">1,200</span>
-                        <span style="font-size:13px;color:var(--muted);text-align:right;">82</span>
-                        <span style="font-size:13px;color:var(--muted);text-align:right;">24</span>
+                    <div id="twTopPostsList">
+                        <div style="padding:20px 0;text-align:center;color:var(--muted);font-size:12px;">Loading tweets…</div>
                     </div>
-                    <div style="display:grid;grid-template-columns:1fr 90px 70px 70px;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2);align-items:center;">
-                        <span style="font-size:13px;color:var(--light);">Creator Mistakes Poll</span>
-                        <span style="font-size:13px;font-weight:600;color:var(--white);text-align:right;">940</span>
-                        <span style="font-size:13px;color:var(--muted);text-align:right;">64</span>
-                        <span style="font-size:13px;color:var(--muted);text-align:right;">12</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Threads Analytics -->
+        <div class="platform-analytics" id="platform-threads" style="display:none;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+                <div style="width:32px;height:32px;border-radius:7px;background:#141414;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="4"/>
+                        <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/>
+                    </svg>
+                </div>
+                <div>
+                    <div id="thHeaderTitle" style="font-size:16px;font-weight:700;color:var(--white);">Threads Analytics</div>
+                    <div id="thHeaderHandle" style="font-size:12px;color:var(--muted);">@vaibhav.tf7</div>
+                </div>
+                <div id="thHeaderActions" style="display:flex;align-items:center;gap:10px;margin-left:auto;"></div>
+            </div>
+
+            <!-- Threads stats row -->
+            <div class="stats-grid" style="margin-bottom:20px;">
+                <div class="stat-card">
+                    <div class="stat-row">
+                        <span class="stat-label">Total Views</span>
+                        <span id="thBadgeViews" style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;background:rgba(124,58,237,0.12);color:#a78bfa;border:1px solid rgba(124,58,237,0.25);">Live</span>
                     </div>
-                    <div style="display:grid;grid-template-columns:1fr 90px 70px 70px;gap:10px;padding:10px 0;align-items:center;">
-                        <span style="font-size:13px;color:var(--light);">Prompt Guide Link</span>
-                        <span style="font-size:13px;font-weight:600;color:var(--white);text-align:right;">742</span>
-                        <span style="font-size:13px;color:var(--muted);text-align:right;">38</span>
-                        <span style="font-size:13px;color:var(--muted);text-align:right;">6</span>
+                    <div id="thStatViews" class="stat-value">—</div>
+                    <div class="stat-change up">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                        <span id="thBadgeViewsTrend">+18%</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-row">
+                        <span class="stat-label">Likes</span>
+                        <span id="thBadgeLikes" style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;background:rgba(124,58,237,0.12);color:#a78bfa;border:1px solid rgba(124,58,237,0.25);">Live</span>
+                    </div>
+                    <div id="thStatLikes" class="stat-value">—</div>
+                    <div class="stat-change up">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                        <span id="thBadgeLikesTrend">+14%</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-row">
+                        <span class="stat-label">Replies & Reposts</span>
+                        <span id="thBadgeReplies" style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;background:rgba(124,58,237,0.12);color:#a78bfa;border:1px solid rgba(124,58,237,0.25);">Live</span>
+                    </div>
+                    <div id="thStatReplies" class="stat-value">—</div>
+                    <div class="stat-change up">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                        <span id="thBadgeRepliesTrend">+22%</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-row">
+                        <span class="stat-label">Followers</span>
+                        <span id="thBadgeFollowers" style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;background:rgba(124,58,237,0.12);color:#a78bfa;border:1px solid rgba(124,58,237,0.25);">Live</span>
+                    </div>
+                    <div id="thStatFollowers" class="stat-value">—</div>
+                    <div class="stat-change up">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                        <span id="thBadgeFollowersTrend">+8%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Threads charts -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+                <div class="chart-card">
+                    <div class="chart-title">Views Trend</div>
+                    <div class="chart-sub">Daily impressions on Threads</div>
+                    <div id="threads-views-chart" style="height:140px;margin-top:12px;"></div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-title">Engagement Rate Trend</div>
+                    <div class="chart-sub">Interactions per view (%)</div>
+                    <div id="threads-engagement-chart" style="height:140px;margin-top:12px;"></div>
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+                <div class="chart-card">
+                    <div class="chart-title">Content Format Performance</div>
+                    <div class="chart-sub">Average interactions by post type</div>
+                    <div id="threads-post-types-chart" style="height:140px;margin-top:12px;"></div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-title">Replies vs Reposts</div>
+                    <div class="chart-sub">Conversational volume breakdown</div>
+                    <div id="threads-reach-chart" style="height:140px;margin-top:12px;"></div>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-title">Top Performing Threads</div>
+                <div class="chart-sub">Live from Meta Threads API</div>
+                <div style="display:flex;flex-direction:column;gap:0;margin-top:12px;">
+                    <div style="display:grid;grid-template-columns:1fr 80px 80px 70px;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2);font-size:10.5px;font-weight:600;color:var(--muted2);text-transform:uppercase;letter-spacing:.05em;">
+                        <span>Post</span><span style="text-align:right;">Views</span><span style="text-align:right;">Likes</span><span style="text-align:right;">Replies</span>
+                    </div>
+                    <div id="thTopPostsList">
+                        <div style="padding:20px 0;text-align:center;color:var(--muted);font-size:12px;">Loading threads...</div>
                     </div>
                 </div>
             </div>
@@ -1305,15 +1469,305 @@
 
 <script>
 // ── Page navigation
-const pageTitles = { dashboard:'Dashboard', create:'Create', library:'Library', distribution:'Distribution', analytics:'Analytics', settings:'Settings' };
+const pageTitles = { dashboard:'Dashboard', create:'Create', library:'Library', schedule:'Schedule', distribution:'Distribution', analytics:'Analytics', settings:'Settings' };
 
 function showPage(id, btn) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    document.getElementById('page-' + id).classList.add('active');
+    const pageEl = document.getElementById('page-' + id);
+    if (!pageEl) { console.warn('Page not found: page-' + id); return; }
+    pageEl.classList.add('active');
     if (btn) btn.classList.add('active');
     document.getElementById('topTitle').textContent = pageTitles[id] || 'Dashboard';
-    window.scrollTo(0,0);
+    if (id === 'library') renderLibrary();
+    if (id === 'distribution') {
+        checkYouTubeStatus();
+        checkThreadsStatus();
+    }
+    if (id === 'analytics') {
+        const plat = document.getElementById('platformSelector')?.value || 'youtube';
+        if (plat === 'youtube') loadYouTubeAnalytics();
+        if (plat === 'instagram') loadInstagramAnalytics();
+        if (plat === 'threads') loadThreadsAnalytics();
+        if (plat === 'twitter') loadTwitterAnalytics();
+        setTimeout(() => window.dispatchEvent(new Event('resize')), 150);
+    }
+
+    if (id === 'schedule') {
+        renderScheduledPosts();
+        // Pre-fill date/time to +1 hour if empty
+        const ds = document.getElementById('scheduleDate');
+        const ts = document.getElementById('scheduleTime');
+        if (ds && !ds.value) {
+            const d = new Date(Date.now() + 3600000);
+            ds.value = d.toISOString().slice(0, 10);
+            ts.value = d.toTimeString().slice(0, 5);
+        }
+    }
+    window.scrollTo(0, 0);
+}
+
+
+// ── Schedule page state (pre-population from Create)
+let _schedulePreloadFile = null;
+let _schedulePreloadPath = null;
+let _schedulePreloadCaption = '';
+let _schedulePreloadPlatforms = [];
+
+function goToScheduleFromCreate() {
+    // Capture current create state
+    const isUpload = document.getElementById('createUploadTab')?.style.display !== 'none';
+    _schedulePreloadFile = isUpload ? (document.getElementById('fileInput')?.files[0] || null) : null;
+    _schedulePreloadPath = null;
+    _schedulePreloadCaption = isUpload
+        ? (document.getElementById('uploadCaptionInput')?.value.trim() || '')
+        : (document.getElementById('promptInput')?.value.trim() || '');
+    _schedulePreloadPlatforms = Array.from(document.querySelectorAll('#platformGrid .platform-toggle.selected'))
+        .map(el => el.querySelector('.pt-name')?.textContent.trim()).filter(Boolean);
+
+    if (!_schedulePreloadFile && !isUpload) {
+        // prompt mode — no actual file to schedule, alert user
+        alert('Please upload a video file to schedule a post. AI generation creates a draft — upload it first.');
+        return;
+    }
+    if (!_schedulePreloadFile) {
+        alert('Please select a video to upload before scheduling.');
+        return;
+    }
+
+    const navBtn = Array.from(document.querySelectorAll('.nav-item')).find(b => b.textContent.trim() === 'Schedule');
+    showPage('schedule', navBtn);
+    populateScheduleForm();
+}
+
+function scheduleCurrentGeneratedVideo() {
+    // From Done card — use last uploaded file path if available
+    _schedulePreloadFile = null;
+    _schedulePreloadPath = null;
+    _schedulePreloadCaption = '';
+    _schedulePreloadPlatforms = [];
+    const navBtn = Array.from(document.querySelectorAll('.nav-item')).find(b => b.textContent.trim() === 'Schedule');
+    showPage('schedule', navBtn);
+    // Inform user
+    const msg = document.getElementById('scheduleFormMsg');
+    if (msg) {
+        msg.style.display = 'block';
+        msg.style.color = '#8899ff';
+        msg.textContent = 'Upload a video below, add your caption, choose platforms & time, then click Schedule Post.';
+    }
+}
+
+function populateScheduleForm() {
+    if (_schedulePreloadCaption) {
+        const cap = document.getElementById('scheduleCaptionInput');
+        if (cap) cap.value = _schedulePreloadCaption;
+    }
+    if (_schedulePreloadFile) {
+        const lbl = document.getElementById('scheduleVideoLabel');
+        const icon = document.querySelector('#scheduleVideoInfo svg');
+        if (lbl) { lbl.textContent = _schedulePreloadFile.name; lbl.style.color = 'var(--light)'; }
+        if (icon) icon.setAttribute('stroke', '#6677ff');
+    }
+    // Set selected platforms
+    if (_schedulePreloadPlatforms.length > 0) {
+        document.querySelectorAll('#schedulePlatformGrid .platform-toggle').forEach(el => {
+            const name = el.querySelector('.pt-name')?.textContent.trim();
+            el.classList.toggle('selected', _schedulePreloadPlatforms.includes(name));
+        });
+    }
+}
+
+function handleScheduleVideoFile(input) {
+    if (input.files && input.files[0]) {
+        _schedulePreloadFile = input.files[0];
+        const lbl = document.getElementById('scheduleVideoLabel');
+        const icon = document.querySelector('#scheduleVideoInfo svg');
+        if (lbl) { lbl.textContent = input.files[0].name; lbl.style.color = 'var(--light)'; }
+        if (icon) icon.setAttribute('stroke', '#6677ff');
+    }
+}
+
+function applySchedulePreset(preset) {
+    const ds = document.getElementById('scheduleDate');
+    const ts = document.getElementById('scheduleTime');
+    if (!ds || !ts) return;
+    const now = new Date();
+    let target;
+    if (preset === '5min')  { target = new Date(now.getTime() + 5 * 60000); }
+    else if (preset === '1hr')  { target = new Date(now.getTime() + 3600000); }
+    else if (preset === 'tmr9') { target = new Date(now); target.setDate(target.getDate() + 1); target.setHours(9, 0, 0, 0); }
+    else if (preset === 'tmr6') { target = new Date(now); target.setDate(target.getDate() + 1); target.setHours(18, 0, 0, 0); }
+    if (!target) return;
+    ds.value = target.toISOString().slice(0, 10);
+    ts.value = target.toTimeString().slice(0, 5);
+}
+
+async function handleScheduleSubmit() {
+    const btn = document.getElementById('scheduleSubmitBtn');
+    const btnText = document.getElementById('scheduleSubmitText');
+    const msg = document.getElementById('scheduleFormMsg');
+
+    const caption  = document.getElementById('scheduleCaptionInput')?.value.trim() || '';
+    const dateVal  = document.getElementById('scheduleDate')?.value;
+    const timeVal  = document.getElementById('scheduleTime')?.value;
+    const platforms = Array.from(document.querySelectorAll('#schedulePlatformGrid .platform-toggle.selected'))
+        .map(el => el.querySelector('.pt-name')?.textContent.trim()).filter(Boolean).join(', ');
+
+    if (!dateVal || !timeVal) {
+        showSchedMsg('Please pick a date and time.', '#ff6666');
+        return;
+    }
+    const scheduledTime = new Date(dateVal + 'T' + timeVal).toISOString();
+    if (new Date(scheduledTime) <= new Date()) {
+        showSchedMsg('Please pick a future date and time.', '#ff6666');
+        return;
+    }
+    if (!platforms) {
+        showSchedMsg('Select at least one platform.', '#ff6666');
+        return;
+    }
+
+    const formData = new FormData();
+    if (_schedulePreloadFile) {
+        formData.append('video', _schedulePreloadFile);
+    }
+    formData.append('caption', caption);
+    formData.append('platforms', platforms);
+    formData.append('scheduledTime', scheduledTime);
+    formData.append('title', caption || (_schedulePreloadFile?.name || 'Scheduled Post'));
+
+    if (btn) btn.disabled = true;
+    if (btnText) btnText.textContent = 'Scheduling...';
+    showSchedMsg('Sending to server...', '#8899ff');
+
+    try {
+        const res = await fetch('/api/schedule-post', { method: 'POST', body: formData });
+        const data = await res.json();
+        if (data.success) {
+            showSchedMsg('✅ Post scheduled successfully!', '#44cc88');
+            renderScheduledPosts();
+            // Reset form
+            setTimeout(() => {
+                document.getElementById('scheduleCaptionInput').value = '';
+                document.getElementById('scheduleDate').value = '';
+                document.getElementById('scheduleTime').value = '';
+                document.getElementById('scheduleVideoFile').value = '';
+                document.getElementById('scheduleVideoLabel').textContent = 'No video selected — upload or generate content first, then click Schedule Post';
+                document.getElementById('scheduleVideoLabel').style.color = 'var(--muted)';
+                document.querySelector('#scheduleVideoInfo svg').setAttribute('stroke', '#666');
+                _schedulePreloadFile = null;
+                _schedulePreloadPath = null;
+                showSchedMsg('', '');
+            }, 3000);
+        } else {
+            showSchedMsg('Error: ' + (data.message || 'Failed to schedule'), '#ff6666');
+        }
+    } catch (e) {
+        showSchedMsg('Network error: ' + e.message, '#ff6666');
+    } finally {
+        if (btn) btn.disabled = false;
+        if (btnText) btnText.textContent = 'Schedule Post';
+    }
+}
+
+function showSchedMsg(text, color) {
+    const msg = document.getElementById('scheduleFormMsg');
+    if (!msg) return;
+    if (!text) { msg.style.display = 'none'; return; }
+    msg.style.display = 'block';
+    msg.style.color = color || 'var(--muted)';
+    msg.textContent = text;
+}
+
+async function renderScheduledPosts() {
+    const list = document.getElementById('scheduledPostsList');
+    if (!list) return;
+    list.innerHTML = '<div style="text-align:center;padding:30px 20px;color:var(--muted);font-size:13px;">Loading...</div>';
+    try {
+        const res  = await fetch('/api/scheduled-posts');
+        const data = await res.json();
+        const posts = data.scheduledPosts || [];
+        if (posts.length === 0) {
+            list.innerHTML = `
+                <div style="text-align:center;padding:50px 20px;border:1px dashed var(--border);border-radius:10px;">
+                    <div style="font-size:28px;margin-bottom:12px;">🗓️</div>
+                    <div style="font-size:14px;font-weight:600;color:var(--light);margin-bottom:6px;">No scheduled posts yet</div>
+                    <div style="font-size:12px;color:var(--muted);">Use the form to queue your first post</div>
+                </div>`;
+            return;
+        }
+        list.innerHTML = posts.map(p => {
+            const statusBadge = {
+                scheduled:  `<span class="badge blue" style="font-size:11px;"><span class="pulse-dot" style="margin-right:4px;"></span>Scheduled</span>`,
+                processing: `<span class="badge amber" style="font-size:11px;"><span class="spin-dot" style="margin-right:4px;"></span>Processing</span>`,
+                posted:     `<span class="badge green" style="font-size:11px;">✓ Posted</span>`,
+                failed:     `<span class="badge" style="background:#2a0a0a;color:#ff6666;font-size:11px;">✗ Failed</span>`
+            }[p.status] || `<span class="badge muted" style="font-size:11px;">${p.status}</span>`;
+
+            const scheduledDate = new Date(p.scheduledTime);
+            const timeStr = scheduledDate.toLocaleString([], { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+            const platformStr = p.platforms || 'All platforms';
+
+            const actionBtns = p.status === 'scheduled' ? `
+                <button class="sched-action-btn trigger" onclick="triggerPostNow('${p.id}')">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                    Post Now
+                </button>
+                <button class="sched-action-btn cancel" onclick="cancelScheduledPost('${p.id}')">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    Cancel
+                </button>` : '';
+
+            return `
+                <div class="sched-card" id="scard-${p.id}">
+                    <div class="sched-card-top">
+                        <div class="sched-card-info">
+                            <div class="sched-title">${p.title || p.caption || 'Untitled'}</div>
+                            <div class="sched-meta">
+                                <div class="sched-time-pill">
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                    ${timeStr}
+                                </div>
+                                <div style="font-size:11px;color:var(--muted);">${platformStr}</div>
+                            </div>
+                        </div>
+                        ${statusBadge}
+                    </div>
+                    ${p.error ? `<div style="font-size:11px;color:#ff6666;padding:4px 0;">Error: ${p.error}</div>` : ''}
+                    ${actionBtns ? `<div class="sched-card-actions">${actionBtns}</div>` : ''}
+                </div>`;
+        }).join('');
+    } catch (e) {
+        list.innerHTML = `<div style="text-align:center;padding:30px;color:#ff6666;font-size:13px;">Failed to load scheduled posts.<br>${e.message}</div>`;
+    }
+}
+
+async function triggerPostNow(id) {
+    if (!confirm('Post this now immediately?')) return;
+    try {
+        const res = await fetch('/api/scheduled-posts/' + id + '/trigger', { method: 'POST' });
+        const data = await res.json();
+        if (data.success) { renderScheduledPosts(); }
+        else { alert('Failed: ' + data.message); }
+    } catch(e) { alert('Error: ' + e.message); }
+}
+
+async function cancelScheduledPost(id) {
+    if (!confirm('Cancel this scheduled post?')) return;
+    const card = document.getElementById('scard-' + id);
+    if (card) { card.style.opacity = '0.4'; card.style.pointerEvents = 'none'; }
+    try {
+        const res = await fetch('/api/scheduled-posts/' + id, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.success) { renderScheduledPosts(); }
+        else {
+            if (card) { card.style.opacity = ''; card.style.pointerEvents = ''; }
+            alert('Failed: ' + data.message);
+        }
+    } catch(e) {
+        if (card) { card.style.opacity = ''; card.style.pointerEvents = ''; }
+        alert('Error: ' + e.message);
+    }
 }
 
 // ── Platform toggles
@@ -1325,8 +1779,8 @@ function updateCount(el) {
     if (el.value.length > 500) el.value = el.value.substring(0,500);
 }
 
-// ── Generate animation
-const steps = [
+// ── Generate animation & pipeline steps
+const promptSteps = [
     { label: 'Generating script...', sub: 'Analysing your prompt and building narrative structure', progress: 18 },
     { label: 'Sourcing assets...', sub: 'Finding visuals, B-roll and background music', progress: 38 },
     { label: 'Generating voiceover...', sub: 'Converting script to natural-sounding speech', progress: 60 },
@@ -1334,28 +1788,96 @@ const steps = [
     { label: 'Finalising...', sub: 'Optimising for selected platforms', progress: 96 },
 ];
 
+const uploadSteps = [
+    { label: 'Uploading video...', sub: 'Sending file to server & n8n webhook', progress: 20 },
+    { label: 'Uploading to Blotato...', sub: 'Pushing media asset to Blotato CDN', progress: 45 },
+    { label: 'Configuring posts...', sub: 'Applying captions and platform formats', progress: 70 },
+    { label: 'Dispatching to socials...', sub: 'Broadcasting posts to your selected platforms', progress: 90 },
+    { label: 'Posting complete!', sub: 'Distribution initiated successfully', progress: 100 }
+];
+
 const stepIds = ['step-script','step-assets','step-voice','step-render','step-done-step'];
 const lineIds = ['line-1','line-2','line-3','line-4'];
 
-function startGenerate() {
-    const prompt = document.getElementById('promptInput').value.trim();
-    if (!prompt) { document.getElementById('promptInput').focus(); return; }
+async function startGenerate() {
+    const isUploadMode = document.getElementById('createUploadTab') && document.getElementById('createUploadTab').style.display !== 'none';
+    let file = null;
+    let uploadedFileData = null;
+    let capturedCaption = '';
+    let capturedPrompt = '';
 
-    document.getElementById('generateBtn').disabled = true;
+    if (isUploadMode) {
+        file = document.getElementById('fileInput')?.files[0];
+        if (!file) { alert("Please select a video to upload first."); return; }
+        capturedCaption = document.getElementById('uploadCaptionInput')?.value.trim() || '';
+    } else {
+        capturedPrompt = document.getElementById('promptInput')?.value.trim() || '';
+        if (!capturedPrompt) { document.getElementById('promptInput')?.focus(); return; }
+    }
+
+    const capturedPlatforms = Array.from(document.querySelectorAll('#platformGrid .platform-toggle.selected'))
+        .map(el => el.querySelector('.pt-name')?.textContent.trim())
+        .filter(Boolean);
+
+    const generateBtn = document.getElementById('generateBtn');
+    if (generateBtn) generateBtn.disabled = true;
     document.getElementById('createForm').style.display = 'none';
     document.getElementById('progressPanel').classList.add('visible');
     document.getElementById('doneCard').classList.remove('visible');
 
-    let current = 0;
-    runStep(current);
+    const activeSteps = isUploadMode ? uploadSteps : promptSteps;
 
-    function runStep(i) {
-        if (i >= steps.length) { finish(); return; }
-        const s = steps[i];
+    // Update step labels in the stepper header
+    const stepLabels = isUploadMode 
+        ? ['Upload', 'Blotato', 'Configure', 'Distribute', 'Done']
+        : ['Script', 'Assets', 'Voice', 'Render', 'Done'];
+    stepIds.forEach((sid, idx) => {
+        const lbl = document.getElementById(sid)?.querySelector('.step-label');
+        if (lbl && stepLabels[idx]) lbl.textContent = stepLabels[idx];
+    });
+
+    if (isUploadMode) {
+        document.getElementById('stepStatusText').textContent = 'Uploading video...';
+        document.getElementById('stepStatusSub').textContent  = 'Sending to server & n8n workflow';
+        document.getElementById('progressFill').style.width   = '10%';
+        
+        const formData = new FormData();
+        formData.append('video', file);
+
+        if (capturedCaption) formData.append('caption', capturedCaption);
+        if (capturedPlatforms.length > 0) formData.append('platforms', capturedPlatforms.join(', '));
+        
+        try {
+            const res = await fetch('/api/upload', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json();
+            if (data.success) {
+                console.log("Upload success:", data.file);
+                uploadedFileData = data.file;
+                runStep(0, activeSteps);
+            } else {
+                alert("Upload failed: " + (data.message || 'Unknown error'));
+                resetCreate();
+            }
+        } catch (e) {
+            console.error("Upload error:", e);
+            alert("Upload failed due to network error.");
+            resetCreate();
+        }
+    } else {
+        runStep(0, activeSteps);
+    }
+
+    function runStep(i, stepsList) {
+        if (i >= stepsList.length) { finish(); return; }
+        const s = stepsList[i];
 
         // Update stepper
         stepIds.forEach((sid, idx) => {
             const el = document.getElementById(sid);
+            if (!el) return;
             el.classList.remove('active','done');
             if (idx < i) { el.classList.add('done'); el.querySelector('.step-circle').innerHTML = '✓'; }
             else if (idx === i) { el.classList.add('active'); el.querySelector('.step-circle').textContent = idx+1; }
@@ -1364,6 +1886,7 @@ function startGenerate() {
 
         lineIds.forEach((lid, idx) => {
             const el = document.getElementById(lid);
+            if (!el) return;
             el.classList.remove('done','active');
             if (idx < i) el.classList.add('done');
             else if (idx === i) el.classList.add('active');
@@ -1372,21 +1895,60 @@ function startGenerate() {
         document.getElementById('stepStatusText').textContent = s.label;
         document.getElementById('stepStatusSub').textContent  = s.sub;
         document.getElementById('progressFill').style.width   = s.progress + '%';
-        document.getElementById('progressTitle').textContent  = 'Step ' + (i+1) + ' of ' + steps.length;
+        document.getElementById('progressTitle').textContent  = 'Step ' + (i+1) + ' of ' + stepsList.length;
 
-        setTimeout(() => runStep(i + 1), 1800);
+        setTimeout(() => runStep(i + 1, stepsList), 1600);
     }
 
     function finish() {
-        stepIds.forEach((sid,idx) => {
+        stepIds.forEach((sid) => {
             const el = document.getElementById(sid);
-            el.classList.remove('active'); el.classList.add('done');
-            el.querySelector('.step-circle').innerHTML = '✓';
+            if (el) {
+                el.classList.remove('active'); el.classList.add('done');
+                el.querySelector('.step-circle').innerHTML = '✓';
+            }
         });
-        lineIds.forEach(lid => { document.getElementById(lid).classList.remove('active'); document.getElementById(lid).classList.add('done'); });
+        lineIds.forEach(lid => {
+            const el = document.getElementById(lid);
+            if (el) { el.classList.remove('active'); el.classList.add('done'); }
+        });
         document.getElementById('progressFill').style.width = '100%';
         document.getElementById('progressPanel').classList.remove('visible');
-        document.getElementById('doneCard').classList.add('visible');
+
+        // Save to Content Library
+        const platformsToSave = capturedPlatforms.length ? capturedPlatforms : ['YouTube', 'Instagram'];
+        if (isUploadMode) {
+            const title = capturedCaption || (file ? file.name.replace(/\.[^/.]+$/, "") : 'Uploaded Video');
+            addLibraryItem({
+                title: title,
+                status: 'published',
+                platforms: platformsToSave,
+                type: 'upload',
+                filePath: uploadedFileData?.path || ''
+            });
+        } else {
+            const title = capturedPrompt.length > 55 ? capturedPrompt.substring(0, 55) + '...' : (capturedPrompt || 'AI Generated Video');
+            addLibraryItem({
+                title: title,
+                status: 'draft',
+                platforms: platformsToSave,
+                type: 'generated'
+            });
+        }
+
+        const doneCard = document.getElementById('doneCard');
+        if (doneCard) {
+            const h3 = doneCard.querySelector('h3');
+            const p = doneCard.querySelector('p');
+            if (isUploadMode) {
+                if (h3) h3.textContent = 'Posting Pipeline Started!';
+                if (p) p.textContent = 'Your video has been uploaded, published, and saved to your Content Library.';
+            } else {
+                if (h3) h3.textContent = 'Saved to Drafts';
+                if (p) p.textContent = 'Your AI video has been generated and saved to your Content Library as a draft.';
+            }
+            doneCard.classList.add('visible');
+        }
     }
 }
 
@@ -1394,201 +1956,311 @@ function resetCreate() {
     document.getElementById('createForm').style.display = '';
     document.getElementById('progressPanel').classList.remove('visible');
     document.getElementById('doneCard').classList.remove('visible');
-    document.getElementById('generateBtn').disabled = false;
-    document.getElementById('promptInput').value = '';
-    document.getElementById('promptCount').textContent = '0 / 500';
+    const generateBtn = document.getElementById('generateBtn');
+    if (generateBtn) generateBtn.disabled = false;
+    
+    // Clear prompt input
+    const promptInput = document.getElementById('promptInput');
+    if (promptInput) promptInput.value = '';
+    const promptCount = document.getElementById('promptCount');
+    if (promptCount) promptCount.textContent = '0 / 500';
+
+    // Clear caption input
+    const captionInput = document.getElementById('uploadCaptionInput');
+    if (captionInput) captionInput.value = '';
+
+    // Clear uploaded file
+    clearFile();
+
+    // Reset progress fill
     document.getElementById('progressFill').style.width = '5%';
-    stepIds.forEach((sid,idx) => {
+
+    // Reset stepper
+    const defaultLabels = ['Script', 'Assets', 'Voice', 'Render', 'Done'];
+    stepIds.forEach((sid, idx) => {
         const el = document.getElementById(sid);
-        el.classList.remove('active','done');
-        el.querySelector('.step-circle').textContent = idx+1;
+        if (el) {
+            el.classList.remove('active','done');
+            el.querySelector('.step-circle').textContent = idx+1;
+            const lbl = el.querySelector('.step-label');
+            if (lbl) lbl.textContent = defaultLabels[idx];
+        }
     });
-    lineIds.forEach(lid => { const el = document.getElementById(lid); el.classList.remove('done','active'); });
+    lineIds.forEach(lid => {
+        const el = document.getElementById(lid);
+        if (el) el.classList.remove('done','active');
+    });
+
+    // Match button text to currently active tab
+    const isUpload = document.getElementById('createUploadTab') && document.getElementById('createUploadTab').style.display !== 'none';
+    const btnText = document.getElementById('generateBtnText');
+    if (btnText) btnText.textContent = isUpload ? 'Start Posting' : 'Generate Video';
 }
 
-// ── Library filter (visual only)
+// ── Library management (Dynamic & Persistent)
+const DEFAULT_STORAGE_KEY = 'cashora_library_items';
+let currentLibFilter = 'all';
+
+function getLibraryItems() {
+    try {
+        const stored = localStorage.getItem(DEFAULT_STORAGE_KEY);
+        if (stored) return JSON.parse(stored);
+    } catch(e) {
+        console.error("Error reading library from localStorage:", e);
+    }
+    return [];
+}
+
+function saveLibraryItems(items) {
+    try {
+        localStorage.setItem(DEFAULT_STORAGE_KEY, JSON.stringify(items));
+    } catch(e) {
+        console.error("Error saving library to localStorage:", e);
+    }
+}
+
+function addLibraryItem(item) {
+    const items = getLibraryItems();
+    items.unshift({
+        id: 'vid_' + Date.now(),
+        title: item.title || 'Untitled Video',
+        date: item.date || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        status: item.status || 'draft',
+        platforms: item.platforms || ['YouTube', 'Instagram'],
+        type: item.type || 'upload',
+        filePath: item.filePath || ''
+    });
+    saveLibraryItems(items);
+    renderLibrary();
+}
+
+function deleteLibraryItem(id) {
+    let items = getLibraryItems();
+    items = items.filter(it => it.id !== id);
+    saveLibraryItems(items);
+    renderLibrary();
+}
+
+function publishDraftItem(id) {
+    const items = getLibraryItems();
+    const item = items.find(it => it.id === id);
+    if (item) {
+        item.status = 'published';
+        saveLibraryItems(items);
+        renderLibrary();
+        alert(`"${item.title}" is now published across your selected platforms!`);
+    }
+}
+
+function republishItem(id) {
+    const items = getLibraryItems();
+    const item = items.find(it => it.id === id);
+    if (item) {
+        alert(`Republish triggered for "${item.title}".`);
+    }
+}
+
 function filterLib(btn, filter) {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+    if (btn) btn.classList.add('active');
+    currentLibFilter = filter;
+    renderLibrary();
+}
+
+function getPlatformIcon(plat) {
+    const p = (plat || '').toLowerCase();
+    if (p.includes('youtube')) {
+        return `<div class="p-icon" title="YouTube"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="1.8"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>`;
+    } else if (p.includes('insta')) {
+        return `<div class="p-icon" title="Instagram"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#9b59b6" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#9b59b6"/></svg></div>`;
+    } else if (p.includes('tik')) {
+        return `<div class="p-icon" title="TikTok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#e94057" stroke-width="1.8"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.77-.39 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.22 8.22 0 004.87 1.6V6.84a4.85 4.85 0 01-1.1-.15z"/></svg></div>`;
+    } else if (p.includes('link')) {
+        return `<div class="p-icon" title="LinkedIn"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#2867b2" stroke-width="1.8"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></div>`;
+    } else if (p.includes('twitter') || p.includes('x')) {
+        return `<div class="p-icon" title="Twitter/X"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="1.8"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.259 5.622z"/></svg></div>`;
+    }
+    return `<div class="p-icon" title="${plat}"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="8 21 12 17 16 21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>`;
+}
+
+const THUMB_GRADIENTS = [
+    'linear-gradient(135deg,#0e1024,#13183a)',
+    'linear-gradient(135deg,#1a0820,#2d0a3a)',
+    'linear-gradient(135deg,#0a1a0e,#122010)',
+    'linear-gradient(135deg,#1a1208,#2a1e08)',
+    'linear-gradient(135deg,#0d1a24,#12293b)'
+];
+
+function renderLibrary() {
+    const grid = document.getElementById('libraryGrid');
+    if (!grid) return;
+
+    let items = getLibraryItems();
+
+    if (currentLibFilter === 'published') {
+        items = items.filter(it => it.status === 'published');
+    } else if (currentLibFilter === 'draft') {
+        items = items.filter(it => it.status === 'draft');
+    }
+
+    if (items.length === 0) {
+        grid.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: #0e0e0e; border: 1px dashed var(--border); border-radius: 12px; margin-top: 10px;">
+                <div style="width: 50px; height: 50px; border-radius: 50%; background: #13183a; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: #6677ff;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/></svg>
+                </div>
+                <div style="font-size: 16px; font-weight: 700; color: var(--light); margin-bottom: 6px;">
+                    ${currentLibFilter === 'all' ? 'No content in your library yet' : `No ${currentLibFilter} content found`}
+                </div>
+                <div style="font-size: 13px; color: var(--muted); max-width: 360px; margin: 0 auto 20px;">
+                    Upload a video to publish across your platforms, or generate video from a text prompt to save as draft.
+                </div>
+                <button class="lib-new-btn" style="margin: 0 auto; display: inline-flex;" onclick="showPage('create', document.querySelectorAll('.nav-item')[1])">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Create or Upload Video
+                </button>
+            </div>
+        `;
+        return;
+    }
+
+    grid.innerHTML = items.map((item, idx) => {
+        const isDraft = item.status === 'draft';
+        const badge = isDraft 
+            ? `<span class="badge muted">Draft</span>` 
+            : `<span class="badge green">Published</span>`;
+        const grad = THUMB_GRADIENTS[idx % THUMB_GRADIENTS.length];
+        const platIcons = (item.platforms || []).map(p => getPlatformIcon(p)).join('');
+
+        return `
+            <div class="video-card" id="card-${item.id}">
+                <div class="video-thumb" style="background:${grad};position:relative;overflow:hidden;">
+                    ${item.filePath ? `
+                        <video src="${item.filePath}" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;" preload="metadata" onmouseover="this.play()" onmouseout="this.pause()"></video>
+                    ` : ''}
+                    <div class="thumb-play" style="position:relative;z-index:2;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="#fff"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    </div>
+                    ${item.type ? `
+                        <div style="position:absolute;top:8px;left:8px;z-index:2;">
+                            <span class="badge" style="background:rgba(0,0,0,0.7);font-size:10px;text-transform:uppercase;">
+                                ${item.type === 'upload' ? 'Upload' : 'AI Gen'}
+                            </span>
+                        </div>
+                    ` : ''}
+                </div>
+                <div class="video-body">
+                    <div class="video-title" title="${item.title}">${item.title}</div>
+                    <div class="video-meta">
+                        <span class="video-date">${item.date}</span>
+                        <div style="display:flex;align-items:center;gap:6px;">
+                            ${badge}
+                            <div class="platform-icons">
+                                ${platIcons}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="video-actions">
+                        ${isDraft ? `
+                            <button class="v-btn publish" onclick="publishDraftItem('${item.id}')">
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                                Post / Publish
+                            </button>
+                        ` : `
+                            <button class="v-btn publish" onclick="republishItem('${item.id}')">
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                                Republish
+                            </button>
+                        `}
+                        <button class="v-btn del" onclick="deleteLibraryItem('${item.id}')">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
 }
 
 // ── Platform analytics switcher
 function switchPlatform(platform) {
     document.querySelectorAll('.platform-analytics').forEach(p => p.style.display = 'none');
-    document.getElementById('platform-' + platform).style.display = 'block';
+    const target = document.getElementById('platform-' + platform);
+    if (target) target.style.display = 'block';
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 250);
+    if (platform === 'youtube') loadYouTubeAnalytics();
+    if (platform === 'instagram') loadInstagramAnalytics();
+    if (platform === 'threads') {
+        if (typeof window.renderThreadsCharts === 'function') window.renderThreadsCharts();
+        loadThreadsAnalytics();
+    }
+    if (platform === 'twitter') {
+        if (typeof window.renderTwitterCharts === 'function') window.renderTwitterCharts();
+        loadTwitterAnalytics();
+    }
 }
 
 // ── Create tab switching
 function switchCreateTab(mode) {
     const promptTab = document.getElementById('createPromptTab');
     const uploadTab = document.getElementById('createUploadTab');
-    const imageTab = document.getElementById('createImageTab');
     const btnPrompt = document.getElementById('tabPrompt');
     const btnUpload = document.getElementById('tabUpload');
-    const btnImage = document.getElementById('tabImage');
-    const videoOptions = document.getElementById('videoOptions');
-    const imageOptions = document.getElementById('imageOptions');
+    const videoLengthGroup = document.getElementById('videoLengthGroup');
+    const aspectRatioGroup = document.getElementById('aspectRatioGroup');
+    const generationStyleRow = document.getElementById('generationStyleRow');
+    const btnText = document.getElementById('generateBtnText');
     
-    // Hide all tabs
-    promptTab.style.display = 'none';
-    uploadTab.style.display = 'none';
-    imageTab.style.display = 'none';
-    
-    // Reset all button styles
-    btnPrompt.style.background = 'transparent';
-    btnPrompt.style.color = 'var(--muted)';
-    btnUpload.style.background = 'transparent';
-    btnUpload.style.color = 'var(--muted)';
-    btnImage.style.background = 'transparent';
-    btnImage.style.color = 'var(--muted)';
-    
-    // Show selected tab and highlight button
     if (mode === 'prompt') {
-        promptTab.style.display = '';
-        btnPrompt.style.background = '#13183a';
-        btnPrompt.style.color = '#6677ff';
-        videoOptions.style.display = '';
-        imageOptions.style.display = 'none';
+        if (promptTab) promptTab.style.display = '';
+        if (uploadTab) uploadTab.style.display = 'none';
+        if (btnPrompt) {
+            btnPrompt.style.background = '#13183a';
+            btnPrompt.style.color = '#6677ff';
+        }
+        if (btnUpload) {
+            btnUpload.style.background = 'transparent';
+            btnUpload.style.color = 'var(--muted)';
+        }
+        // Show aspect ratio & video length for prompt generation
+        if (aspectRatioGroup) aspectRatioGroup.style.display = '';
+        if (generationStyleRow) generationStyleRow.style.gridTemplateColumns = '1fr 1fr';
+        if (videoLengthGroup) videoLengthGroup.style.display = '';
+        // Button text: Generate Video
+        if (btnText) btnText.textContent = 'Generate Video';
     } else if (mode === 'upload') {
-        uploadTab.style.display = '';
-        btnUpload.style.background = '#13183a';
-        btnUpload.style.color = '#6677ff';
-        videoOptions.style.display = '';
-        imageOptions.style.display = 'none';
-    } else if (mode === 'image') {
-        imageTab.style.display = '';
-        btnImage.style.background = '#13183a';
-        btnImage.style.color = '#6677ff';
-        videoOptions.style.display = 'none';
-        imageOptions.style.display = '';
-    }
-}
-
-// ── Image mode switching (upload vs generate)
-function switchImageMode(mode) {
-    const uploadMode = document.getElementById('imgUploadMode');
-    const generateMode = document.getElementById('imgGenerateMode');
-    const btnUpload = document.getElementById('imgTabUpload');
-    const btnGenerate = document.getElementById('imgTabGenerate');
-    
-    if (mode === 'upload') {
-        uploadMode.style.display = '';
-        generateMode.style.display = 'none';
-        btnUpload.style.background = '#13183a';
-        btnUpload.style.color = '#6677ff';
-        btnGenerate.style.background = 'transparent';
-        btnGenerate.style.color = 'var(--muted)';
-    } else {
-        uploadMode.style.display = 'none';
-        generateMode.style.display = '';
-        btnGenerate.style.background = '#13183a';
-        btnGenerate.style.color = '#6677ff';
-        btnUpload.style.background = 'transparent';
-        btnUpload.style.color = 'var(--muted)';
+        if (promptTab) promptTab.style.display = 'none';
+        if (uploadTab) uploadTab.style.display = '';
+        if (btnUpload) {
+            btnUpload.style.background = '#13183a';
+            btnUpload.style.color = '#6677ff';
+        }
+        if (btnPrompt) {
+            btnPrompt.style.background = 'transparent';
+            btnPrompt.style.color = 'var(--muted)';
+        }
+        // Remove / hide aspect ratio & video length in upload section
+        if (aspectRatioGroup) aspectRatioGroup.style.display = 'none';
+        if (generationStyleRow) generationStyleRow.style.gridTemplateColumns = '1fr';
+        if (videoLengthGroup) videoLengthGroup.style.display = 'none';
+        // Button text: Start Posting
+        if (btnText) btnText.textContent = 'Start Posting';
     }
 }
 
 // ── File upload handlers
-function handleDrop(e) {
-    e.preventDefault();
-    e.target.style.borderColor = 'var(--border)';
-    const files = e.dataTransfer.files;
-    if (files.length > 0) displayFile(files[0]);
-}
-
-function handleFileSelect(input) {
-    if (input.files.length > 0) displayFile(input.files[0]);
-}
-
-function displayFile(file) {
-    const preview = document.getElementById('filePreview');
-    const fileName = document.getElementById('fileName');
-    const fileSize = document.getElementById('fileSize');
-    
-    fileName.textContent = file.name;
-    const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
-    fileSize.textContent = sizeMB + ' MB';
-    preview.style.display = 'flex';
-}
-
-function clearFile() {
-    document.getElementById('fileInput').value = '';
-    document.getElementById('filePreview').style.display = 'none';
-}
-
-// ── Image file upload handlers
-function handleImgDrop(e) {
-    e.preventDefault();
-    e.target.style.borderColor = 'var(--border)';
-    const files = e.dataTransfer.files;
-    if (files.length > 0) displayImgFile(files[0]);
-}
-
-function handleImgFileSelect(input) {
-    if (input.files.length > 0) displayImgFile(input.files[0]);
-}
-
-function displayImgFile(file) {
-    const preview = document.getElementById('imgPreview');
-    const fileName = document.getElementById('imgFileName');
-    const fileSize = document.getElementById('imgFileSize');
-    const thumb = document.getElementById('imgPreviewThumb');
-    
-    fileName.textContent = file.name;
-    const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
-    fileSize.textContent = sizeMB + ' MB';
-    
-    // Show thumbnail preview
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        thumb.src = e.target.result;
-        thumb.style.display = 'block';
-    };
-    reader.readAsDataURL(file);
-    
-    preview.style.display = 'flex';
-}
-
-function clearImgFile() {
-    document.getElementById('imgFileInput').value = '';
-    document.getElementById('imgPreview').style.display = 'none';
-    document.getElementById('imgPreviewThumb').style.display = 'none';
-}
-
-// ── Image prompt counter
-function updateImgCount(el) {
-    document.getElementById('imgPromptCount').textContent = el.value.length + ' / 500';
-    if (el.value.length > 500) el.value = el.value.substring(0,500);
-}
-
-// ── Create tab switching
-function switchCreateTab(mode) {
-    if (mode === 'prompt') {
-        document.getElementById('tabPrompt').style.background = '#13183a';
-        document.getElementById('tabPrompt').style.color = '#6677ff';
-        document.getElementById('tabUpload').style.background = 'transparent';
-        document.getElementById('tabUpload').style.color = 'var(--muted)';
-        document.getElementById('createPromptTab').style.display = '';
-        document.getElementById('createUploadTab').style.display = 'none';
-    } else {
-        document.getElementById('tabPrompt').style.background = 'transparent';
-        document.getElementById('tabPrompt').style.color = 'var(--muted)';
-        document.getElementById('tabUpload').style.background = '#13183a';
-        document.getElementById('tabUpload').style.color = '#6677ff';
-        document.getElementById('createPromptTab').style.display = 'none';
-        document.getElementById('createUploadTab').style.display = '';
-    }
-}
-
-// ── Upload handlers
 function handleDrop(event) {
     event.preventDefault();
     event.stopPropagation();
-    const dropZone = event.currentTarget;
-    dropZone.style.borderColor = 'var(--border)';
+    const dropZone = document.getElementById('dropZone');
+    if (dropZone) dropZone.style.borderColor = 'var(--border)';
     
-    const files = event.dataTransfer.files;
-    if (files.length > 0 && files[0].type.startsWith('video/')) {
+    const files = event.dataTransfer ? event.dataTransfer.files : null;
+    if (files && files.length > 0) {
+        const fileInput = document.getElementById('fileInput');
+        if (fileInput) fileInput.files = files;
         displayFile(files[0]);
     }
 }
@@ -1603,19 +2275,28 @@ function displayFile(file) {
     const preview = document.getElementById('filePreview');
     const fileName = document.getElementById('fileName');
     const fileSize = document.getElementById('fileSize');
+    const dropZone = document.getElementById('dropZone');
     
-    fileName.textContent = file.name;
-    const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
-    fileSize.textContent = sizeMB + ' MB';
-    
-    preview.style.display = 'flex';
-    document.getElementById('dropZone').style.display = 'none';
+    if (fileName) fileName.textContent = file.name;
+    if (fileSize) {
+        const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
+        fileSize.textContent = sizeMB + ' MB';
+    }
+    if (preview) preview.style.display = 'flex';
+    if (dropZone) dropZone.style.display = 'none';
 }
 
 function clearFile() {
-    document.getElementById('filePreview').style.display = 'none';
-    document.getElementById('dropZone').style.display = '';
-    document.getElementById('fileInput').value = '';
+    const preview = document.getElementById('filePreview');
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    
+    if (preview) preview.style.display = 'none';
+    if (dropZone) {
+        dropZone.style.display = '';
+        dropZone.style.borderColor = 'var(--border)';
+    }
+    if (fileInput) fileInput.value = '';
 }
 
 // ── Auth
@@ -1655,376 +2336,478 @@ fetch('http://127.0.0.1:4000/auth/user', { credentials: 'include' })
     })
     .catch(() => { document.getElementById('topTitle').textContent = 'Dashboard'; });
 
-// ── Initialize charts when page loads
+// ── YouTube Integration & Analytics ─────────────────────────
+let _youtubeConnected = false;
+
+async function checkYouTubeStatus() {
+    try {
+        const res = await fetch('/api/youtube/status', { credentials: 'include' });
+        const data = await res.json();
+        _youtubeConnected = !!data.connected;
+
+        const handleEl = document.getElementById('distYtHandle');
+        const toggleEl = document.getElementById('distYtToggle');
+
+        if (data.connected && data.channel) {
+            if (handleEl) {
+                handleEl.textContent = data.channel.customUrl || data.channel.title || 'Connected';
+                handleEl.style.color = '#22c55e';
+            }
+            if (toggleEl) {
+                toggleEl.classList.remove('off');
+                toggleEl.setAttribute('title', 'Connected — Click to disconnect');
+            }
+        } else {
+            if (handleEl) {
+                handleEl.textContent = 'Not connected — Click to authorize';
+                handleEl.style.color = 'var(--muted)';
+            }
+            if (toggleEl) {
+                toggleEl.classList.add('off');
+                toggleEl.setAttribute('title', 'Click to connect YouTube');
+            }
+        }
+    } catch (e) {
+        console.warn('Could not check YouTube status:', e.message);
+    }
+}
+
+function handleYouTubeToggle() {
+    if (_youtubeConnected) {
+        if (confirm('Disconnect YouTube account from Cashora?')) {
+            window.location.href = '/auth/youtube/disconnect';
+        }
+    } else {
+        window.location.href = '/auth/youtube';
+    }
+}
+
+let _threadsConnected = false;
+
+async function checkThreadsStatus() {
+    try {
+        const res = await fetch('/api/threads/status', { credentials: 'include' });
+        const data = await res.json();
+        _threadsConnected = !!data.connected;
+
+        const handleEl = document.getElementById('distThreadsHandle');
+        const toggleEl = document.getElementById('distThreadsToggle');
+
+        if (data.connected && data.account) {
+            if (handleEl) {
+                handleEl.textContent = '@' + (data.account.username || 'vaibhav.tf7') + ' (Connected)';
+                handleEl.style.color = '#a78bfa';
+            }
+            if (toggleEl) {
+                toggleEl.classList.remove('off');
+                toggleEl.setAttribute('title', 'Connected — Click to disconnect');
+                toggleEl.onclick = handleThreadsToggle;
+            }
+        } else {
+            if (handleEl) {
+                handleEl.textContent = 'Not connected — Meta Threads token required';
+                handleEl.style.color = 'var(--muted)';
+            }
+            if (toggleEl) {
+                toggleEl.classList.add('off');
+                toggleEl.setAttribute('title', 'Click to view Threads setup');
+                toggleEl.onclick = handleThreadsToggle;
+            }
+        }
+    } catch (e) {
+        console.warn('Could not check Threads status:', e.message);
+    }
+}
+
+function handleThreadsToggle() {
+    if (_threadsConnected) {
+        if (confirm('Disconnect Threads account from Cashora?')) {
+            window.location.href = '/auth/threads/disconnect';
+        }
+    } else {
+        alert('To connect Threads: generate an access token in Meta Developers for account @vaibhav.tf7 and configure it in your server.');
+    }
+}
+
+async function loadYouTubeAnalytics(forceRefresh = false) {
+    const banner = document.getElementById('ytConnectBanner');
+    const headerActions = document.getElementById('ytHeaderActions');
+    const channelTitle = document.getElementById('ytChannelTitle');
+    const channelHandle = document.getElementById('ytChannelHandle');
+    const avatarContainer = document.getElementById('ytChannelAvatarContainer');
+
+    const statViews = document.getElementById('ytStatViews');
+    const statWatch = document.getElementById('ytStatWatchTime');
+    const statSubs = document.getElementById('ytStatSubs');
+    const statCTR = document.getElementById('ytStatCTR');
+
+    const badgeViews = document.getElementById('ytBadgeViews');
+    const badgeWatch = document.getElementById('ytBadgeWatchTime');
+    const badgeSubs = document.getElementById('ytBadgeSubs');
+    const badgeCTR = document.getElementById('ytBadgeCTR');
+
+    const topVideosList = document.getElementById('ytTopVideosList');
+
+    if (forceRefresh && headerActions) {
+        headerActions.innerHTML = `<span style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg> Syncing...</span>`;
+    }
+
+    try {
+        const url = '/api/analytics/youtube' + (forceRefresh ? '?refresh=true' : '');
+        const res = await fetch(url, { credentials: 'include' });
+        
+        if (res.status === 401 || !res.ok) {
+            _youtubeConnected = false;
+            if (banner) banner.style.display = 'flex';
+            if (channelHandle) channelHandle.textContent = 'Not connected';
+            if (headerActions) {
+                headerActions.innerHTML = `
+                    <a href="/auth/youtube" style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:#ff0033;color:#fff;border-radius:7px;font-size:12px;font-weight:600;text-decoration:none;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                        Connect YouTube
+                    </a>
+                `;
+            }
+            [badgeViews, badgeWatch, badgeSubs, badgeCTR].forEach(b => {
+                if (b) { b.textContent = 'Demo'; b.style.color = 'var(--muted)'; }
+            });
+            return;
+        }
+
+        const data = await res.json();
+        if (data.connected && data.channel) {
+            _youtubeConnected = true;
+            if (banner) banner.style.display = 'none';
+
+            if (channelTitle) channelTitle.textContent = data.channel.title || 'YouTube Analytics';
+            if (channelHandle) channelHandle.textContent = data.channel.customUrl || '@youtube';
+            if (avatarContainer && data.channel.avatar) {
+                avatarContainer.innerHTML = `<img src="${data.channel.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">`;
+            }
+
+            if (headerActions) {
+                headerActions.innerHTML = `
+                    <span style="display:inline-flex;align-items:center;gap:6px;background:rgba(34,197,94,0.1);color:#22c55e;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;border:1px solid rgba(34,197,94,0.25);">
+                        <span style="width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px #22c55e;"></span>
+                        Live Synced
+                    </span>
+                    <button onclick="loadYouTubeAnalytics(true)" class="lib-new-btn" style="padding:5px 12px;font-size:11.5px;background:#141414;color:var(--light);border:1px solid var(--border);display:inline-flex;align-items:center;gap:6px;cursor:pointer;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                        Refresh
+                    </button>
+                    <a href="/auth/youtube/disconnect" onclick="return confirm('Disconnect YouTube account?')" style="font-size:11.5px;color:var(--muted);text-decoration:none;margin-left:4px;">Disconnect</a>
+                `;
+            }
+
+            if (statViews) statViews.textContent = Number(data.stats.totalViews).toLocaleString();
+            if (statWatch) statWatch.textContent = Number(data.stats.watchTimeHours).toLocaleString() + ' h';
+            if (statSubs) statSubs.textContent = Number(data.stats.subscriberCount).toLocaleString();
+            if (statCTR) statCTR.textContent = data.stats.videoCount ? (data.stats.videoCount + ' videos') : data.stats.avgCtr;
+
+            [badgeViews, badgeWatch, badgeSubs, badgeCTR].forEach(b => {
+                if (b) { b.textContent = 'Live'; b.style.color = ''; }
+            });
+
+            if (window.updateYouTubeCharts && data.charts) {
+                window.updateYouTubeCharts(data.charts);
+            }
+
+            if (topVideosList && data.topVideos && data.topVideos.length > 0) {
+                topVideosList.innerHTML = data.topVideos.map(v => `
+                    <div style="display:grid;grid-template-columns:1fr 80px 70px 70px;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2);align-items:center;">
+                        <div style="display:flex;align-items:center;gap:10px;overflow:hidden;min-width:0;">
+                            ${v.thumbnail ? `<img src="${v.thumbnail}" style="width:42px;height:24px;border-radius:4px;object-fit:cover;flex-shrink:0;">` : ''}
+                            <span style="font-size:13px;color:var(--light);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${v.title}">${v.title}</span>
+                        </div>
+                        <span style="font-size:13px;font-weight:600;color:var(--white);text-align:right;">${Number(v.views).toLocaleString()}</span>
+                        <span style="font-size:13px;color:var(--muted);text-align:right;">${v.watchTimeApprox || '--'}</span>
+                        <span style="font-size:13px;color:var(--muted);text-align:right;">${v.ctr || v.likes || '--'}</span>
+                    </div>
+                `).join('');
+            }
+        }
+    } catch (err) {
+        console.error('Error loading YouTube analytics:', err);
+    }
+}
+
+async function loadInstagramAnalytics(forceRefresh = false) {
+    const headerActions = document.getElementById('igHeaderActions');
+    const headerHandle = document.getElementById('igHeaderHandle');
+
+    const statReach = document.getElementById('igStatReach');
+    const statEng = document.getElementById('igStatEng');
+    const statMedia = document.getElementById('igStatMedia');
+    const statSaves = document.getElementById('igStatSaves');
+    const topPostsList = document.getElementById('igTopPostsList');
+
+    if (forceRefresh && headerActions) {
+        headerActions.innerHTML = `<span style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg> Syncing...</span>`;
+    }
+
+    try {
+        const url = '/api/analytics/instagram' + (forceRefresh ? '?refresh=true' : '');
+        const res = await fetch(url, { credentials: 'include' });
+        const data = await res.json();
+
+        if (!res.ok || !data.connected) {
+            if (headerActions) {
+                headerActions.innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px;background:rgba(239,68,68,0.1);color:#ef4444;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;border:1px solid rgba(239,68,68,0.25);"><span style="width:6px;height:6px;border-radius:50%;background:#ef4444;"></span>Not Connected</span>`;
+            }
+            if (headerHandle) headerHandle.textContent = 'Token may be expired — please reconnect';
+            if (topPostsList) topPostsList.innerHTML = `<div style="padding:20px 0;text-align:center;color:var(--muted);font-size:12px;">${data.message || data.error || 'Instagram not connected.'}</div>`;
+            return;
+        }
+
+        // Connected!
+        if (headerHandle) headerHandle.textContent = '@' + (data.username || 'vaibhav.tf7');
+        if (headerActions) {
+            headerActions.innerHTML = `
+                <span style="display:inline-flex;align-items:center;gap:6px;background:rgba(34,197,94,0.1);color:#22c55e;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;border:1px solid rgba(34,197,94,0.25);">
+                    <span style="width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px #22c55e;"></span>
+                    Live Synced
+                </span>
+                <button onclick="loadInstagramAnalytics(true)" class="lib-new-btn" style="padding:5px 12px;font-size:11.5px;background:#141414;color:var(--light);border:1px solid var(--border);display:inline-flex;align-items:center;gap:6px;cursor:pointer;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                    Refresh
+                </button>
+            `;
+        }
+
+        // Update stats
+        const s = data.stats || {};
+        if (statReach) statReach.textContent = s.reach ? Number(s.reach).toLocaleString() : (s.totalInteractions ? Number(s.totalInteractions).toLocaleString() : '—');
+        if (statEng) statEng.textContent = s.totalInteractions ? Number(s.totalInteractions).toLocaleString() : (s.totalLikes ? Number(s.totalLikes).toLocaleString() : '—');
+        if (statMedia) statMedia.textContent = s.mediaCount ? Number(s.mediaCount).toLocaleString() : '—';
+        if (statSaves) statSaves.textContent = s.totalSaves ? Number(s.totalSaves).toLocaleString() : (s.saved ? Number(s.saved).toLocaleString() : '—');
+
+        // Populate top posts table
+        if (topPostsList && data.topPosts && data.topPosts.length > 0) {
+            topPostsList.innerHTML = data.topPosts.map((p, i) => `
+                <div style="display:grid;grid-template-columns:1fr 80px 80px 70px;gap:10px;padding:10px 0;${i < data.topPosts.length - 1 ? 'border-bottom:1px solid var(--border2);' : ''}align-items:center;">
+                    <div style="display:flex;align-items:center;gap:8px;overflow:hidden;min-width:0;">
+                        ${p.thumbnail ? `<img src="${p.thumbnail}" style="width:36px;height:36px;border-radius:6px;object-fit:cover;flex-shrink:0;">` : `<div style="width:36px;height:36px;border-radius:6px;background:rgba(155,89,182,0.15);border:1px solid rgba(155,89,182,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9b59b6" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/></svg></div>`}
+                        <a href="${p.permalink || '#'}" target="_blank" style="font-size:12.5px;color:var(--light);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-decoration:none;" title="${p.title || ''}"><span style="font-size:9px;margin-right:4px;color:#9b59b6;background:rgba(155,89,182,0.1);padding:1px 5px;border-radius:4px;">${p.type || 'POST'}</span>${p.title || 'Instagram Post'}</a>
+                    </div>
+                    <span style="font-size:13px;font-weight:600;color:var(--white);text-align:right;">${p.reach ? Number(p.reach).toLocaleString() : '—'}</span>
+                    <span style="font-size:13px;color:var(--muted);text-align:right;">${p.likes ? Number(p.likes).toLocaleString() : '—'}</span>
+                    <span style="font-size:13px;color:var(--muted);text-align:right;">${p.saves ? Number(p.saves).toLocaleString() : '—'}</span>
+                </div>
+            `).join('');
+        } else if (topPostsList) {
+            topPostsList.innerHTML = '<div style="padding:20px 0;text-align:center;color:var(--muted);font-size:12px;">No posts found.</div>';
+        }
+
+        if (typeof window.updateInstagramCharts === 'function' && data.charts) {
+            window.updateInstagramCharts(data.charts);
+        }
+
+    } catch (err) {
+        console.error('Error loading Instagram analytics:', err);
+        if (headerActions) headerActions.innerHTML = `<span style="font-size:11px;color:#ef4444;">Error loading data</span>`;
+    }
+}
+
+async function loadThreadsAnalytics(forceRefresh = false) {
+    const headerActions = document.getElementById('thHeaderActions');
+    const headerHandle = document.getElementById('thHeaderHandle');
+
+    const statViews = document.getElementById('thStatViews');
+    const statLikes = document.getElementById('thStatLikes');
+    const statReplies = document.getElementById('thStatReplies');
+    const statFollowers = document.getElementById('thStatFollowers');
+    const topPostsList = document.getElementById('thTopPostsList');
+
+    if (forceRefresh && headerActions) {
+        headerActions.innerHTML = `<span style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg> Syncing...</span>`;
+    }
+
+    try {
+        const url = '/api/analytics/threads' + (forceRefresh ? '?refresh=true' : '');
+        const res = await fetch(url, { credentials: 'include' });
+        const data = await res.json();
+
+        if (!res.ok || !data.connected) {
+            if (headerActions) {
+                headerActions.innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px;background:rgba(239,68,68,0.1);color:#ef4444;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;border:1px solid rgba(239,68,68,0.25);"><span style="width:6px;height:6px;border-radius:50%;background:#ef4444;"></span>Not Connected</span>`;
+            }
+            if (headerHandle) headerHandle.textContent = 'Token required — Meta Developers Threads API';
+            if (topPostsList) topPostsList.innerHTML = `<div style="padding:24px 0;text-align:center;color:var(--muted);font-size:12px;">${data.message || data.error || 'Threads token not configured yet.'}</div>`;
+            return;
+        }
+
+        // Connected!
+        if (headerHandle) headerHandle.textContent = '@' + (data.username || 'vaibhav.tf7');
+        if (headerActions) {
+            headerActions.innerHTML = `
+                <span style="display:inline-flex;align-items:center;gap:6px;background:rgba(124,58,237,0.12);color:#a78bfa;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;border:1px solid rgba(124,58,237,0.25);">
+                    <span style="width:6px;height:6px;border-radius:50%;background:#a78bfa;box-shadow:0 0 6px #7c3aed;"></span>
+                    Live Synced
+                </span>
+                <button onclick="loadThreadsAnalytics(true)" class="lib-new-btn" style="padding:5px 12px;font-size:11.5px;background:#141414;color:var(--light);border:1px solid var(--border);display:inline-flex;align-items:center;gap:6px;cursor:pointer;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                    Refresh
+                </button>
+            `;
+        }
+
+        // Update stats
+        const s = data.stats || {};
+        if (statViews) statViews.textContent = s.views !== undefined ? Number(s.views).toLocaleString() : '—';
+        if (statLikes) statLikes.textContent = s.likes !== undefined ? Number(s.likes).toLocaleString() : '—';
+        if (statReplies) statReplies.textContent = (s.replies !== undefined && s.reposts !== undefined) ? Number(s.replies + s.reposts).toLocaleString() : (s.replies !== undefined ? Number(s.replies).toLocaleString() : '—');
+        if (statFollowers) statFollowers.textContent = s.followers !== undefined ? Number(s.followers).toLocaleString() : '—';
+
+        // Populate top posts table
+        if (topPostsList && data.topPosts && data.topPosts.length > 0) {
+            topPostsList.innerHTML = data.topPosts.map((p, i) => `
+                <div style="display:grid;grid-template-columns:1fr 80px 80px 70px;gap:10px;padding:10px 0;${i < data.topPosts.length - 1 ? 'border-bottom:1px solid var(--border2);' : ''}align-items:center;">
+                    <div style="display:flex;align-items:center;gap:8px;overflow:hidden;min-width:0;">
+                        <div style="width:36px;height:36px;border-radius:6px;background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/></svg>
+                        </div>
+                        <a href="${p.permalink || '#'}" target="_blank" style="font-size:12.5px;color:var(--light);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-decoration:none;" title="${p.fullText || p.title || ''}">
+                            <span style="font-size:9px;margin-right:4px;color:#a78bfa;background:rgba(124,58,237,0.12);padding:1px 5px;border-radius:4px;">${p.type || 'THREAD'}</span>${p.title || 'Threads Post'}
+                        </a>
+                    </div>
+                    <span style="font-size:13px;font-weight:600;color:var(--white);text-align:right;">${p.views !== undefined ? Number(p.views).toLocaleString() : '—'}</span>
+                    <span style="font-size:13px;color:var(--muted);text-align:right;">${p.likes !== undefined ? Number(p.likes).toLocaleString() : '—'}</span>
+                    <span style="font-size:13px;color:var(--muted);text-align:right;">${p.replies !== undefined ? Number(p.replies).toLocaleString() : '—'}</span>
+                </div>
+            `).join('');
+        } else if (topPostsList) {
+            topPostsList.innerHTML = '<div style="padding:20px 0;text-align:center;color:var(--muted);font-size:12px;">No threads found.</div>';
+        }
+
+        // Live chart updates with ApexCharts
+        if (typeof window.renderThreadsCharts === 'function' && data.charts) {
+            window.renderThreadsCharts(data.charts);
+        }
+
+    } catch (err) {
+        console.error('Error loading Threads analytics:', err);
+        if (headerActions) headerActions.innerHTML = `<span style="font-size:11px;color:#ef4444;">Error loading data</span>`;
+    }
+}
+
+// ─── Twitter / X Analytics ────────────────────────────────────────────────────
+async function loadTwitterAnalytics(forceRefresh = false) {
+    const headerActions = document.getElementById('twHeaderActions');
+    const headerHandle  = document.getElementById('twHeaderHandle');
+
+    const statImpressions = document.getElementById('twStatImpressions');
+    const statLikes       = document.getElementById('twStatLikes');
+    const statRetweets    = document.getElementById('twStatRetweets');
+    const statFollowers   = document.getElementById('twStatFollowers');
+    const topPostsList    = document.getElementById('twTopPostsList');
+    const chartSub        = document.getElementById('twChartSub');
+
+    if (forceRefresh && headerActions) {
+        headerActions.innerHTML = `<span style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg> Syncing...</span>`;
+    }
+
+    try {
+        const url = '/api/analytics/twitter' + (forceRefresh ? '?refresh=true' : '');
+        const res = await fetch(url, { credentials: 'include' });
+        const data = await res.json();
+
+        // Update handle
+        if (headerHandle) headerHandle.textContent = '@' + (data.account?.username || 'vaibhav_tf7');
+
+        // Status badge
+        if (headerActions) {
+            if (data.demo) {
+                headerActions.innerHTML = `
+                    <span style="display:inline-flex;align-items:center;gap:6px;background:rgba(234,179,8,0.1);color:#eab308;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;border:1px solid rgba(234,179,8,0.25);">
+                        <span style="width:6px;height:6px;border-radius:50%;background:#eab308;"></span>
+                        Demo Data
+                    </span>
+                    <span style="font-size:11px;color:var(--muted);">${data.message || 'Add Bearer Token to .env'}</span>
+                `;
+                if (chartSub) chartSub.textContent = 'Demo data — add Bearer Token for live data';
+            } else {
+                headerActions.innerHTML = `
+                    <span style="display:inline-flex;align-items:center;gap:6px;background:rgba(29,155,240,0.12);color:#1d9bf0;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;border:1px solid rgba(29,155,240,0.25);">
+                        <span style="width:6px;height:6px;border-radius:50%;background:#1d9bf0;box-shadow:0 0 6px #1d9bf0;"></span>
+                        Live Synced
+                    </span>
+                    <button onclick="loadTwitterAnalytics(true)" class="lib-new-btn" style="padding:5px 12px;font-size:11.5px;background:#141414;color:var(--light);border:1px solid var(--border);display:inline-flex;align-items:center;gap:6px;cursor:pointer;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                        Refresh
+                    </button>
+                `;
+            }
+        }
+
+        // Update stat cards
+        const s = data.stats || {};
+        if (statImpressions) statImpressions.textContent = s.impressions !== undefined ? Number(s.impressions).toLocaleString() : '—';
+        if (statLikes)        statLikes.textContent       = s.likes       !== undefined ? Number(s.likes).toLocaleString()       : '—';
+        if (statRetweets)     statRetweets.textContent    = s.retweets    !== undefined ? Number(s.retweets).toLocaleString()    : '—';
+        if (statFollowers)    statFollowers.textContent   = s.followers   !== undefined ? Number(s.followers).toLocaleString()   : '—';
+
+        // Populate top tweets table
+        if (topPostsList && data.topTweets && data.topTweets.length > 0) {
+            topPostsList.innerHTML = data.topTweets.map((t, i) => `
+                <div style="display:grid;grid-template-columns:1fr 90px 70px 70px;gap:10px;padding:10px 0;${i < data.topTweets.length - 1 ? 'border-bottom:1px solid var(--border2);' : ''}align-items:center;">
+                    <div style="display:flex;align-items:center;gap:8px;overflow:hidden;min-width:0;">
+                        <div style="width:36px;height:36px;border-radius:6px;background:rgba(29,155,240,0.1);border:1px solid rgba(29,155,240,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1d9bf0" stroke-width="1.8"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.259 5.622z"/></svg>
+                        </div>
+                        <a href="${t.url || '#'}" target="_blank" style="font-size:12.5px;color:var(--light);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-decoration:none;" title="${t.text || ''}">${t.text || 'Tweet'}</a>
+                    </div>
+                    <span style="font-size:13px;font-weight:600;color:var(--white);text-align:right;">${t.impressions !== undefined ? Number(t.impressions).toLocaleString() : '—'}</span>
+                    <span style="font-size:13px;color:var(--muted);text-align:right;">${t.likes !== undefined ? Number(t.likes).toLocaleString() : '—'}</span>
+                    <span style="font-size:13px;color:var(--muted);text-align:right;">${t.retweets !== undefined ? Number(t.retweets).toLocaleString() : '—'}</span>
+                </div>
+            `).join('');
+        } else if (topPostsList) {
+            topPostsList.innerHTML = '<div style="padding:20px 0;text-align:center;color:var(--muted);font-size:12px;">No tweets found.</div>';
+        }
+
+        // Update charts with live data
+        if (typeof window.renderTwitterCharts === 'function' && data.charts) {
+            window.renderTwitterCharts(data.charts);
+        }
+
+    } catch (err) {
+        console.error('Error loading Twitter analytics:', err);
+        if (headerActions) headerActions.innerHTML = `<span style="font-size:11px;color:#ef4444;">Error loading data</span>`;
+    }
+}
+
+// ── Initialize charts, library, and handle deep-linking on load
 window.addEventListener('DOMContentLoaded', function() {
-    initializeCharts();
+    renderLibrary();
+    if (typeof initializeCharts === 'function') {
+        initializeCharts();
+    }
+
+    // Always check YouTube, Threads & Twitter connection status
+    checkYouTubeStatus();
+    checkThreadsStatus();
+
+    // Check URL parameters for OAuth callbacks
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabParam = urlParams.get('tab');
+    const connectedParam = urlParams.get('connected');
+    const ytError = urlParams.get('youtube_error');
+
+    if (ytError) {
+        alert('YouTube Authorization: ' + decodeURIComponent(ytError));
+    }
+
+    if (tabParam === 'analytics' || connectedParam === 'youtube') {
+        const analyticsNav = document.querySelectorAll('.nav-item')[4];
+        showPage('analytics', analyticsNav);
+        const selector = document.getElementById('platformSelector');
+        if (selector) selector.value = 'youtube';
+        switchPlatform('youtube');
+        loadYouTubeAnalytics();
+    }
 });
 
-function initializeCharts() {
-    const { BarChart, Bar, LineChart, Line, AreaChart, Area, PieChart, Pie, Cell, 
-            XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ComposedChart } = Recharts;
-    
-    // Chart colors matching the dark theme
-    const colors = {
-        primary: '#3344ff',
-        youtube: '#4a7fa5',
-        instagram: '#9b59b6',
-        tiktok: '#e94057',
-        twitter: '#888888',
-        bg: '#0a0a0a',
-        text: '#d4d4d4',
-        muted: '#666666'
-    };
 
-    // Overall Views Chart
-    const overallData = [
-        { month: 'Feb', views: 18000 },
-        { month: 'Mar', views: 21000 },
-        { month: 'Apr', views: 26500 },
-        { month: 'May', views: 24200 },
-        { month: 'Jun', views: 32200 },
-        { month: 'Jul', views: 37400 },
-        { month: 'Aug', views: 47382 }
-    ];
-
-    ReactDOM.render(
-        React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
-            React.createElement(AreaChart, { data: overallData },
-                React.createElement(CartesianGrid, { strokeDasharray: '3 3', stroke: '#222' }),
-                React.createElement(XAxis, { dataKey: 'month', stroke: colors.muted, style: { fontSize: '12px' } }),
-                React.createElement(YAxis, { stroke: colors.muted, style: { fontSize: '12px' } }),
-                React.createElement(Tooltip, { 
-                    contentStyle: { backgroundColor: '#111', border: '1px solid #333', borderRadius: '8px', color: colors.text },
-                    labelStyle: { color: colors.text }
-                }),
-                React.createElement(Area, { type: 'monotone', dataKey: 'views', stroke: colors.primary, fill: colors.primary, fillOpacity: 0.3 })
-            )
-        ),
-        document.getElementById('overall-views-chart')
-    );
-
-    // YouTube Charts
-    const ytViewsData = [
-        { day: 'Mon', views: 2400 }, { day: 'Tue', views: 2200 }, { day: 'Wed', views: 2800 },
-        { day: 'Thu', views: 2600 }, { day: 'Fri', views: 3200 }, { day: 'Sat', views: 3500 }, { day: 'Sun', views: 3800 }
-    ];
-    
-    ReactDOM.render(
-        React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
-            React.createElement(BarChart, { data: ytViewsData },
-                React.createElement(CartesianGrid, { strokeDasharray: '3 3', stroke: '#222' }),
-                React.createElement(XAxis, { dataKey: 'day', stroke: colors.muted, style: { fontSize: '11px' } }),
-                React.createElement(YAxis, { stroke: colors.muted, style: { fontSize: '11px' } }),
-                React.createElement(Tooltip, { contentStyle: { backgroundColor: '#111', border: '1px solid #333', borderRadius: '6px' } }),
-                React.createElement(Bar, { dataKey: 'views', fill: colors.youtube, radius: [4, 4, 0, 0] })
-            )
-        ),
-        document.getElementById('youtube-views-chart')
-    );
-
-    const ytEngagementData = [
-        { day: 'W1', rate: 4.2 }, { day: 'W2', rate: 4.4 }, { day: 'W3', rate: 4.6 },
-        { day: 'W4', rate: 4.3 }, { day: 'W5', rate: 4.8 }, { day: 'W6', rate: 4.9 }, { day: 'W7', rate: 4.8 }
-    ];
-
-    ReactDOM.render(
-        React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
-            React.createElement(AreaChart, { data: ytEngagementData },
-                React.createElement(CartesianGrid, { strokeDasharray: '3 3', stroke: '#222' }),
-                React.createElement(XAxis, { dataKey: 'day', stroke: colors.muted, style: { fontSize: '11px' } }),
-                React.createElement(YAxis, { stroke: colors.muted, style: { fontSize: '11px' } }),
-                React.createElement(Tooltip, { contentStyle: { backgroundColor: '#111', border: '1px solid #333', borderRadius: '6px' } }),
-                React.createElement(Area, { type: 'monotone', dataKey: 'rate', stroke: colors.youtube, fill: colors.youtube, fillOpacity: 0.4 })
-            )
-        ),
-        document.getElementById('youtube-engagement-chart')
-    );
-
-    const ytSubsData = [
-        { day: 'Mon', subs: 120 }, { day: 'Tue', subs: 135 }, { day: 'Wed', subs: 145 },
-        { day: 'Thu', subs: 138 }, { day: 'Fri', subs: 162 }, { day: 'Sat', subs: 148 }, { day: 'Sun', subs: 180 }
-    ];
-
-    ReactDOM.render(
-        React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
-            React.createElement(LineChart, { data: ytSubsData },
-                React.createElement(CartesianGrid, { strokeDasharray: '3 3', stroke: '#222' }),
-                React.createElement(XAxis, { dataKey: 'day', stroke: colors.muted, style: { fontSize: '11px' } }),
-                React.createElement(YAxis, { stroke: colors.muted, style: { fontSize: '11px' } }),
-                React.createElement(Tooltip, { contentStyle: { backgroundColor: '#111', border: '1px solid #333', borderRadius: '6px' } }),
-                React.createElement(Line, { type: 'monotone', dataKey: 'subs', stroke: colors.youtube, strokeWidth: 2, dot: { r: 4 } })
-            )
-        ),
-        document.getElementById('youtube-subscribers-chart')
-    );
-
-    const ytTrafficData = [
-        { source: 'Search', value: 42 },
-        { source: 'Suggested', value: 31 },
-        { source: 'Browse', value: 15 },
-        { source: 'External', value: 12 }
-    ];
-    const TRAFFIC_COLORS = ['#4a7fa5', '#5c8db5', '#7099bb', '#89a8c8'];
-
-    ReactDOM.render(
-        React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
-            React.createElement(PieChart, {},
-                React.createElement(Pie, { 
-                    data: ytTrafficData, 
-                    dataKey: 'value', 
-                    nameKey: 'source', 
-                    cx: '50%', 
-                    cy: '50%', 
-                    innerRadius: 35,
-                    outerRadius: 55,
-                    paddingAngle: 2
-                }, ytTrafficData.map((entry, index) => 
-                    React.createElement(Cell, { key: `cell-${index}`, fill: TRAFFIC_COLORS[index % TRAFFIC_COLORS.length] })
-                )),
-                React.createElement(Tooltip, { contentStyle: { backgroundColor: '#111', border: '1px solid #333', borderRadius: '6px', fontSize: '12px' } })
-            )
-        ),
-        document.getElementById('youtube-traffic-chart')
-    );
-
-    // Instagram Charts
-    const igReachData = [
-        { day: 'Mon', reach: 1800 }, { day: 'Tue', reach: 2200 }, { day: 'Wed', reach: 2400 },
-        { day: 'Thu', reach: 2100 }, { day: 'Fri', reach: 2900 }, { day: 'Sat', reach: 3100 }, { day: 'Sun', reach: 3300 }
-    ];
-
-    ReactDOM.render(
-        React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
-            React.createElement(BarChart, { data: igReachData },
-                React.createElement(CartesianGrid, { strokeDasharray: '3 3', stroke: '#222' }),
-                React.createElement(XAxis, { dataKey: 'day', stroke: colors.muted, style: { fontSize: '11px' } }),
-                React.createElement(YAxis, { stroke: colors.muted, style: { fontSize: '11px' } }),
-                React.createElement(Tooltip, { contentStyle: { backgroundColor: '#111', border: '1px solid #333', borderRadius: '6px' } }),
-                React.createElement(Bar, { dataKey: 'reach', fill: colors.instagram, radius: [4, 4, 0, 0] })
-            )
-        ),
-        document.getElementById('instagram-reach-chart')
-    );
-
-    const igPostTypesData = [
-        { type: 'Reels', engagement: 920 },
-        { type: 'Carousel', engagement: 580 },
-        { type: 'Single', engagement: 340 }
-    ];
-
-    ReactDOM.render(
-        React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
-            React.createElement(BarChart, { data: igPostTypesData, layout: 'vertical' },
-                React.createElement(CartesianGrid, { strokeDasharray: '3 3', stroke: '#222' }),
-                React.createElement(XAxis, { type: 'number', stroke: colors.muted, style: { fontSize: '11px' } }),
-                React.createElement(YAxis, { type: 'category', dataKey: 'type', stroke: colors.muted, style: { fontSize: '11px' } }),
-                React.createElement(Tooltip, { contentStyle: { backgroundColor: '#111', border: '1px solid #333', borderRadius: '6px' } }),
-                React.createElement(Bar, { dataKey: 'engagement', fill: colors.instagram, radius: [0, 4, 4, 0] })
-            )
-        ),
-        document.getElementById('instagram-post-types-chart')
-    );
-
-    const igEngagementData = [
-        { day: 'Mon', rate: 11.2 }, { day: 'Tue', rate: 12.1 }, { day: 'Wed', rate: 11.8 },
-        { day: 'Thu', rate: 13.4 }, { day: 'Fri', rate: 12.9 }, { day: 'Sat', rate: 13.8 }, { day: 'Sun', rate: 13.6 }
-    ];
-
-    ReactDOM.render(
-        React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
-            React.createElement(LineChart, { data: igEngagementData },
-                React.createElement(CartesianGrid, { strokeDasharray: '3 3', stroke: '#222' }),
-                React.createElement(XAxis, { dataKey: 'day', stroke: colors.muted, style: { fontSize: '11px' } }),
-                React.createElement(YAxis, { stroke: colors.muted, style: { fontSize: '11px' } }),
-                React.createElement(Tooltip, { contentStyle: { backgroundColor: '#111', border: '1px solid #333', borderRadius: '6px' } }),
-                React.createElement(Line, { type: 'monotone', dataKey: 'rate', stroke: colors.instagram, strokeWidth: 2, dot: { r: 4 } })
-            )
-        ),
-        document.getElementById('instagram-engagement-chart')
-    );
-
-    const igStoryFeedData = [
-        { day: 'Mon', stories: 1200, feed: 1600 }, { day: 'Tue', stories: 1400, feed: 1800 },
-        { day: 'Wed', stories: 1500, feed: 1900 }, { day: 'Thu', stories: 1300, feed: 1700 },
-        { day: 'Fri', stories: 1800, feed: 2100 }, { day: 'Sat', stories: 1900, feed: 2200 },
-        { day: 'Sun', stories: 2000, feed: 2400 }
-    ];
-
-    ReactDOM.render(
-        React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
-            React.createElement(BarChart, { data: igStoryFeedData },
-                React.createElement(CartesianGrid, { strokeDasharray: '3 3', stroke: '#222' }),
-                React.createElement(XAxis, { dataKey: 'day', stroke: colors.muted, style: { fontSize: '11px' } }),
-                React.createElement(YAxis, { stroke: colors.muted, style: { fontSize: '11px' } }),
-                React.createElement(Tooltip, { contentStyle: { backgroundColor: '#111', border: '1px solid #333', borderRadius: '6px' } }),
-                React.createElement(Bar, { dataKey: 'stories', fill: '#7b68a8', radius: [4, 4, 0, 0] }),
-                React.createElement(Bar, { dataKey: 'feed', fill: colors.instagram, radius: [4, 4, 0, 0] })
-            )
-        ),
-        document.getElementById('instagram-story-feed-chart')
-    );
-
-    // TikTok Charts
-    const ttViewsData = [
-        { day: 'Mon', views: 950 }, { day: 'Tue', views: 1200 }, { day: 'Wed', views: 1100 },
-        { day: 'Thu', views: 1450 }, { day: 'Fri', views: 1600 }, { day: 'Sat', views: 1750 }, { day: 'Sun', views: 1950 }
-    ];
-
-    ReactDOM.render(
-        React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
-            React.createElement(BarChart, { data: ttViewsData },
-                React.createElement(CartesianGrid, { strokeDasharray: '3 3', stroke: '#222' }),
-                React.createElement(XAxis, { dataKey: 'day', stroke: colors.muted, style: { fontSize: '11px' } }),
-                React.createElement(YAxis, { stroke: colors.muted, style: { fontSize: '11px' } }),
-                React.createElement(Tooltip, { contentStyle: { backgroundColor: '#111', border: '1px solid #333', borderRadius: '6px' } }),
-                React.createElement(Bar, { dataKey: 'views', fill: colors.tiktok, radius: [4, 4, 0, 0] })
-            )
-        ),
-        document.getElementById('tiktok-views-chart')
-    );
-
-    const ttEngagementData = [
-        { day: 'Mon', rate: 13.2 }, { day: 'Tue', rate: 14.5 }, { day: 'Wed', rate: 14.1 },
-        { day: 'Thu', rate: 15.8 }, { day: 'Fri', rate: 15.2 }, { day: 'Sat', rate: 16.4 }, { day: 'Sun', rate: 15.1 }
-    ];
-
-    ReactDOM.render(
-        React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
-            React.createElement(AreaChart, { data: ttEngagementData },
-                React.createElement(CartesianGrid, { strokeDasharray: '3 3', stroke: '#222' }),
-                React.createElement(XAxis, { dataKey: 'day', stroke: colors.muted, style: { fontSize: '11px' } }),
-                React.createElement(YAxis, { stroke: colors.muted, style: { fontSize: '11px' } }),
-                React.createElement(Tooltip, { contentStyle: { backgroundColor: '#111', border: '1px solid #333', borderRadius: '6px' } }),
-                React.createElement(Area, { type: 'monotone', dataKey: 'rate', stroke: colors.tiktok, fill: colors.tiktok, fillOpacity: 0.4 })
-            )
-        ),
-        document.getElementById('tiktok-engagement-chart')
-    );
-
-    const ttTrafficData = [
-        { source: 'For You', value: 68 },
-        { source: 'Following', value: 22 },
-        { source: 'Profile', value: 10 }
-    ];
-    const TT_COLORS = ['#e94057', '#f55969', '#ff7a89'];
-
-    ReactDOM.render(
-        React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
-            React.createElement(PieChart, {},
-                React.createElement(Pie, { 
-                    data: ttTrafficData, 
-                    dataKey: 'value', 
-                    nameKey: 'source', 
-                    cx: '50%', 
-                    cy: '50%', 
-                    innerRadius: 35,
-                    outerRadius: 55,
-                    paddingAngle: 2
-                }, ttTrafficData.map((entry, index) => 
-                    React.createElement(Cell, { key: `cell-${index}`, fill: TT_COLORS[index % TT_COLORS.length] })
-                )),
-                React.createElement(Tooltip, { contentStyle: { backgroundColor: '#111', border: '1px solid #333', borderRadius: '6px', fontSize: '12px' } })
-            )
-        ),
-        document.getElementById('tiktok-traffic-chart')
-    );
-
-    const ttWatchTimeData = [
-        { day: 'Mon', seconds: 18 }, { day: 'Tue', seconds: 21 }, { day: 'Wed', seconds: 19 },
-        { day: 'Thu', seconds: 24 }, { day: 'Fri', seconds: 23 }, { day: 'Sat', seconds: 26 }, { day: 'Sun', seconds: 25 }
-    ];
-
-    ReactDOM.render(
-        React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
-            React.createElement(LineChart, { data: ttWatchTimeData },
-                React.createElement(CartesianGrid, { strokeDasharray: '3 3', stroke: '#222' }),
-                React.createElement(XAxis, { dataKey: 'day', stroke: colors.muted, style: { fontSize: '11px' } }),
-                React.createElement(YAxis, { stroke: colors.muted, style: { fontSize: '11px' } }),
-                React.createElement(Tooltip, { contentStyle: { backgroundColor: '#111', border: '1px solid #333', borderRadius: '6px' } }),
-                React.createElement(Line, { type: 'monotone', dataKey: 'seconds', stroke: colors.tiktok, strokeWidth: 2, dot: { r: 4 } })
-            )
-        ),
-        document.getElementById('tiktok-watchtime-chart')
-    );
-
-    // Twitter Charts
-    const twImpressionsData = [
-        { day: 'Mon', impressions: 380 }, { day: 'Tue', impressions: 350 }, { day: 'Wed', impressions: 480 },
-        { day: 'Thu', impressions: 520 }, { day: 'Fri', impressions: 460 }, { day: 'Sat', impressions: 620 }, { day: 'Sun', impressions: 710 }
-    ];
-
-    ReactDOM.render(
-        React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
-            React.createElement(BarChart, { data: twImpressionsData },
-                React.createElement(CartesianGrid, { strokeDasharray: '3 3', stroke: '#222' }),
-                React.createElement(XAxis, { dataKey: 'day', stroke: colors.muted, style: { fontSize: '11px' } }),
-                React.createElement(YAxis, { stroke: colors.muted, style: { fontSize: '11px' } }),
-                React.createElement(Tooltip, { contentStyle: { backgroundColor: '#111', border: '1px solid #333', borderRadius: '6px' } }),
-                React.createElement(Bar, { dataKey: 'impressions', fill: colors.twitter, radius: [4, 4, 0, 0] })
-            )
-        ),
-        document.getElementById('twitter-impressions-chart')
-    );
-
-    const twEngagementData = [
-        { day: 'Mon', rate: 5.8 }, { day: 'Tue', rate: 6.1 }, { day: 'Wed', rate: 5.9 },
-        { day: 'Thu', rate: 6.7 }, { day: 'Fri', rate: 6.3 }, { day: 'Sat', rate: 6.9 }, { day: 'Sun', rate: 6.4 }
-    ];
-
-    ReactDOM.render(
-        React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
-            React.createElement(AreaChart, { data: twEngagementData },
-                React.createElement(CartesianGrid, { strokeDasharray: '3 3', stroke: '#222' }),
-                React.createElement(XAxis, { dataKey: 'day', stroke: colors.muted, style: { fontSize: '11px' } }),
-                React.createElement(YAxis, { stroke: colors.muted, style: { fontSize: '11px' } }),
-                React.createElement(Tooltip, { contentStyle: { backgroundColor: '#111', border: '1px solid #333', borderRadius: '6px' } }),
-                React.createElement(Area, { type: 'monotone', dataKey: 'rate', stroke: colors.twitter, fill: colors.twitter, fillOpacity: 0.4 })
-            )
-        ),
-        document.getElementById('twitter-engagement-chart')
-    );
-
-    const twTweetTypesData = [
-        { type: 'Threads', engagement: 45 },
-        { type: 'Media', engagement: 38 },
-        { type: 'Text', engagement: 24 },
-        { type: 'Polls', engagement: 32 }
-    ];
-
-    ReactDOM.render(
-        React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
-            React.createElement(BarChart, { data: twTweetTypesData, layout: 'vertical' },
-                React.createElement(CartesianGrid, { strokeDasharray: '3 3', stroke: '#222' }),
-                React.createElement(XAxis, { type: 'number', stroke: colors.muted, style: { fontSize: '11px' } }),
-                React.createElement(YAxis, { type: 'category', dataKey: 'type', stroke: colors.muted, style: { fontSize: '11px' } }),
-                React.createElement(Tooltip, { contentStyle: { backgroundColor: '#111', border: '1px solid #333', borderRadius: '6px' } }),
-                React.createElement(Bar, { dataKey: 'engagement', fill: colors.twitter, radius: [0, 4, 4, 0] })
-            )
-        ),
-        document.getElementById('twitter-tweet-types-chart')
-    );
-
-    const twActionsData = [
-        { day: 'Mon', clicks: 28, likes: 52 }, { day: 'Tue', clicks: 24, likes: 48 },
-        { day: 'Wed', clicks: 38, likes: 64 }, { day: 'Thu', clicks: 42, likes: 68 },
-        { day: 'Fri', clicks: 36, likes: 58 }, { day: 'Sat', clicks: 48, likes: 78 },
-        { day: 'Sun', clicks: 54, likes: 84 }
-    ];
-
-    ReactDOM.render(
-        React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
-            React.createElement(LineChart, { data: twActionsData },
-                React.createElement(CartesianGrid, { strokeDasharray: '3 3', stroke: '#222' }),
-                React.createElement(XAxis, { dataKey: 'day', stroke: colors.muted, style: { fontSize: '11px' } }),
-                React.createElement(YAxis, { stroke: colors.muted, style: { fontSize: '11px' } }),
-                React.createElement(Tooltip, { contentStyle: { backgroundColor: '#111', border: '1px solid #333', borderRadius: '6px' } }),
-                React.createElement(Line, { type: 'monotone', dataKey: 'clicks', stroke: '#5599ff', strokeWidth: 2, dot: { r: 3 } }),
-                React.createElement(Line, { type: 'monotone', dataKey: 'likes', stroke: colors.twitter, strokeWidth: 2, dot: { r: 3 } })
-            )
-        ),
-        document.getElementById('twitter-actions-chart')
-    );
-}
 </script>
 <script src="charts.js"></script>
 </body>
