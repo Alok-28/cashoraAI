@@ -262,7 +262,7 @@
         </div>
         
         <div class="back-home">
-            <a href="../index.html">← Back to Home</a>
+            <a href="http://127.0.0.1:4000/">← Back to Home</a>
         </div>
     </div>
     
@@ -302,14 +302,10 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    // Hide form, show user info
-                    document.getElementById('login-form').style.display = 'none';
-                    document.getElementById('error-message').classList.remove('show');
-                    document.getElementById('user-info').classList.add('show');
-                    document.getElementById('user-name').textContent = data.user.name;
-                    document.getElementById('user-email').textContent = data.user.email;
-                    document.getElementById('user-avatar').src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(data.user.name) + '&background=667eea&color=fff&size=80';
-                    document.getElementById('success-message').classList.add('show');
+                    // Redirect to dashboard after successful login
+                    setTimeout(() => {
+                        window.location.href = '../dashboard/';
+                    }, 500);
                 } else {
                     document.getElementById('error-message').textContent = data.message || 'Invalid email or password';
                     document.getElementById('error-message').classList.add('show');

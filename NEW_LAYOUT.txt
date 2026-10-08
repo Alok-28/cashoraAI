@@ -1,0 +1,315 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                                                                              ║
+║                     🎯 NEW BUTTON LAYOUT - SIDE BY SIDE 🎯                  ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ DESKTOP VIEW (≥ 769px width)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                                                                              │
+│  [LOGO] CASHORA                                                              │
+│  ┌────────────────────────────────────────────────────────────────────────┐  │
+│  │                                                                        │  │
+│  │                    WELCOME TO CASHORA                                 │  │
+│  │                Your Digital Payment Solution                          │  │
+│  │                                                                        │  │
+│  │                 ╔══════════════╗  ╔══════════╗                       │  │
+│  │                 ║ START FREE   ║  ║ Log In   ║                       │  │
+│  │                 ╚══════════════╝  ╚══════════╝                       │  │
+│  │                    ↑               ↑                                   │  │
+│  │              Gradient Blue   Gradient Blue                            │  │
+│  │              12px spacing                                             │  │
+│  │                                                                        │  │
+│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐                │  │
+│  │  │   Feature 1  │  │   Feature 2  │  │   Feature 3  │                │  │
+│  │  │              │  │              │  │              │                │  │
+│  │  └──────────────┘  └──────────────┘  └──────────────┘                │  │
+│  │                                                                        │  │
+│  └────────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ MOBILE VIEW (< 769px width)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+┌────────────────────────────────┐
+│                                │
+│  [LOGO] CASHORA                │
+│  ┌──────────────────────────┐  │
+│  │                          │  │
+│  │   WELCOME TO CASHORA     │  │
+│  │  Payment Solution        │  │
+│  │                          │  │
+│  │  ╔════════════════╗      │  │
+│  │  ║  START FREE    ║      │  │
+│  │  ╚════════════════╝      │  │
+│  │                          │  │
+│  │  ╔════════════════╗      │  │
+│  │  ║   Log In       ║      │  │
+│  │  ╚════════════════╝      │  │
+│  │                          │  │
+│  │  ┌──────────────┐        │  │
+│  │  │ Feature 1    │        │  │
+│  │  └──────────────┘        │  │
+│  │                          │  │
+│  └──────────────────────────┘  │
+│                                │
+└────────────────────────────────┘
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ COMPARISON
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+BEFORE (Overlapping - Top Right)
+┌────────────────────────────────────┐
+│                        Log In →     │
+│ Your Content                        │
+│ [START FREE Button]                 │
+└────────────────────────────────────┘
+
+AFTER (Side by Side)
+┌────────────────────────────────────┐
+│ Your Content                        │
+│ [START FREE]  [Log In]              │
+│        ↓           ↓                 │
+│     12px spacing                    │
+└────────────────────────────────────┘
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ BUTTON STYLING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+┌─ START FREE BUTTON ────────────────────────────────────────────────────────┐
+│                                                                            │
+│  Style:    Original (preserved)                                           │
+│  Position: In its original location                                       │
+│  Size:     Unchanged                                                       │
+│  Behavior: All original functionality                                     │
+│                                                                            │
+│  Layout:   Inline-block, flows with page content                          │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+
+┌─ LOG IN BUTTON ────────────────────────────────────────────────────────────┐
+│                                                                            │
+│  ╔════════════════════════════════════════════════════════╗               │
+│  ║                                                        ║               │
+│  ║    Log In                                              ║               │
+│  ║                                                        ║               │
+│  ╚════════════════════════════════════════════════════════╝               │
+│                                                                            │
+│  Style:      Blue gradient (same as before)                               │
+│  Background: Linear gradient (#5c77ff → #011eff)                         │
+│  Text:       White, bold, 14px (desktop), 12px (mobile)                  │
+│  Position:   RIGHT BESIDE START FREE                                      │
+│  Spacing:    12px margin-left (8px on mobile)                             │
+│  Shadow:     Blue glow effect                                             │
+│                                                                            │
+│  Hover Effect:                                                             │
+│  ├─ Lifts up 2px                                                           │
+│  ├─ Shadow gets stronger                                                   │
+│  └─ Gradient reversed                                                      │
+│                                                                            │
+│  Layout:     Inline-block, flows with page content                        │
+│  Click:      Navigate to /login/                                          │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ HOW IT WORKS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+STEP 1: Page Loads
+   ↓
+   Framer renders START FREE button in its original location
+
+STEP 2: JavaScript Executes
+   ↓
+   Searches through page elements for "START FREE" text
+
+STEP 3: Button Found
+   ↓
+   Located the START FREE button element
+
+STEP 4: LOG IN Button Created
+   ↓
+   Creates new button with same styling
+
+STEP 5: Button Inserted
+   ↓
+   Inserts LOG IN button RIGHT AFTER START FREE in the DOM
+   
+       Parent Container
+       ├── START FREE button
+       └── LOG IN button ← Inserted here
+
+STEP 6: CSS Flows Buttons
+   ↓
+   Both buttons are inline-block
+   12px margin-left creates spacing
+   They appear side by side
+
+RESULT: Two buttons displayed next to each other!
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ POSITIONING DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Position Property: relative (not fixed!)
+Display Property:  inline-block (flows with content)
+
+This means:
+✅ Buttons are part of normal page flow
+✅ Not floating above content
+✅ Respond to container layout
+✅ Wrap on smaller screens if needed
+✅ Scroll with page content
+✅ Align with other inline elements
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ SPACING BREAKDOWN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Desktop Layout (≥ 769px)
+┌─────────────────────────────────────────┐
+│ [START FREE]   ←12px→   [Log In]         │
+│                                         │
+│ Padding: 10px 24px each button          │
+│ Margin between: 12px                    │
+│ Font size: 14px                         │
+└─────────────────────────────────────────┘
+
+Mobile Layout (< 769px)
+┌───────────────────────────┐
+│ [START FREE]              │
+│   ↑ 8px spacing ↑         │
+│ [Log In]                  │
+│                           │
+│ Padding: 8px 16px each    │
+│ Font size: 12px           │
+└───────────────────────────┘
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ RESPONSIVE BEHAVIOR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Screen Width     Layout              Button Size      Margin
+─────────────────────────────────────────────────────────────
+≥ 1200px        [START FREE] [LogIn]   14px, 10x24px   12px
+769-1199px      [START FREE] [LogIn]   14px, 10x24px   12px
+500-768px       [START FREE] [LogIn]   12px, 8x16px    8px
+< 500px         May wrap to 2 lines    12px, 8x16px    8px
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ USER INTERACTION FLOW
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+┌─ CLICK START FREE ─────────────────────────────────────────────────────────┐
+│                                                                            │
+│  User sees two buttons:                                                   │
+│  [START FREE]  [Log In]                                                   │
+│       ↑                                                                    │
+│    Click                                                                   │
+│       ↓                                                                    │
+│  Original behavior (navigate to /login/ or whatever)                      │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+
+┌─ CLICK LOG IN ─────────────────────────────────────────────────────────────┐
+│                                                                            │
+│  User sees two buttons:                                                   │
+│  [START FREE]  [Log In]                                                   │
+│               ↑                                                            │
+│            Hover: Lifts up 2px, shadow enhances                           │
+│               ↓                                                            │
+│            Click                                                           │
+│               ↓                                                            │
+│            Navigate to /login/                                            │
+│               ↓                                                            │
+│            Login page loads                                               │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ KEY FEATURES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Smart Positioning
+   - Automatically finds START FREE button
+   - Inserts LOG IN right after it
+   - Works even if button moves in Framer
+
+✅ Intelligent Searching
+   - Tries multiple times to find START FREE
+   - Waits for dynamic rendering
+   - Fallback if button not found
+
+✅ Responsive Design
+   - Desktop: Side by side with 12px spacing
+   - Mobile: Responsive sizing and spacing
+   - Tablet: Scaled proportionally
+
+✅ Professional Styling
+   - Gradient blue color (brand match)
+   - Smooth animations on hover
+   - Shadow effects for depth
+   - Rounded corners
+
+✅ Perfect Alignment
+   - Same size and style as START FREE context
+   - No overlapping with page content
+   - Proper spacing maintained
+   - Flows naturally with layout
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ QUICK TEST
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Hard refresh:     Ctrl+Shift+R
+2. Visit:            http://127.0.0.1:4000/
+3. Look for:         Two buttons side by side
+4. Check spacing:    12px between them (8px on mobile)
+5. Test hover:       Lift animation works
+6. Test click:       Both navigate to /login/
+7. Console check:    "✅ Custom LOG IN button positioned beside START FREE"
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ SUMMARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✨ LOG IN button is now BESIDE START FREE instead of overlapping!
+
+Features:
+✅ Smart positioning right after START FREE
+✅ 12px spacing (8px on mobile)
+✅ Responsive for all screen sizes
+✅ Smooth animations
+✅ Professional gradient styling
+✅ No content overlapping
+✅ Natural page flow
+
+Status: ✅ READY TO USE
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                                                                              ║
+║      Visit http://127.0.0.1:4000/ to see the buttons side by side!          ║
+║                                                                              ║
+║            [START FREE]  [Log In]                                           ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝

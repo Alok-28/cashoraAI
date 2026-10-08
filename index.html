@@ -273,4 +273,224 @@
     <!-- End of bodyEnd -->
 
 
+<style>
+/* Hide buttons by their framer-name or text content using data attributes */
+div[data-framer-name="Team"],
+div[data-framer-name="Workflow"], 
+div[data-framer-name="Price"],
+div[data-framer-name="TEAM"],
+div[data-framer-name="WORKFLOW"],
+div[data-framer-name="PRICE"],
+a[href="/team"],
+a[href="/team/"],
+a[href="/workflow"],
+a[href="/workflow/"],
+a[href^="/team?"],
+a[href^="/workflow?"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Custom LOG IN Button */
+#custom-login-btn {
+  position: relative;
+  display: inline-block;
+  z-index: 100;
+  padding: 10px 24px;
+  background: linear-gradient(135deg, #5c77ff 0%, #011eff 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(5, 30, 255, 0.3);
+  margin-left: 12px;
+}
+
+#custom-login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(5, 30, 255, 0.4);
+  background: linear-gradient(135deg, #011eff 0%, #5c77ff 100%);
+}
+
+#custom-login-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(5, 30, 255, 0.3);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  #custom-login-btn {
+    padding: 8px 16px;
+    font-size: 12px;
+    margin-left: 8px;
+  }
+}
+</style>
+
+<script>
+// Advanced button removal for Framer-generated websites
+(function() {
+  const targetTexts = ['TEAM', 'WORKFLOW', 'PRICE']; // Removed LOG IN from here
+  const targetVariations = [
+    'Team', 'Workflow', 'Price',
+    'TEAM', 'WORKFLOW', 'PRICE',
+    'team', 'workflow', 'price'
+  ];
+  
+  function removeButtons() {
+    let removed = 0;
+    
+    // Strategy 1: Check framer-name attributes - most direct approach
+    document.querySelectorAll('[data-framer-name]').forEach(el => {
+      const name = el.getAttribute('data-framer-name');
+      if (targetVariations.includes(name)) {
+        el.style.display = 'none';
+        el.style.visibility = 'hidden';
+        el.style.pointerEvents = 'none';
+        removed++;
+      }
+    });
+    
+    // Strategy 2: Find by exact text content
+    document.querySelectorAll('*').forEach(el => {
+      const text = el.textContent?.trim();
+      // Check if this is the button itself (not a parent container)
+      if (text && targetVariations.includes(text) && el.children.length <= 2) {
+        // Disable all click handlers
+        el.onclick = null;
+        el.style.display = 'none';
+        el.style.pointerEvents = 'none';
+        
+        // Also hide parent containers up to 3 levels
+        let parent = el.parentElement;
+        for (let i = 0; i < 3; i++) {
+          if (parent && parent.tagName !== 'BODY' && parent.tagName !== 'HTML') {
+            parent.style.display = 'none';
+            parent.style.pointerEvents = 'none';
+            parent = parent.parentElement;
+          }
+        }
+        removed++;
+      }
+    });
+    
+    // Strategy 3: Look for interactive containers
+    document.querySelectorAll('div[onclick], a, button').forEach(el => {
+      const text = el.textContent?.trim();
+      if (text && targetVariations.includes(text)) {
+        el.onclick = null;
+        el.style.display = 'none';
+        el.style.pointerEvents = 'none';
+        removed++;
+      }
+    });
+    
+    // Strategy 4: Intercept all navigation clicks to blocked pages
+    document.addEventListener('click', function(e) {
+      const href = e.target.getAttribute('href') || e.target.closest('a')?.getAttribute('href');
+      if (href && (href.includes('/team') || href.includes('/workflow'))) {
+        e.preventDefault();
+        e.stopPropagation();
+        window.location.href = '/';
+        return false;
+      }
+    }, true);
+    
+    console.log(`Removed ${removed} button elements`);
+  }
+  
+  // Create custom LOG IN button
+  function createLoginButton() {
+    // Check if button already exists
+    if (document.getElementById('custom-login-btn')) {
+      return;
+    }
+    
+    // Try to find the START FREE button first
+    let startFreeBtn = null;
+    let searchAttempts = 0;
+    
+    function findAndPositionButton() {
+      searchAttempts++;
+      
+      // Search for START FREE button by text content
+      const allButtons = document.querySelectorAll('a, button, div[role="button"]');
+      for (let btn of allButtons) {
+        const text = btn.textContent?.trim();
+        if (text && (text.includes('START FREE') || text.includes('Start Free') || text.includes('start free'))) {
+          startFreeBtn = btn;
+          break;
+        }
+      }
+      
+      // If found, insert LOG IN button after it
+      if (startFreeBtn && startFreeBtn.parentElement) {
+        const loginBtn = document.createElement('a');
+        loginBtn.id = 'custom-login-btn';
+        loginBtn.href = '/login/';
+        loginBtn.textContent = 'Log In';
+        loginBtn.title = 'Go to Login Page';
+        
+        // Insert after START FREE button
+        startFreeBtn.parentElement.insertBefore(loginBtn, startFreeBtn.nextSibling);
+        console.log('✅ Custom LOG IN button positioned beside START FREE button');
+      } else if (searchAttempts < 10) {
+        // If not found, try again after a short delay
+        setTimeout(findAndPositionButton, 200);
+      } else {
+        // Fallback: append to body if START FREE not found
+        const loginBtn = document.createElement('a');
+        loginBtn.id = 'custom-login-btn';
+        loginBtn.href = '/login/';
+        loginBtn.textContent = 'Log In';
+        loginBtn.title = 'Go to Login Page';
+        document.body.appendChild(loginBtn);
+        console.log('✅ Custom LOG IN button created (fallback to body)');
+      }
+    }
+    
+    findAndPositionButton();
+  }
+  
+  // Remove on load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      removeButtons();
+      createLoginButton();
+    });
+  } else {
+    removeButtons();
+    createLoginButton();
+  }
+  
+  // Also remove after delays to catch dynamically rendered buttons
+  setTimeout(removeButtons, 300);
+  setTimeout(removeButtons, 800);
+  setTimeout(removeButtons, 1500);
+  
+  // Monitor for new elements added to DOM
+  const observer = new MutationObserver(function() {
+    removeButtons();
+    // Make sure our custom button stays
+    if (!document.getElementById('custom-login-btn')) {
+      createLoginButton();
+    }
+  });
+  
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+})();
+</script>
 <iframe id="__framer-editorbar" src="https://framer.com/edit?framerSiteId=52c02801f0a0af60c65e17e412f32cc00b255c0cd6bd61866fbff9af63e99194&amp;source=communicative-months-691092.framer.app&amp;features=%7B%22editorBarDisableFrameAncestorsSecurity%22%3Afalse%2C%22onPageLocalizationSupport%22%3Atrue%2C%22onPageMoveTool%22%3Atrue%7D&amp;loadStart=1779042381959" aria-hidden="true" allow="autoplay" tabindex="-1" class="status_visually_hidden"></iframe></body></html>

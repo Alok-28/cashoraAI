@@ -11,7 +11,7 @@ app.use(express.json());
 
 // CORS middleware for Safari compatibility
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'http://127.0.0.1:4000');
+  res.header('Access-Control-Allow-Origin', req.headers.origin || 'http://127.0.0.1:4000');
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
@@ -23,6 +23,44 @@ app.use((req, res, next) => {
 
 // Serve static files from the project root
 app.use(express.static(path.join(__dirname, '..')));
+
+// Redirect rules for proper navigation
+app.get('/login', (req, res) => {
+  res.redirect('/login/');
+});
+
+app.get('/dashboard', (req, res) => {
+  res.redirect('/dashboard/');
+});
+
+app.get('/contact', (req, res) => {
+  res.redirect('/contact/');
+});
+
+// Block access to removed navigation pages - redirect back to home
+app.get('/team', (req, res) => {
+  res.redirect('/');
+});
+
+app.get('/team/', (req, res) => {
+  res.redirect('/');
+});
+
+app.get('/workflow', (req, res) => {
+  res.redirect('/');
+});
+
+app.get('/workflow/', (req, res) => {
+  res.redirect('/');
+});
+
+app.get('/venue', (req, res) => {
+  res.redirect('/venue/');
+});
+
+app.get('/terms', (req, res) => {
+  res.redirect('/terms-and-conditions/');
+});
 
 // Session
 app.use(session({
@@ -90,7 +128,7 @@ app.get('/auth/user', (req, res) => {
 // Logout
 app.get('/auth/logout', (req, res) => {
   req.session.destroy(() => {
-    res.redirect('/login/');
+    res.redirect(`http://127.0.0.1:${PORT}/login/`);
   });
 });
 
