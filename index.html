@@ -274,19 +274,23 @@
 
 
 <style>
-/* Hide buttons by their framer-name or text content using data attributes */
-div[data-framer-name="Team"],
-div[data-framer-name="Workflow"], 
-div[data-framer-name="Price"],
-div[data-framer-name="TEAM"],
-div[data-framer-name="WORKFLOW"],
-div[data-framer-name="PRICE"],
+/* ── Hide TEAM / WORKFLOW / PRICE / START FREE nav buttons ── */
+/* Exact hrefs discovered via DOM inspection */
 a[href="/team"],
 a[href="/team/"],
 a[href="/workflow"],
 a[href="/workflow/"],
-a[href^="/team?"],
-a[href^="/workflow?"] {
+a[href="/venue"],
+a[href="/venue/"],
+a[href="/#tickets"],
+a[href="#tickets"],
+/* Framer's built-in LOG IN button (links to /contact) - hide it, we have our own */
+a[href="/contact"],
+a[href="/contact/"],
+/* Framer class-based fallback (all nav links share this class) */
+a.framer-npy4b.framer-mxN0T,
+/* START FREE button Framer classes */
+a.framer-wwSlk.framer-PcSZF {
   display: none !important;
   visibility: hidden !important;
   pointer-events: none !important;
@@ -294,6 +298,17 @@ a[href^="/workflow?"] {
   width: 0 !important;
   margin: 0 !important;
   padding: 0 !important;
+  overflow: hidden !important;
+}
+
+/* But keep our custom Log In button visible */
+#custom-login-btn {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: auto !important;
+  width: auto !important;
+  overflow: visible !important;
 }
 
 /* Custom LOG IN Button */
@@ -335,162 +350,247 @@ a[href^="/workflow?"] {
     margin-left: 8px;
   }
 }
+
+/* ── Profile Avatar Circle ── */
+#cashora-profile-wrap {
+  position: fixed;
+  top: 18px;
+  right: 24px;
+  z-index: 99999;
+  font-family: 'Inter', -apple-system, sans-serif;
+}
+
+#cashora-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #5c77ff 0%, #011eff 100%);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 2.5px solid rgba(255,255,255,0.35);
+  box-shadow: 0 4px 16px rgba(5, 30, 255, 0.45);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  user-select: none;
+  letter-spacing: 0.5px;
+}
+
+#cashora-avatar:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 22px rgba(5, 30, 255, 0.55);
+}
+
+#cashora-dropdown {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+  padding: 16px 0 8px;
+  min-width: 200px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-6px) scale(0.97);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+#cashora-dropdown.open {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateY(0) scale(1);
+}
+
+#cashora-dropdown .dd-name {
+  padding: 0 18px 12px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a2e;
+  border-bottom: 1px solid #f0f0f5;
+  margin-bottom: 6px;
+}
+
+#cashora-dropdown .dd-email {
+  padding: 0 18px 12px;
+  font-size: 12px;
+  color: #888;
+  border-bottom: 1px solid #f0f0f5;
+  margin-bottom: 6px;
+}
+
+#cashora-dropdown a {
+  display: block;
+  padding: 9px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+  text-decoration: none;
+  transition: background 0.15s;
+  border-radius: 0;
+}
+
+#cashora-dropdown a:hover {
+  background: #f5f5fb;
+}
+
+#cashora-dropdown .dd-signout {
+  color: #ef4444;
+  border-top: 1px solid #f0f0f5;
+  margin-top: 4px;
+}
 </style>
 
 <script>
-// Advanced button removal for Framer-generated websites
+// Button removal for Framer-generated website
 (function() {
-  const targetTexts = ['TEAM', 'WORKFLOW', 'PRICE']; // Removed LOG IN from here
-  const targetVariations = [
+  const TARGET_TEXTS = new Set([
     'Team', 'Workflow', 'Price',
     'TEAM', 'WORKFLOW', 'PRICE',
-    'team', 'workflow', 'price'
-  ];
-  
-  function removeButtons() {
-    let removed = 0;
-    
-    // Strategy 1: Check framer-name attributes - most direct approach
-    document.querySelectorAll('[data-framer-name]').forEach(el => {
-      const name = el.getAttribute('data-framer-name');
-      if (targetVariations.includes(name)) {
-        el.style.display = 'none';
-        el.style.visibility = 'hidden';
-        el.style.pointerEvents = 'none';
-        removed++;
-      }
-    });
-    
-    // Strategy 2: Find by exact text content
-    document.querySelectorAll('*').forEach(el => {
-      const text = el.textContent?.trim();
-      // Check if this is the button itself (not a parent container)
-      if (text && targetVariations.includes(text) && el.children.length <= 2) {
-        // Disable all click handlers
-        el.onclick = null;
-        el.style.display = 'none';
-        el.style.pointerEvents = 'none';
-        
-        // Also hide parent containers up to 3 levels
-        let parent = el.parentElement;
-        for (let i = 0; i < 3; i++) {
-          if (parent && parent.tagName !== 'BODY' && parent.tagName !== 'HTML') {
-            parent.style.display = 'none';
-            parent.style.pointerEvents = 'none';
-            parent = parent.parentElement;
-          }
-        }
-        removed++;
-      }
-    });
-    
-    // Strategy 3: Look for interactive containers
-    document.querySelectorAll('div[onclick], a, button').forEach(el => {
-      const text = el.textContent?.trim();
-      if (text && targetVariations.includes(text)) {
-        el.onclick = null;
-        el.style.display = 'none';
-        el.style.pointerEvents = 'none';
-        removed++;
-      }
-    });
-    
-    // Strategy 4: Intercept all navigation clicks to blocked pages
-    document.addEventListener('click', function(e) {
-      const href = e.target.getAttribute('href') || e.target.closest('a')?.getAttribute('href');
-      if (href && (href.includes('/team') || href.includes('/workflow'))) {
-        e.preventDefault();
-        e.stopPropagation();
-        window.location.href = '/';
-        return false;
-      }
-    }, true);
-    
-    console.log(`Removed ${removed} button elements`);
+    'team', 'workflow', 'price',
+    'START FREE', 'Start Free', 'start free'
+  ]);
+
+  let loginButtonCreated = false;
+  let observerDebounceTimer = null;
+
+  // --- Safe hide: use visibility so React's vdom is NOT corrupted ---
+  function safeHide(el) {
+    if (!el || el.__cashora_hidden) return;
+    el.__cashora_hidden = true;
+    el.style.setProperty('visibility', 'hidden', 'important');
+    el.style.setProperty('pointer-events', 'none', 'important');
+    el.style.setProperty('opacity', '0', 'important');
+    el.onclick = null;
   }
-  
-  // Create custom LOG IN button
+
+  function hideTargetButtons() {
+    // By data-framer-name attribute
+    document.querySelectorAll('[data-framer-name]').forEach(el => {
+      if (TARGET_TEXTS.has(el.getAttribute('data-framer-name'))) safeHide(el);
+    });
+
+    // By exact visible text (only leaf-ish nodes to avoid nuking parent containers)
+    document.querySelectorAll('a, button, [role="button"], div[tabindex]').forEach(el => {
+      const text = el.textContent?.trim();
+      if (text && TARGET_TEXTS.has(text)) safeHide(el);
+    });
+  }
+
+  // --- Block clicks to /team and /workflow ---
+  document.addEventListener('click', function(e) {
+    const href = e.target.getAttribute('href') || e.target.closest('a')?.getAttribute('href');
+    if (href && (href.includes('/team') || href.includes('/workflow'))) {
+      e.preventDefault();
+      e.stopPropagation();
+      window.location.href = '/';
+    }
+  }, true);
+
+  // --- Single Log In button ---
   function createLoginButton() {
-    // Check if button already exists
-    if (document.getElementById('custom-login-btn')) {
+    if (loginButtonCreated || document.getElementById('custom-login-btn')) {
+      loginButtonCreated = true;
       return;
     }
-    
-    // Try to find the START FREE button first
-    let startFreeBtn = null;
-    let searchAttempts = 0;
-    
-    function findAndPositionButton() {
-      searchAttempts++;
-      
-      // Search for START FREE button by text content
-      const allButtons = document.querySelectorAll('a, button, div[role="button"]');
-      for (let btn of allButtons) {
-        const text = btn.textContent?.trim();
-        if (text && (text.includes('START FREE') || text.includes('Start Free') || text.includes('start free'))) {
-          startFreeBtn = btn;
-          break;
+    const navContainer =
+      document.querySelector('nav') ||
+      document.querySelector('header') ||
+      document.querySelector('[data-framer-name="Navigation"]') ||
+      document.querySelector('[data-framer-name="Navbar"]') ||
+      document.body;
+
+    const btn = document.createElement('a');
+    btn.id = 'custom-login-btn';
+    btn.href = '/login/';
+    btn.textContent = 'Log In';
+    btn.title = 'Go to Login Page';
+    navContainer.appendChild(btn);
+    loginButtonCreated = true;
+  }
+
+  // --- Session check: swap Log In for profile avatar if logged in ---
+  function checkSession() {
+    fetch('/auth/user', { credentials: 'include' })
+      .then(r => r.json())
+      .then(data => {
+        if (data.loggedIn) {
+          // Hide the Log In button
+          const loginBtn = document.getElementById('custom-login-btn');
+          if (loginBtn) loginBtn.style.display = 'none';
+
+          // Build initials
+          const initials = data.name
+            .split(' ')
+            .map(w => w[0])
+            .join('')
+            .toUpperCase()
+            .slice(0, 2);
+
+          // Inject profile wrap if not already there
+          if (!document.getElementById('cashora-profile-wrap')) {
+            const wrap = document.createElement('div');
+            wrap.id = 'cashora-profile-wrap';
+            wrap.innerHTML = `
+              <div id="cashora-avatar" title="${data.name}">${initials}</div>
+              <div id="cashora-dropdown">
+                <div class="dd-name">${data.name}</div>
+                <div class="dd-email">${data.email}</div>
+                <a href="/dashboard/">&#9632; Dashboard</a>
+                <a href="/auth/logout" class="dd-signout">&#10148; Sign Out</a>
+              </div>
+            `;
+            document.body.appendChild(wrap);
+
+            // Toggle dropdown
+            const avatar = document.getElementById('cashora-avatar');
+            const dropdown = document.getElementById('cashora-dropdown');
+            avatar.addEventListener('click', (e) => {
+              e.stopPropagation();
+              dropdown.classList.toggle('open');
+            });
+            document.addEventListener('click', () => dropdown.classList.remove('open'));
+          }
         }
-      }
-      
-      // If found, insert LOG IN button after it
-      if (startFreeBtn && startFreeBtn.parentElement) {
-        const loginBtn = document.createElement('a');
-        loginBtn.id = 'custom-login-btn';
-        loginBtn.href = '/login/';
-        loginBtn.textContent = 'Log In';
-        loginBtn.title = 'Go to Login Page';
-        
-        // Insert after START FREE button
-        startFreeBtn.parentElement.insertBefore(loginBtn, startFreeBtn.nextSibling);
-        console.log('✅ Custom LOG IN button positioned beside START FREE button');
-      } else if (searchAttempts < 10) {
-        // If not found, try again after a short delay
-        setTimeout(findAndPositionButton, 200);
-      } else {
-        // Fallback: append to body if START FREE not found
-        const loginBtn = document.createElement('a');
-        loginBtn.id = 'custom-login-btn';
-        loginBtn.href = '/login/';
-        loginBtn.textContent = 'Log In';
-        loginBtn.title = 'Go to Login Page';
-        document.body.appendChild(loginBtn);
-        console.log('✅ Custom LOG IN button created (fallback to body)');
-      }
-    }
-    
-    findAndPositionButton();
+      })
+      .catch(() => {}); // not logged in or server down — show Log In button normally
   }
-  
-  // Remove on load
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
-      removeButtons();
-      createLoginButton();
-    });
-  } else {
-    removeButtons();
+
+  // --- Run once on DOMContentLoaded ---
+  function init() {
+    hideTargetButtons();
     createLoginButton();
+    checkSession();
   }
-  
-  // Also remove after delays to catch dynamically rendered buttons
-  setTimeout(removeButtons, 300);
-  setTimeout(removeButtons, 800);
-  setTimeout(removeButtons, 1500);
-  
-  // Monitor for new elements added to DOM
-  const observer = new MutationObserver(function() {
-    removeButtons();
-    // Make sure our custom button stays
-    if (!document.getElementById('custom-login-btn')) {
-      createLoginButton();
-    }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+  // Catch Framer's late-rendered nodes — run a few times then stop
+  [400, 900, 1800, 3000].forEach(ms => setTimeout(hideTargetButtons, ms));
+
+  // MutationObserver with debounce — auto-disconnects after 6 s
+  const observer = new MutationObserver(() => {
+    clearTimeout(observerDebounceTimer);
+    observerDebounceTimer = setTimeout(() => {
+      hideTargetButtons();
+      if (loginButtonCreated && !document.getElementById('custom-login-btn')) {
+        loginButtonCreated = false;
+        createLoginButton();
+      }
+    }, 150); // wait 150 ms for React to finish its batch
   });
-  
-  observer.observe(document.body, {
-    childList: true,
-    subtree: true
-  });
+
+  observer.observe(document.body, { childList: true, subtree: true });
+
+  // Stop observing after 6 s — Framer is fully hydrated by then
+  setTimeout(() => observer.disconnect(), 6000);
 })();
 </script>
 <iframe id="__framer-editorbar" src="https://framer.com/edit?framerSiteId=52c02801f0a0af60c65e17e412f32cc00b255c0cd6bd61866fbff9af63e99194&amp;source=communicative-months-691092.framer.app&amp;features=%7B%22editorBarDisableFrameAncestorsSecurity%22%3Afalse%2C%22onPageLocalizationSupport%22%3Atrue%2C%22onPageMoveTool%22%3Atrue%7D&amp;loadStart=1779042381959" aria-hidden="true" allow="autoplay" tabindex="-1" class="status_visually_hidden"></iframe></body></html>

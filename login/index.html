@@ -253,7 +253,7 @@
             <div class="user-details">
                 <div id="user-name"></div>
                 <div id="user-email"></div>
-                <a id="logout-btn" href="http://127.0.0.1:4000/auth/logout">Sign Out</a>
+                <a id="logout-btn" href="/auth/logout">Sign Out</a>
             </div>
         </div>
         
@@ -262,13 +262,13 @@
         </div>
         
         <div class="back-home">
-            <a href="http://127.0.0.1:4000/">← Back to Home</a>
+            <a href="/">← Back to Home</a>
         </div>
     </div>
     
     <script>
         // Check if user is already logged in
-        fetch('http://127.0.0.1:4000/auth/user')
+        fetch('/auth/user')
             .then(r => r.json())
             .then(data => {
                 if (data.loggedIn) {
@@ -290,7 +290,7 @@
             const password = document.getElementById('password').value;
             
             try {
-                const response = await fetch('http://127.0.0.1:4000/auth/login', {
+                const response = await fetch('/auth/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

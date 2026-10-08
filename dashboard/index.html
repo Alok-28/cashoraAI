@@ -532,7 +532,7 @@
                 <div style="display:flex;gap:0;margin-bottom:16px;border:1px solid var(--border);border-radius:9px;overflow:hidden;width:fit-content;">
                     <button id="tabPrompt" onclick="switchCreateTab('prompt')" style="padding:8px 18px;font-size:13px;font-weight:600;border:none;cursor:pointer;background:#13183a;color:#6677ff;transition:all .15s;">AI Video from Text</button>
                     <button id="tabUpload" onclick="switchCreateTab('upload')" style="padding:8px 18px;font-size:13px;font-weight:600;border:none;cursor:pointer;background:transparent;color:var(--muted);transition:all .15s;">Upload Video</button>
-                    <button id="tabImage" onclick="switchCreateTab('image')" style="padding:8px 18px;font-size:13px;font-weight:600;border:none;cursor:pointer;background:transparent;color:var(--muted);transition:all .15s;">Create Image</button>
+
                 </div>
 
                 <!-- Main form -->
@@ -613,113 +613,8 @@
                                 <label style="display:flex;align-items:center;gap:9px;padding:10px 12px;border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:13px;color:var(--light);">
                                     <input type="checkbox" checked style="accent-color:var(--blue);width:14px;height:14px;"> Auto-generate captions
                                 </label>
-                                <label style="display:flex;align-items:center;gap:9px;padding:10px 12px;border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:13px;color:var(--light);">
-                                    <input type="checkbox" style="accent-color:var(--blue);width:14px;height:14px;"> Create platform variants (Reel, Short, etc.)
-                                </label>
-                                <label style="display:flex;align-items:center;gap:9px;padding:10px 12px;border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:13px;color:var(--light);">
-                                    <input type="checkbox" style="accent-color:var(--blue);width:14px;height:14px;"> AI thumbnail generation
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Image tab -->
-                    <div id="createImageTab" style="display:none;">
-                        <!-- Sub-tabs for upload vs generate -->
-                        <div style="display:flex;gap:8px;margin-bottom:16px;">
-                            <button id="imgTabUpload" onclick="switchImageMode('upload')" style="flex:1;padding:10px;font-size:13px;font-weight:600;border:1px solid var(--border);border-radius:7px;cursor:pointer;background:#13183a;color:#6677ff;transition:all .15s;">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:6px;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                                Upload Image
-                            </button>
-                            <button id="imgTabGenerate" onclick="switchImageMode('generate')" style="flex:1;padding:10px;font-size:13px;font-weight:600;border:1px solid var(--border);border-radius:7px;cursor:pointer;background:transparent;color:var(--muted);transition:all .15s;">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:6px;"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-                                Generate with AI
-                            </button>
-                        </div>
-
-                        <!-- Upload Image Mode -->
-                        <div id="imgUploadMode">
-                            <div class="form-group">
-                                <label class="form-label">Upload Image</label>
-                                <div id="imgDropZone" onclick="document.getElementById('imgFileInput').click()" ondragover="event.preventDefault();this.style.borderColor='#3344ff'" ondragleave="this.style.borderColor='var(--border)'" ondrop="handleImgDrop(event)"
-                                    style="border:1.5px dashed var(--border);border-radius:10px;padding:36px 20px;text-align:center;cursor:pointer;transition:border-color .2s;background:#0e0e0e;">
-                                    <input type="file" id="imgFileInput" accept="image/*" style="display:none;" onchange="handleImgFileSelect(this)">
-                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--muted2)" stroke-width="1.5" style="margin:0 auto 10px;display:block;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                                    <div style="font-size:13.5px;font-weight:600;color:var(--light);margin-bottom:4px;">Drop your image here</div>
-                                    <div style="font-size:12px;color:var(--muted);">or click to browse — JPG, PNG, WebP up to 10MB</div>
-                                </div>
-                                <div id="imgPreview" style="display:none;margin-top:10px;padding:12px 14px;background:#141414;border:1px solid var(--border);border-radius:8px;align-items:center;gap:10px;">
-                                    <img id="imgPreviewThumb" style="width:48px;height:48px;object-fit:cover;border-radius:6px;display:none;">
-                                    <div style="flex:1;">
-                                        <div id="imgFileName" style="font-size:13px;color:var(--light);"></div>
-                                        <div id="imgFileSize" style="font-size:11px;color:var(--muted);margin-top:2px;"></div>
-                                    </div>
-                                    <button onclick="clearImgFile()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;line-height:1;">×</button>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Image Enhancements</label>
-                                <div style="display:flex;flex-direction:column;gap:8px;">
-                                    <label style="display:flex;align-items:center;gap:9px;padding:10px 12px;border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:13px;color:var(--light);">
-                                        <input type="checkbox" style="accent-color:var(--blue);width:14px;height:14px;"> AI background removal
-                                    </label>
-                                    <label style="display:flex;align-items:center;gap:9px;padding:10px 12px;border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:13px;color:var(--light);">
-                                        <input type="checkbox" style="accent-color:var(--blue);width:14px;height:14px;"> Auto color correction
-                                    </label>
-                                    <label style="display:flex;align-items:center;gap:9px;padding:10px 12px;border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:13px;color:var(--light);">
-                                        <input type="checkbox" style="accent-color:var(--blue);width:14px;height:14px;"> Generate caption text
-                                    </label>
-                                    <label style="display:flex;align-items:center;gap:9px;padding:10px 12px;border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:13px;color:var(--light);">
-                                        <input type="checkbox" checked style="accent-color:var(--blue);width:14px;height:14px;"> Resize for all platforms
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Generate Image Mode -->
-                        <div id="imgGenerateMode" style="display:none;">
-                            <div class="form-group">
-                                <label class="form-label">Image Description Prompt</label>
-                                <div class="prompt-wrap">
-                                    <textarea class="prompt-input" id="imgPromptInput" placeholder="e.g. A futuristic city skyline at sunset with flying cars, neon lights, and holographic billboards. Cyberpunk aesthetic, highly detailed..." style="min-height:120px;" oninput="updateImgCount(this)"></textarea>
-                                    <span class="prompt-count" id="imgPromptCount">0 / 500</span>
-                                </div>
-                            </div>
-                            <div class="toggle-row">
-                                <div class="form-group" style="margin-bottom:0">
-                                    <label class="form-label">Art Style</label>
-                                    <select class="select-input" id="imgStyle">
-                                        <option>Photorealistic</option>
-                                        <option>Digital Art</option>
-                                        <option>Oil Painting</option>
-                                        <option>Watercolor</option>
-                                        <option>Anime / Manga</option>
-                                        <option>3D Render</option>
-                                        <option>Sketch / Line Art</option>
-                                        <option>Pixel Art</option>
-                                        <option>Abstract</option>
-                                    </select>
-                                </div>
-                                <div class="form-group" style="margin-bottom:0">
-                                    <label class="form-label">Aspect Ratio</label>
-                                    <select class="select-input" id="imgRatio">
-                                        <option>1:1 (Square)</option>
-                                        <option>16:9 (Landscape)</option>
-                                        <option>9:16 (Portrait)</option>
-                                        <option>4:3 (Standard)</option>
-                                        <option>21:9 (Ultrawide)</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Quality & Detail</label>
-                                <select class="select-input" id="imgQuality">
-                                    <option>Standard (Fast)</option>
-                                    <option>High Quality</option>
-                                    <option>Ultra HD (Slower)</option>
-                                </select>
-                            </div>
-                        </div>
+                             </div>
+                         </div>
                     </div>
 
                     <!-- Common sections for all tabs -->
