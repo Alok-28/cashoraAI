@@ -1,0 +1,442 @@
+{
+  "name": "7Socials - Fixed Parallel Cross-Posting",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "89093ed9-5a7c-4f9b-a9a5-6c27045e0f2d",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -300,
+        100
+      ],
+      "id": "node-webhook",
+      "name": "Webhook"
+    },
+    {
+      "parameters": {
+        "resource": "media",
+        "mediaUrl": "={{ $json.body?.media || $json.media || $json.mediaUrl || \"https://cashora.tech\" }}"
+      },
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 2,
+      "position": [
+        -80,
+        100
+      ],
+      "id": "node-upload-media",
+      "name": "Upload media",
+      "credentials": {
+        "blotatoApi": {
+          "id": "DhjuoSptPQwDt513",
+          "name": "Blotato account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "platform": "instagram",
+        "postContentText": "={{ $(\"Webhook\").item.json.body?.caption || $(\"Webhook\").item.json.caption || \"Check out this video! 🎬 #cashora #content\" }}",
+        "postContentMediaUrls": "={{ $json.url }}",
+        "options": {}
+      },
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 2,
+      "position": [
+        200,
+        -180
+      ],
+      "id": "node-instagram",
+      "name": "Instagram",
+      "credentials": {
+        "blotatoApi": {
+          "id": "DhjuoSptPQwDt513",
+          "name": "Blotato account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "platform": "facebook",
+        "postContentText": "={{ $(\"Webhook\").item.json.body?.caption || $(\"Webhook\").item.json.caption || \"Check out this video! 🎬 #cashora #content\" }}",
+        "postContentMediaUrls": "={{ $json.url }}",
+        "options": {}
+      },
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 2,
+      "position": [
+        200,
+        -90
+      ],
+      "id": "node-facebook",
+      "name": "Facebook",
+      "credentials": {
+        "blotatoApi": {
+          "id": "DhjuoSptPQwDt513",
+          "name": "Blotato account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "platform": "threads",
+        "postContentText": "={{ $(\"Webhook\").item.json.body?.caption || $(\"Webhook\").item.json.caption || \"Check out this video! 🎬 #cashora #content\" }}",
+        "postContentMediaUrls": "={{ $json.url }}",
+        "options": {}
+      },
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 2,
+      "position": [
+        200,
+        0
+      ],
+      "id": "node-threads",
+      "name": "Threads",
+      "credentials": {
+        "blotatoApi": {
+          "id": "DhjuoSptPQwDt513",
+          "name": "Blotato account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "platform": "linkedin",
+        "postContentText": "={{ $(\"Webhook\").item.json.body?.caption || $(\"Webhook\").item.json.caption || \"Check out this video! 🎬 #cashora #content\" }}",
+        "postContentMediaUrls": "={{ $json.url }}",
+        "options": {}
+      },
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 2,
+      "position": [
+        200,
+        90
+      ],
+      "id": "node-linkedin",
+      "name": "LinkedIn",
+      "credentials": {
+        "blotatoApi": {
+          "id": "DhjuoSptPQwDt513",
+          "name": "Blotato account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "platform": "twitter",
+        "postContentText": "={{ $(\"Webhook\").item.json.body?.caption || $(\"Webhook\").item.json.caption || \"Check out this video! 🎬 #cashora #content\" }}",
+        "postContentMediaUrls": "={{ $json.url }}",
+        "options": {}
+      },
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 2,
+      "position": [
+        200,
+        180
+      ],
+      "id": "node-x",
+      "name": "X",
+      "credentials": {
+        "blotatoApi": {
+          "id": "DhjuoSptPQwDt513",
+          "name": "Blotato account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "platform": "bluesky",
+        "postContentText": "={{ $(\"Webhook\").item.json.body?.caption || $(\"Webhook\").item.json.caption || \"Check out this video! 🎬 #cashora #content\" }}",
+        "postContentMediaUrls": "={{ $json.url }}",
+        "options": {}
+      },
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 2,
+      "position": [
+        200,
+        270
+      ],
+      "id": "node-bluesky",
+      "name": "Bluesky",
+      "credentials": {
+        "blotatoApi": {
+          "id": "DhjuoSptPQwDt513",
+          "name": "Blotato account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "platform": "pinterest",
+        "postContentText": "={{ $(\"Webhook\").item.json.body?.caption || $(\"Webhook\").item.json.caption || \"Check out this video! 🎬 #cashora #content\" }}",
+        "postContentMediaUrls": "={{ $json.url }}",
+        "options": {}
+      },
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 2,
+      "position": [
+        200,
+        360
+      ],
+      "id": "node-pinterest",
+      "name": "Pinterest",
+      "credentials": {
+        "blotatoApi": {
+          "id": "DhjuoSptPQwDt513",
+          "name": "Blotato account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "platform": "youtube",
+        "postContentText": "={{ $(\"Webhook\").item.json.body?.caption || $(\"Webhook\").item.json.caption || \"Check out this video! 🎬 #cashora #content\" }}",
+        "postContentMediaUrls": "={{ $json.url }}",
+        "postCreateYoutubeOptionTitle": "={{ $(\"Webhook\").item.json.body?.caption?.slice(0, 50) || \"Cashora Video\" }}",
+        "options": {}
+      },
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 2,
+      "position": [
+        200,
+        450
+      ],
+      "id": "node-youtube",
+      "name": "YouTube",
+      "credentials": {
+        "blotatoApi": {
+          "id": "DhjuoSptPQwDt513",
+          "name": "Blotato account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://hgo4qp-ip-103-97-105-144.tunnelmole.net/api/posting-status",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "status",
+              "value": "success"
+            },
+            {
+              "name": "platforms",
+              "value": "all"
+            },
+            {
+              "name": "message",
+              "value": "Successfully cross-posted"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        550,
+        100
+      ],
+      "id": "node-notify-success",
+      "name": "Notify Success",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://hgo4qp-ip-103-97-105-144.tunnelmole.net/api/posting-status",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "status",
+              "value": "failed"
+            },
+            {
+              "name": "message",
+              "value": "={{ $json.error || \"Media upload failed\" }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        200,
+        580
+      ],
+      "id": "node-notify-error",
+      "name": "Notify Error",
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Upload media",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload media": {
+      "main": [
+        [
+          {
+            "node": "Instagram",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Facebook",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Threads",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "LinkedIn",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "X",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Bluesky",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Pinterest",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "YouTube",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Notify Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Instagram": {
+      "main": [
+        [
+          {
+            "node": "Notify Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Facebook": {
+      "main": [
+        [
+          {
+            "node": "Notify Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Threads": {
+      "main": [
+        [
+          {
+            "node": "Notify Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LinkedIn": {
+      "main": [
+        [
+          {
+            "node": "Notify Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "X": {
+      "main": [
+        [
+          {
+            "node": "Notify Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bluesky": {
+      "main": [
+        [
+          {
+            "node": "Notify Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinterest": {
+      "main": [
+        [
+          {
+            "node": "Notify Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "YouTube": {
+      "main": [
+        [
+          {
+            "node": "Notify Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

@@ -11,6 +11,7 @@ server/.env.*
 *_tokens.json
 server/*_tokens.json
 server/uploads/
+server/data/bluesky_session.json
 
 # System files
 .DS_Store

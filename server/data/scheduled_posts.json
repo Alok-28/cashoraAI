@@ -1,0 +1,14 @@
+[
+  {
+    "id": "sched_1791573401957",
+    "title": "Scheduled Test Video",
+    "caption": "Testing schedule flow",
+    "platforms": "YouTube, Instagram",
+    "scheduledTime": "2026-10-15T12:00:00.000Z",
+    "status": "scheduled",
+    "videoPath": "/Users/vaibhavgawai/anticashorasem7/cashoraAI/server/uploads/video-1791528480566-633563857.mp4",
+    "filename": "video-1791528480566-633563857.mp4",
+    "createdAt": "2026-10-09T19:16:41.957Z",
+    "email": "demo@cashora.tech"
+  }
+]

@@ -27,17 +27,20 @@ function initializeCharts() {
         dataLabels: { enabled: false }
     };
 
-    // Overall Views Chart
-    new ApexCharts(document.querySelector("#overall-views-chart"), {
-        ...baseOptions,
-        chart: { ...baseOptions.chart, type: 'area', height: 200 },
-        series: [{ name: 'Total Views', data: [18000, 21000, 26500, 24200, 32200, 37400, 47382] }],
-        xaxis: { categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'] },
-        yaxis: { labels: { formatter: (val) => val.toLocaleString() } },
-        colors: ['#3344ff'],
-        fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.5, opacityTo: 0.1 } },
-        stroke: { curve: 'smooth', width: 3 }
-    }).render();
+    // Overall Views Chart (optional)
+    const overallEl = document.querySelector("#overall-views-chart");
+    if (overallEl) {
+        new ApexCharts(overallEl, {
+            ...baseOptions,
+            chart: { ...baseOptions.chart, type: 'area', height: 200 },
+            series: [{ name: 'Total Views', data: [0, 0, 0, 0, 0, 0, 15] }],
+            xaxis: { categories: ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'] },
+            yaxis: { labels: { formatter: (val) => val.toLocaleString() } },
+            colors: ['#3344ff'],
+            fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.5, opacityTo: 0.1 } },
+            stroke: { curve: 'smooth', width: 3 }
+        }).render();
+    }
 
     // YOUTUBE
     window.ytViewsChart = new ApexCharts(document.querySelector("#youtube-views-chart"), {

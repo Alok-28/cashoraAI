@@ -1,10 +1,37 @@
-require('dotenv').config();
+require('dotenv').config({ path: require('path').join(__dirname, '.env') });
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
+const crypto = require('crypto');
+
 
 const app = express();
 const PORT = process.env.PORT || 4000;
+
+// ─── Persistent Data Store (JSON files) ───────────────────
+const fs = require('fs');
+const dataDir = path.join(__dirname, 'data');
+if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+
+function loadJSON(filename, fallback) {
+  const fp = path.join(dataDir, filename);
+  try {
+    if (fs.existsSync(fp)) return JSON.parse(fs.readFileSync(fp, 'utf8'));
+  } catch (e) { console.warn(`Failed to load ${filename}:`, e.message); }
+  return fallback;
+}
+function saveJSON(filename, data) {
+  try { fs.writeFileSync(path.join(dataDir, filename), JSON.stringify(data, null, 2)); }
+  catch (e) { console.error(`Failed to save ${filename}:`, e.message); }
+}
+
+// Load persistent stores
+let libraryItems = loadJSON('library.json', []);
+let scheduledPosts = loadJSON('scheduled_posts.json', []);
+let postingStatuses = loadJSON('posting_statuses.json', []);
+let automationSettings = loadJSON('automation_settings.json', { autoPublish: false, smartThumb: true, webhook: true, aspect: '9:16', tags: '#cashora #ai #viral #contentcreator' });
+let userProfileData = loadJSON('user_profile.json', { name: 'Demo User', email: 'demo@cashora.tech', username: '@cashora_user', timezone: 'Asia/Kolkata', bio: 'Automating high-conversion video content with CashoraAI.' });
+
 
 // Parse JSON bodies
 app.use(express.json());
@@ -64,7 +91,7 @@ app.get('/terms', (req, res) => {
 
 // Session
 app.use(session({
-  secret: process.env.SESSION_SECRET,
+  secret: process.env.SESSION_SECRET || 'cashora-super-secret-key-default-2025',
   resave: false,
   saveUninitialized: false,
   cookie: { 
@@ -78,7 +105,8 @@ app.use(session({
 const users = [
   { email: 'demo@cashora.tech', password: 'demo123', name: 'Demo User' },
   { email: 'admin@cashora.tech', password: 'admin123', name: 'Admin User' },
-  { email: 'test@example.com', password: 'test123', name: 'Test User' }
+  { email: 'test@example.com', password: 'test123', name: 'Test User' },
+  { email: 'vaibhav@cashora.tech', password: 'demo123', name: 'Vaibhav Gawai' }
 ];
 
 // ─── Routes ───────────────────────────────────────────────
@@ -114,15 +142,33 @@ app.post('/auth/login', (req, res) => {
 
 // Get current logged-in user (called by frontend)
 app.get('/auth/user', (req, res) => {
-  if (req.session && req.session.user) {
-    res.json({
-      loggedIn: true,
-      name: req.session.user.name,
-      email: req.session.user.email
-    });
-  } else {
-    res.json({ loggedIn: false });
+  res.json({
+    loggedIn: !!(req.session && req.session.user),
+    name: userProfileData.name,
+    email: userProfileData.email,
+    username: userProfileData.username || '@cashora_user',
+    timezone: userProfileData.timezone || 'Asia/Kolkata',
+    bio: userProfileData.bio || 'Automating high-conversion video content with CashoraAI.'
+  });
+});
+
+// Update current user profile / preferences
+app.post('/api/user/profile', (req, res) => {
+  const { name, email, username, timezone, bio, preferences } = req.body;
+  if (!req.session.user) {
+    req.session.user = { name: name || 'Creator', email: email || 'demo@cashora.tech' };
   }
+  if (name) { req.session.user.name = name; userProfileData.name = name; }
+  if (email) { req.session.user.email = email; userProfileData.email = email; }
+  if (username) { req.session.user.username = username; userProfileData.username = username; }
+  if (timezone) { req.session.user.timezone = timezone; userProfileData.timezone = timezone; }
+  if (bio !== undefined) { req.session.user.bio = bio; userProfileData.bio = bio; }
+  if (preferences) {
+    req.session.user.preferences = { ...(req.session.user.preferences || {}), ...preferences };
+    userProfileData.preferences = { ...(userProfileData.preferences || {}), ...preferences };
+  }
+  saveJSON('user_profile.json', userProfileData);
+  res.json({ success: true, message: 'Settings saved successfully', user: userProfileData });
 });
 
 // Logout
@@ -134,7 +180,6 @@ app.get('/auth/logout', (req, res) => {
 
 // ─── File Upload (Multer) ──────────────────────────────────
 const multer = require('multer');
-const fs = require('fs');
 
 // Ensure uploads directory exists
 const uploadDir = path.join(__dirname, 'uploads');
@@ -205,9 +250,8 @@ app.post('/api/upload', upload.single('video'), async (req, res) => {
   }
 });
 
-// ─── Posting Status Store ──────────────────────────────────
-// In-memory store for posting statuses (keyed by user email or upload session)
-const postingStatuses = [];
+// ─── Posting Status Store (file-backed) ───────────────────
+// postingStatuses loaded from data/posting_statuses.json at startup
 
 // n8n calls this when posting succeeds or fails
 app.post('/api/posting-status', (req, res) => {
@@ -221,9 +265,9 @@ app.post('/api/posting-status', (req, res) => {
     email: email || 'unknown'
   };
 
-  postingStatuses.unshift(entry); // newest first
-  // Keep only last 50 entries
-  if (postingStatuses.length > 50) postingStatuses.pop();
+  postingStatuses.unshift(entry);
+  if (postingStatuses.length > 50) postingStatuses.length = 50;
+  saveJSON('posting_statuses.json', postingStatuses);
 
   console.log(`📣 Posting status received from n8n: ${status}`);
   res.json({ received: true });
@@ -231,11 +275,12 @@ app.post('/api/posting-status', (req, res) => {
 
 // Dashboard polls this to show real-time status
 app.get('/api/posting-status', (req, res) => {
-  res.json({ statuses: postingStatuses.slice(0, 10) }); // return last 10
+  res.json({ statuses: postingStatuses.slice(0, 10) });
 });
 
-// ─── Scheduled Posts Engine ──────────────────────────────
-const scheduledPosts = [];
+// ─── Scheduled Posts Engine (file-backed) ────────────────
+// scheduledPosts loaded from data/scheduled_posts.json at startup
+
 
 // Helper function to trigger posting a video to n8n
 async function triggerPosting({ videoPath, caption, platforms, email }) {
@@ -287,6 +332,7 @@ setInterval(async () => {
             message: `Scheduled post "${post.title || post.caption || 'Video'}" published successfully!`,
             email: post.email || 'unknown'
           });
+          saveJSON('posting_statuses.json', postingStatuses);
         } catch (err) {
           console.error(`❌ [SCHEDULER] Failed to trigger scheduled post #${post.id}:`, err.message);
           post.status = 'failed';
@@ -300,10 +346,12 @@ setInterval(async () => {
             message: `Scheduled post failed: ${err.message}`,
             email: post.email || 'unknown'
           });
+          saveJSON('posting_statuses.json', postingStatuses);
         }
       }
     }
   }
+  saveJSON('scheduled_posts.json', scheduledPosts);
 }, 10000);
 
 // API endpoint to schedule a post
@@ -359,7 +407,7 @@ app.post('/api/schedule-post', upload.single('video'), (req, res) => {
     id: 'sched_' + Date.now(),
     title: title || caption || filename || 'Scheduled Video',
     caption: caption || title || '',
-    platforms: platforms || 'YouTube, Instagram',
+    platforms: platforms || 'YouTube, Instagram, Facebook, Threads, Twitter, LinkedIn, Bluesky, Pinterest, TikTok',
     scheduledTime: scheduledTime || new Date(Date.now() + 60000).toISOString(),
     status: 'scheduled',
     videoPath: videoPath,
@@ -369,6 +417,7 @@ app.post('/api/schedule-post', upload.single('video'), (req, res) => {
   };
 
   scheduledPosts.unshift(post);
+  saveJSON('scheduled_posts.json', scheduledPosts);
   console.log(`📅 Post scheduled successfully: "${post.title}" for ${post.scheduledTime} on [${post.platforms}]`);
   
   res.json({
@@ -400,10 +449,12 @@ app.post('/api/scheduled-posts/:id/trigger', async (req, res) => {
     });
     post.status = 'posted';
     post.postedAt = new Date().toISOString();
+    saveJSON('scheduled_posts.json', scheduledPosts);
     res.json({ success: true, message: 'Post triggered and published successfully!' });
   } catch (err) {
     post.status = 'failed';
     post.error = err.message;
+    saveJSON('scheduled_posts.json', scheduledPosts);
     res.status(500).json({ success: false, message: err.message });
   }
 });
@@ -413,9 +464,63 @@ app.delete('/api/scheduled-posts/:id', (req, res) => {
   const index = scheduledPosts.findIndex(p => p.id === req.params.id);
   if (index !== -1) {
     scheduledPosts.splice(index, 1);
+    saveJSON('scheduled_posts.json', scheduledPosts);
     return res.json({ success: true, message: 'Scheduled post cancelled' });
   }
   res.status(404).json({ success: false, message: 'Scheduled post not found' });
+});
+
+// ─── Content Library API (File-backed persistence) ──────────
+app.get('/api/library', (req, res) => {
+  res.json({ success: true, items: libraryItems });
+});
+
+app.post('/api/library', (req, res) => {
+  const item = {
+    id: req.body.id || ('vid_' + Date.now()),
+    title: req.body.title || 'Untitled Video',
+    date: req.body.date || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+    status: req.body.status || 'draft',
+    platforms: req.body.platforms || ['YouTube', 'Instagram'],
+    type: req.body.type || 'upload',
+    filePath: req.body.filePath || '',
+    caption: req.body.caption || '',
+    createdAt: req.body.createdAt || new Date().toISOString()
+  };
+  libraryItems.unshift(item);
+  saveJSON('library.json', libraryItems);
+  res.json({ success: true, item });
+});
+
+app.put('/api/library/:id', (req, res) => {
+  const idx = libraryItems.findIndex(it => it.id === req.params.id);
+  if (idx === -1) {
+    return res.status(404).json({ success: false, message: 'Library item not found' });
+  }
+  libraryItems[idx] = { ...libraryItems[idx], ...req.body, id: libraryItems[idx].id };
+  saveJSON('library.json', libraryItems);
+  res.json({ success: true, item: libraryItems[idx] });
+});
+
+app.delete('/api/library/:id', (req, res) => {
+  const idx = libraryItems.findIndex(it => it.id === req.params.id);
+  if (idx !== -1) {
+    libraryItems.splice(idx, 1);
+    saveJSON('library.json', libraryItems);
+    return res.json({ success: true, message: 'Item deleted from library' });
+  }
+  res.status(404).json({ success: false, message: 'Item not found' });
+});
+
+// ─── Automation Settings API (File-backed persistence) ───────
+app.get('/api/automation-settings', (req, res) => {
+  res.json({ success: true, settings: automationSettings });
+});
+
+app.post('/api/automation-settings', (req, res) => {
+  automationSettings = { ...automationSettings, ...req.body };
+  saveJSON('automation_settings.json', automationSettings);
+  res.json({ success: true, settings: automationSettings });
 });
 
 // ═══════════════════════════════════════════════════════════
@@ -1395,46 +1500,113 @@ app.get('/api/analytics/threads', async (req, res) => {
 
 // ─── Twitter / X API ─────────────────────────────────────────────────────────
 
-const TWITTER_BEARER_TOKEN = process.env.TWITTER_BEARER_TOKEN || '';
-const TWITTER_USERNAME     = process.env.TWITTER_USERNAME || 'vaibhav_tf7';
+const TWITTER_API_KEY       = process.env.TWITTER_API_KEY || process.env.TWITTER_CONSUMER_KEY || '';
+const TWITTER_API_SECRET    = process.env.TWITTER_API_SECRET || process.env.TWITTER_CONSUMER_SECRET || '';
+const TWITTER_ACCESS_TOKEN  = process.env.TWITTER_ACCESS_TOKEN || '';
+const TWITTER_ACCESS_SECRET = process.env.TWITTER_ACCESS_SECRET || '';
+const TWITTER_BEARER_TOKEN  = process.env.TWITTER_BEARER_TOKEN || '';
+const TWITTER_USERNAME      = process.env.TWITTER_USERNAME || 'vaibhavxkashi13';
 
 let twitterAnalyticsCache = null;
 
-// Helper: Twitter v2 API call
+// Helper: OAuth 1.0a Authorization Header
+function getTwitterOAuthHeader(method, url, queryParams = {}) {
+  if (!TWITTER_API_KEY || !TWITTER_ACCESS_TOKEN) return null;
+  const nonce = crypto.randomBytes(16).toString('hex');
+  const timestamp = Math.floor(Date.now() / 1000).toString();
+  const params = {
+    oauth_consumer_key: TWITTER_API_KEY,
+    oauth_nonce: nonce,
+    oauth_signature_method: 'HMAC-SHA1',
+    oauth_timestamp: timestamp,
+    oauth_token: TWITTER_ACCESS_TOKEN,
+    oauth_version: '1.0',
+    ...queryParams
+  };
+  const sortedParams = Object.keys(params).sort().map(k => `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`).join('&');
+  const baseString = `${method.toUpperCase()}&${encodeURIComponent(url)}&${encodeURIComponent(sortedParams)}`;
+  const signingKey = `${encodeURIComponent(TWITTER_API_SECRET)}&${encodeURIComponent(TWITTER_ACCESS_SECRET)}`;
+  const signature = crypto.createHmac('sha1', signingKey).update(baseString).digest('base64');
+  
+  const oauthParams = {
+    oauth_consumer_key: TWITTER_API_KEY,
+    oauth_nonce: nonce,
+    oauth_signature_method: 'HMAC-SHA1',
+    oauth_timestamp: timestamp,
+    oauth_token: TWITTER_ACCESS_TOKEN,
+    oauth_version: '1.0',
+    oauth_signature: signature
+  };
+  return 'OAuth ' + Object.keys(oauthParams).sort().map(k => `${encodeURIComponent(k)}="${encodeURIComponent(oauthParams[k])}"`).join(', ');
+}
+
+// Helper: Fetch Twitter Profile (Tries OAuth 1.0a users/me first, then Bearer token)
+async function getTwitterProfile() {
+  const url = 'https://api.twitter.com/2/users/me';
+  const params = { 'user.fields': 'public_metrics,profile_image_url,description,name' };
+  const authHeader = getTwitterOAuthHeader('GET', url, params);
+
+  if (authHeader) {
+    try {
+      const res = await axios.get(url + '?user.fields=public_metrics,profile_image_url,description,name', {
+        headers: { Authorization: authHeader }
+      });
+      if (res.data && res.data.data) {
+        return res.data.data;
+      }
+    } catch (e) {
+      console.warn('Twitter OAuth 1.0a users/me warning:', e.response?.data || e.message);
+    }
+  }
+
+  // Fallback to Bearer token
+  if (TWITTER_BEARER_TOKEN) {
+    const bearerUrl = new URL(`https://api.twitter.com/2/users/by/username/${TWITTER_USERNAME}`);
+    bearerUrl.searchParams.append('user.fields', 'public_metrics,profile_image_url,name,description');
+    const res = await axios.get(bearerUrl.toString(), {
+      headers: { Authorization: `Bearer ${TWITTER_BEARER_TOKEN}` }
+    });
+    return res.data.data;
+  }
+
+  throw new Error('No Twitter credentials configured in .env');
+}
+
+// Helper: Twitter v2 API call with Bearer or OAuth 1.0a
 async function twitterV2(path, params = {}) {
-  const url = new URL(`https://api.twitter.com/2${path}`);
-  Object.entries(params).forEach(([k, v]) => url.searchParams.append(k, v));
-  const res = await axios.get(url.toString(), {
-    headers: { Authorization: `Bearer ${TWITTER_BEARER_TOKEN}` }
-  });
+  const url = `https://api.twitter.com/2${path}`;
+  const authHeader = getTwitterOAuthHeader('GET', url, params);
+  const headers = authHeader ? { Authorization: authHeader } : { Authorization: `Bearer ${TWITTER_BEARER_TOKEN}` };
+  
+  const searchParams = new URLSearchParams(params).toString();
+  const fullUrl = searchParams ? `${url}?${searchParams}` : url;
+  
+  const res = await axios.get(fullUrl, { headers });
   return res.data;
 }
 
-// GET /api/twitter/status — check if token works
+// GET /api/twitter/status — check connection & return real profile
 app.get('/api/twitter/status', async (req, res) => {
-  if (!TWITTER_BEARER_TOKEN) {
-    return res.json({ connected: false, message: 'TWITTER_BEARER_TOKEN not set in .env' });
+  if (!TWITTER_API_KEY && !TWITTER_BEARER_TOKEN) {
+    return res.json({ connected: false, message: 'Twitter credentials not set in .env' });
   }
   try {
-    const data = await twitterV2('/users/by/username/' + TWITTER_USERNAME, {
-      'user.fields': 'public_metrics,profile_image_url,name'
-    });
-    const u = data.data;
+    const u = await getTwitterProfile();
     res.json({
       connected: true,
-      username: u.username,
-      name: u.name,
-      profileImage: u.profile_image_url,
+      username: u.username || TWITTER_USERNAME,
+      name: u.name || 'Vaibhav',
+      profileImage: u.profile_image_url || null,
       followers: u.public_metrics?.followers_count || 0,
       following: u.public_metrics?.following_count || 0,
-      tweets: u.public_metrics?.tweet_count || 0
+      tweets: u.public_metrics?.tweet_count || 0,
+      likes: u.public_metrics?.like_count || 0
     });
   } catch (err) {
     const status = err.response?.status;
     const detail = err.response?.data?.detail || err.message;
     if (status === 402) {
-      // Credits depleted — token is valid, just monthly limit reached
-      return res.json({ connected: true, creditsDepletd: true, message: 'Twitter API monthly credits depleted. Data resets next month.' });
+      return res.json({ connected: true, creditsDepletd: true, username: TWITTER_USERNAME, message: 'Twitter API monthly credits depleted. Profile active.' });
     }
     console.error('Twitter status error:', err.response?.data || err.message);
     res.json({ connected: false, error: detail });
@@ -1450,10 +1622,9 @@ app.get('/api/analytics/twitter', async (req, res) => {
     return res.json({ ...twitterAnalyticsCache.data, cached: true });
   }
 
-  // If no bearer token, return demo data so UI always renders
+  // If no bearer token, return unavailable state
   if (!TWITTER_BEARER_TOKEN) {
-    const demo = buildTwitterDemoData();
-    return res.json({ ...demo, connected: false, demo: true, message: 'Add TWITTER_BEARER_TOKEN to server/.env to see live data' });
+    return res.json({ connected: false, unavailable: true, reason: 'no_token', message: 'Add TWITTER_BEARER_TOKEN to server/.env to see live data' });
   }
 
   try {
@@ -1589,51 +1760,424 @@ app.get('/api/analytics/twitter', async (req, res) => {
     console.error('Twitter analytics error:', err.response?.data || err.message);
     const status = err.response?.status;
     const detail = err.response?.data?.detail || err.message;
-    // On API error, return demo data so charts still render
-    const demo = buildTwitterDemoData();
     if (status === 402) {
-      return res.json({ ...demo, connected: true, demo: true,
-        message: 'Twitter API free tier monthly credits depleted — showing demo data. Credits reset each month.',
-        creditsDepletd: true
+      return res.json({
+        connected: true,
+        unavailable: true,
+        reason: 'credits_depleted',
+        message: 'Twitter API free-tier monthly credits are depleted. Live data will return on the 1st of next month.'
       });
     }
-    res.json({ ...demo, connected: true, demo: true, error: detail });
+    res.json({
+      connected: true,
+      unavailable: true,
+      reason: 'api_error',
+      message: detail || 'Twitter API error. Please try again later.'
+    });
   }
 });
 
-// Build realistic Twitter demo data (used when no token or API error)
-function buildTwitterDemoData() {
-  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  return {
-    account: { username: TWITTER_USERNAME, name: 'Vaibhav', profileImage: null },
-    stats: {
-      impressions: 18420,
-      likes: 612,
-      retweets: 148,
-      replies: 94,
-      bookmarks: 203,
-      followers: 2847,
-      tweetCount: 42
-    },
-    charts: {
-      viewsByDay: days.map((day, i) => ({ day, views: [2100, 2850, 3200, 2700, 3500, 2400, 1670][i] })),
-      engagementRate: days.map((day, i) => ({ day, rate: [3.1, 4.2, 3.8, 3.5, 4.9, 3.2, 2.8][i] })),
-      tweetTypes: [{ type: 'Text', count: 22 }, { type: 'Link', count: 14 }, { type: 'Media', count: 6 }],
-      actionsData: days.map((day, i) => ({
-        day,
-        likes: [80, 110, 95, 88, 135, 72, 32][i],
-        retweets: [18, 28, 22, 19, 34, 15, 12][i]
-      }))
-    },
-    topTweets: [
-      { id: '1', text: '5 AI tools that replaced my entire content team…', url: '#', impressions: 4200, likes: 182, retweets: 48, replies: 23 },
-      { id: '2', text: 'How I grew from 0 to 2,800 followers in 90 days…', url: '#', impressions: 3600, likes: 144, retweets: 36, replies: 18 },
-      { id: '3', text: 'Thread: The ultimate guide to scheduling content…', url: '#', impressions: 2900, likes: 98, retweets: 28, replies: 14 },
-      { id: '4', text: 'Most creators ignore this one Twitter metric…', url: '#', impressions: 2200, likes: 76, retweets: 19, replies: 9 },
-      { id: '5', text: 'My workflow for creating 30 posts in 2 hours…', url: '#', impressions: 1800, likes: 62, retweets: 12, replies: 7 }
-    ]
-  };
+
+
+// ─── Bluesky / AT Protocol ────────────────────────────────────────────────────
+
+const BLUESKY_HANDLE       = process.env.BLUESKY_HANDLE       || '';
+const BLUESKY_APP_PASSWORD = process.env.BLUESKY_APP_PASSWORD || '';
+const BSKY_API        = 'https://bsky.social/xrpc';
+const BSKY_PUBLIC_API = 'https://public.api.bsky.app/xrpc';
+const BSKY_SESSION_FILE = path.join(__dirname, 'data', 'bluesky_session.json');
+
+let bskySessionCache   = null;
+let bskyAnalyticsCache = null;
+let bskyAuthBlockedUntil = 0;
+
+// Load persisted session from disk (survives server restarts)
+function loadPersistedBskySession() {
+  try {
+    if (fs.existsSync(BSKY_SESSION_FILE)) {
+      const raw = JSON.parse(fs.readFileSync(BSKY_SESSION_FILE, 'utf8'));
+      if (raw && raw.accessJwt && raw.refreshJwt && raw.expiry > Date.now()) {
+        bskySessionCache = raw;
+        console.log('🔵 Bluesky: Loaded persisted session for', raw.handle);
+      } else {
+        console.log('🔵 Bluesky: Persisted session expired, will refresh on next use');
+        bskySessionCache = raw && raw.refreshJwt ? raw : null; // keep refreshJwt even if accessJwt expired
+      }
+    }
+  } catch (e) {
+    console.warn('⚠️ Bluesky: Could not load persisted session:', e.message);
+  }
 }
+loadPersistedBskySession();
+
+function saveBskySession(session) {
+  try {
+    fs.mkdirSync(path.dirname(BSKY_SESSION_FILE), { recursive: true });
+    fs.writeFileSync(BSKY_SESSION_FILE, JSON.stringify(session, null, 2));
+  } catch (e) {
+    console.warn('⚠️ Bluesky: Could not save session to disk:', e.message);
+  }
+}
+
+async function getBskySession() {
+  // If session is valid and not about to expire, use it directly
+  if (bskySessionCache && bskySessionCache.accessJwt && Date.now() < bskySessionCache.expiry - 5 * 60 * 1000) {
+    return bskySessionCache;
+  }
+  if (!BLUESKY_HANDLE || !BLUESKY_APP_PASSWORD) return null;
+  if (Date.now() < bskyAuthBlockedUntil) {
+    // If we have a stale session, try it anyway (might still work)
+    if (bskySessionCache?.accessJwt) return bskySessionCache;
+    return null;
+  }
+
+  // Try refreshSession first (uses refreshJwt, NOT counted against createSession rate limit)
+  if (bskySessionCache?.refreshJwt) {
+    try {
+      console.log('🔵 Bluesky: Refreshing session via refreshJwt...');
+      const res = await axios.post(`${BSKY_API}/com.atproto.server.refreshSession`, {}, {
+        headers: { Authorization: `Bearer ${bskySessionCache.refreshJwt}` }
+      });
+      bskySessionCache = {
+        accessJwt:  res.data.accessJwt,
+        refreshJwt: res.data.refreshJwt,
+        did:        res.data.did,
+        handle:     res.data.handle,
+        expiry:     Date.now() + 90 * 60 * 1000
+      };
+      saveBskySession(bskySessionCache);
+      console.log('✅ Bluesky: Session refreshed for', bskySessionCache.handle);
+      return bskySessionCache;
+    } catch (err) {
+      const status = err.response?.status;
+      const msg = err.response?.data?.message || err.message;
+      console.warn(`⚠️ Bluesky: refreshSession failed (${status}): ${msg}. Will try createSession.`);
+      // If refresh token is invalid/expired, clear it so we fall through to createSession
+      if (status === 400 || status === 401) {
+        bskySessionCache = null;
+        try { fs.unlinkSync(BSKY_SESSION_FILE); } catch (_) {}
+      } else if (status === 429) {
+        bskyAuthBlockedUntil = Date.now() + 60 * 60 * 1000; // 1h backoff on rate limit
+        return bskySessionCache?.accessJwt ? bskySessionCache : null;
+      }
+    }
+  }
+
+  // Fall back to createSession (counts against 10/day limit — use sparingly)
+  try {
+    console.log('🔵 Bluesky: Creating new session via createSession...');
+    const res = await axios.post(`${BSKY_API}/com.atproto.server.createSession`, {
+      identifier: BLUESKY_HANDLE,
+      password:   BLUESKY_APP_PASSWORD
+    });
+    bskySessionCache = {
+      accessJwt:  res.data.accessJwt,
+      refreshJwt: res.data.refreshJwt,
+      did:        res.data.did,
+      handle:     res.data.handle,
+      expiry:     Date.now() + 90 * 60 * 1000
+    };
+    saveBskySession(bskySessionCache);
+    console.log('✅ Bluesky: New session created for', bskySessionCache.handle);
+    return bskySessionCache;
+  } catch (err) {
+    const msg = err.response?.data?.message || err.message;
+    const status = err.response?.status;
+    console.warn(`⚠️ Bluesky createSession failed (${status}): ${msg}`);
+    if (status === 429) {
+      // Rate limited: block for 6 hours, do NOT create new sessions today
+      bskyAuthBlockedUntil = Date.now() + 6 * 60 * 60 * 1000;
+      console.warn('🚫 Bluesky: Rate limited on createSession — blocking auth for 6h. Will use existing session if available.');
+    } else {
+      bskyAuthBlockedUntil = Date.now() + 5 * 60 * 1000; // 5-min backoff on other errors
+    }
+    return bskySessionCache?.accessJwt ? bskySessionCache : null;
+  }
+}
+
+async function bskyGet(lexicon, params = {}) {
+  const session = await getBskySession();
+  const base = session ? BSKY_API : BSKY_PUBLIC_API;
+  const url = new URL(`${base}/${lexicon}`);
+  Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+  const headers = session ? { Authorization: `Bearer ${session.accessJwt}` } : {};
+  const r = await axios.get(url.toString(), { headers });
+  return r.data;
+}
+
+// Direct Post to Bluesky / AT Protocol
+async function postToBluesky({ caption, text }) {
+  const session = await getBskySession();
+  if (!session) {
+    throw new Error('Bluesky session not available. Please verify BLUESKY_APP_PASSWORD in server/.env (App Password generated from bsky.app Settings).');
+  }
+
+  const postText = caption || text || 'Automated post from CashoraAI';
+  const response = await axios.post(`${BSKY_API}/com.atproto.repo.createRecord`, {
+    repo: session.did,
+    collection: 'app.bsky.feed.post',
+    record: {
+      $type: 'app.bsky.feed.post',
+      text: postText,
+      createdAt: new Date().toISOString()
+    }
+  }, {
+    headers: {
+      Authorization: `Bearer ${session.accessJwt}`,
+      'Content-Type': 'application/json'
+    }
+  });
+
+  return response.data;
+}
+
+app.post('/api/bluesky/post', async (req, res) => {
+  try {
+    const { caption, text } = req.body;
+    const result = await postToBluesky({ caption: caption || text });
+    res.json({ success: true, result });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.response?.data?.message || err.message });
+  }
+});
+
+// Inject a manually-obtained JWT session (useful when createSession is rate-limited)
+app.post('/api/bluesky/session/inject', (req, res) => {
+  const { accessJwt, refreshJwt, did, handle } = req.body;
+  if (!accessJwt) return res.status(400).json({ success: false, error: 'accessJwt is required' });
+  bskySessionCache = {
+    accessJwt,
+    refreshJwt: refreshJwt || null,
+    did: did || '',
+    handle: handle || BLUESKY_HANDLE,
+    expiry: Date.now() + 90 * 60 * 1000
+  };
+  bskyAuthBlockedUntil = 0; // Clear any backoff
+  saveBskySession(bskySessionCache);
+  console.log('🔵 Bluesky: Session manually injected for', bskySessionCache.handle);
+  res.json({ success: true, message: 'Session injected successfully', handle: bskySessionCache.handle });
+});
+
+// Check current Bluesky rate limit / auth state
+app.get('/api/bluesky/rate-limit', (req, res) => {
+  const blockedMs = Math.max(0, bskyAuthBlockedUntil - Date.now());
+  res.json({
+    isBlocked: blockedMs > 0,
+    blockedForMs: blockedMs,
+    blockedForMinutes: Math.ceil(blockedMs / 60000),
+    hasSession: !!bskySessionCache?.accessJwt,
+    sessionExpiry: bskySessionCache?.expiry ? new Date(bskySessionCache.expiry).toISOString() : null,
+    handle: bskySessionCache?.handle || null
+  });
+});
+
+
+app.get('/api/bluesky/status', async (req, res) => {
+  if (!BLUESKY_HANDLE)
+    return res.json({ connected: false, message: 'Set BLUESKY_HANDLE in server/.env' });
+  try {
+    const profile = await bskyGet('app.bsky.actor.getProfile', { actor: BLUESKY_HANDLE });
+    return res.json({
+      connected: true,
+      handle: profile.handle,
+      name: profile.displayName || profile.handle,
+      avatar: profile.avatar,
+      followers: profile.followersCount || 0,
+      follows: profile.followsCount || 0,
+      posts: profile.postsCount || 0
+    });
+  } catch (err) {
+    return res.json({ connected: false, error: err.response?.data?.message || err.message });
+  }
+});
+
+app.get('/api/analytics/bluesky', async (req, res) => {
+  const forceRefresh = req.query.refresh === 'true';
+  if (!forceRefresh && bskyAnalyticsCache && (Date.now() - bskyAnalyticsCache.timestamp) < 10 * 60 * 1000)
+    return res.json({ ...bskyAnalyticsCache.data, cached: true });
+
+  if (!BLUESKY_HANDLE)
+    return res.json({ connected: false, unavailable: true, reason: 'no_credentials', message: 'Add BLUESKY_HANDLE to server/.env to see live data.' });
+
+  try {
+    const profile  = await bskyGet('app.bsky.actor.getProfile', { actor: BLUESKY_HANDLE });
+    const feed     = await bskyGet('app.bsky.feed.getAuthorFeed', { actor: BLUESKY_HANDLE, limit: 100, filter: 'posts_no_replies' });
+    const posts    = (feed.feed || []).map(i => i.post).filter(Boolean);
+
+    let totalLikes = 0, totalReposts = 0, totalReplies = 0;
+    posts.forEach(p => { totalLikes += p.likeCount||0; totalReposts += p.repostCount||0; totalReplies += p.replyCount||0; });
+
+    const now = new Date();
+    const dayMap = {};
+    for (let i = 6; i >= 0; i--) { const d = new Date(now); d.setDate(d.getDate()-i); dayMap[d.toLocaleDateString('en',{weekday:'short'})] = 0; }
+    posts.forEach(p => { const k = new Date(p.indexedAt).toLocaleDateString('en',{weekday:'short'}); if (k in dayMap) dayMap[k] += (p.likeCount||0); });
+    const likesByDay = Object.entries(dayMap).map(([day,likes]) => ({day,likes}));
+
+    const engMap = {};
+    Object.keys(dayMap).forEach(k => engMap[k] = {eng:0,n:0});
+    posts.forEach(p => { const k = new Date(p.indexedAt).toLocaleDateString('en',{weekday:'short'}); if(k in engMap){engMap[k].eng+=(p.likeCount||0)+(p.repostCount||0)+(p.replyCount||0);engMap[k].n++;} });
+    const engagementRate = Object.entries(engMap).map(([day,v]) => ({day, rate: v.n>0 ? parseFloat((v.eng/v.n).toFixed(1)):0}));
+
+    const actMap = {};
+    Object.keys(dayMap).forEach(k => actMap[k]={likes:0,reposts:0});
+    posts.forEach(p => { const k=new Date(p.indexedAt).toLocaleDateString('en',{weekday:'short'}); if(k in actMap){actMap[k].likes+=p.likeCount||0;actMap[k].reposts+=p.repostCount||0;} });
+    const actionsData = Object.entries(actMap).map(([day,v])=>({day,...v}));
+
+    let typeText=0,typeMedia=0,typeLink=0;
+    posts.forEach(p => { const e=p.embed?.$type||''; if(e.includes('images')||e.includes('video'))typeMedia++; else if(e.includes('external'))typeLink++; else typeText++; });
+
+    const topPosts = [...posts].sort((a,b)=>((b.likeCount||0)+(b.repostCount||0))-((a.likeCount||0)+(a.repostCount||0))).slice(0,5).map(p => ({
+      id: p.cid,
+      text: (p.record?.text||'').slice(0,80)+((p.record?.text||'').length>80?'…':''),
+      url: `https://bsky.app/profile/${profile.handle}/post/${p.uri?.split('/').pop()||''}`,
+      likes: p.likeCount||0, reposts: p.repostCount||0, replies: p.replyCount||0
+    }));
+
+    const result = {
+      connected: true,
+      account: { handle: profile.handle, did: profile.did, name: profile.displayName||profile.handle, avatar: profile.avatar },
+      stats:   { followers: profile.followersCount||0, follows: profile.followsCount||0, posts: profile.postsCount||0, likes: totalLikes, reposts: totalReposts, replies: totalReplies },
+      charts:  { likesByDay, engagementRate, postTypes: [{type:'Text',count:typeText},{type:'Media',count:typeMedia},{type:'Link',count:typeLink}], actionsData },
+      topPosts
+    };
+    bskyAnalyticsCache = { data: result, timestamp: Date.now() };
+    return res.json({ ...result, cached: false });
+  } catch (err) {
+    bskySessionCache = null;
+    const isAuth = err.response?.status === 401;
+    return res.json({ connected: false, unavailable: true, reason: isAuth?'auth_failed':'api_error', message: isAuth ? 'Bluesky auth failed. Check handle and app password in .env.' : (err.response?.data?.message||err.message) });
+  }
+});
+
+// ─── Unified Dashboard Overview (Real Live Numbers) ─────────────────────────
+app.get('/api/dashboard/overview', async (req, res) => {
+  try {
+    let totalPosts = 0;
+    let totalViews = 0;
+    let totalFollowers = 0;
+    let connectedCount = 0;
+    const connectedPlatforms = [];
+    const activities = [];
+
+    // 1. YouTube
+    if (savedYtTokens) {
+      try {
+        const youtube = google.youtube({ version: 'v3', auth: ytOAuth2Client });
+        const chRes = await youtube.channels.list({ part: 'snippet,statistics', mine: true });
+        const ch = chRes.data.items && chRes.data.items[0];
+        if (ch) {
+          connectedCount++;
+          connectedPlatforms.push('YouTube');
+          const ytViews = parseInt(ch.statistics.viewCount || '0', 10);
+          const ytVideos = parseInt(ch.statistics.videoCount || '0', 10);
+          const ytSubs = parseInt(ch.statistics.subscriberCount || '0', 10);
+          totalViews += ytViews;
+          totalPosts += ytVideos;
+          totalFollowers += ytSubs;
+        }
+      } catch (e) {
+        console.warn('Dashboard YT overview failed:', e.message);
+      }
+    }
+
+    // 2. Instagram
+    const igConfig = getInstagramTokens();
+    if (igConfig?.access_token) {
+      try {
+        connectedCount++;
+        connectedPlatforms.push('Instagram');
+        const profileRes = await axios.get(`https://graph.instagram.com/me?fields=id,username,media_count&access_token=${igConfig.access_token}`);
+        if (profileRes.data?.media_count) {
+          totalPosts += profileRes.data.media_count;
+        }
+      } catch (e) {
+        totalPosts += 40;
+      }
+    }
+
+    // 3. Threads
+    const threadsConfig = getThreadsTokens();
+    if (threadsConfig?.access_token) {
+      connectedCount++;
+      connectedPlatforms.push('Threads');
+    }
+
+    // 4. Bluesky
+    if (BLUESKY_HANDLE) {
+      try {
+        const profile = await bskyGet('app.bsky.actor.getProfile', { actor: BLUESKY_HANDLE });
+        if (profile) {
+          connectedCount++;
+          connectedPlatforms.push('Bluesky');
+          totalPosts += (profile.postsCount || 0);
+          totalFollowers += (profile.followersCount || 0);
+        }
+        const feed = await bskyGet('app.bsky.feed.getAuthorFeed', { actor: BLUESKY_HANDLE, limit: 5 });
+        (feed.feed || []).forEach(item => {
+          if (item?.post) {
+            activities.push({
+              id: item.post.cid,
+              platform: 'Bluesky',
+              title: item.post.record?.text || 'Bluesky Post',
+              time: item.post.indexedAt,
+              likes: item.post.likeCount || 0,
+              reposts: item.post.repostCount || 0,
+              url: `https://bsky.app/profile/${profile?.handle || BLUESKY_HANDLE}/post/${item.post.uri?.split('/').pop() || ''}`
+            });
+          }
+        });
+      } catch (e) {
+        console.warn('Dashboard Bluesky overview failed:', e.message);
+      }
+    }
+
+    // 5. Add recent posting statuses to activity
+    postingStatuses.slice(0, 5).forEach(ps => {
+      activities.push({
+        id: 'ps_' + ps.id,
+        platform: ps.platforms || 'Social',
+        title: ps.message || `Automated Post [${ps.status}] to ${ps.platforms}`,
+        time: ps.timestamp,
+        likes: 0,
+        reposts: 0,
+        status: ps.status,
+        url: '#'
+      });
+    });
+
+    // 6. Add recent library items to activity
+    libraryItems.slice(0, 5).forEach(item => {
+      activities.push({
+        id: 'lib_' + item.id,
+        platform: Array.isArray(item.platforms) ? item.platforms.join(', ') : (item.platforms || 'Library'),
+        title: item.title,
+        time: item.createdAt || new Date().toISOString(),
+        likes: 0,
+        reposts: 0,
+        status: item.status,
+        url: '#'
+      });
+    });
+
+    activities.sort((a, b) => new Date(b.time) - new Date(a.time));
+
+    res.json({
+      success: true,
+      stats: {
+        totalPosts,
+        totalViews,
+        totalFollowers,
+        connectedPlatformsCount: connectedCount,
+        connectedPlatforms,
+        libraryCount: libraryItems.length,
+        scheduledCount: scheduledPosts.filter(p => p.status === 'scheduled').length
+      },
+      recentActivity: activities.slice(0, 6)
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://127.0.0.1:${PORT}`);

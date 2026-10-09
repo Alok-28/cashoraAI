@@ -1,0 +1,35 @@
+[
+  {
+    "id": "vid_1791574211365",
+    "title": "WhatsApp Video 2026-10-09 at 12.16.50",
+    "date": "Oct 10, 2026",
+    "status": "published",
+    "platforms": [
+      "YouTube",
+      "Instagram",
+      "Facebook",
+      "Threads",
+      "Twitter / X",
+      "LinkedIn",
+      "Bluesky"
+    ],
+    "type": "upload",
+    "filePath": "/server/uploads/video-1791574195972-955978382.mp4",
+    "caption": "",
+    "createdAt": "2026-10-09T19:30:11.384Z"
+  },
+  {
+    "id": "vid_1791573342745",
+    "title": "Cashora AI Demo Reel",
+    "date": "Oct 10, 2026",
+    "status": "published",
+    "platforms": [
+      "YouTube",
+      "Instagram"
+    ],
+    "type": "upload",
+    "filePath": "",
+    "caption": "",
+    "createdAt": "2026-10-09T19:15:42.799Z"
+  }
+]

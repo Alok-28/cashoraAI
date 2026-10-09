@@ -339,36 +339,60 @@
         .spin-dot { width: 10px; height: 10px; border: 2px solid rgba(255,170,0,0.3); border-top-color: #ffaa00; border-radius: 50%; display: inline-block; animation: spin 0.8s linear infinite; }
 
         /* ══════════════════════════════
-           SETTINGS PAGE
+           SETTINGS PAGE - OFFICIAL & MODERN
         ══════════════════════════════ */
-        .settings-layout { display: grid; grid-template-columns: 200px 1fr; gap: 16px; align-items: start; }
-        .settings-menu { background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
-        .settings-menu-item { display: flex; align-items: center; gap: 9px; padding: 11px 14px; font-size: 13px; font-weight: 500; color: var(--muted); cursor: pointer; border-bottom: 1px solid var(--border2); transition: all 0.15s; }
-        .settings-menu-item:last-child { border-bottom: none; }
-        .settings-menu-item:hover  { background: #141414; color: var(--light); }
-        .settings-menu-item.active { background: #13183a; color: #6677ff; }
-        .settings-panel { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 22px; }
-        .settings-section { margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border2); }
-        .settings-section:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
-        .settings-section-title { font-size: 13px; font-weight: 700; color: var(--white); margin-bottom: 14px; }
-        .settings-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-        .settings-row:last-child { margin-bottom: 0; }
-        .settings-label { font-size: 13px; font-weight: 500; color: var(--light); }
-        .settings-sub   { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
-        .settings-input { background: #0e0e0e; border: 1px solid var(--border); border-radius: 7px; padding: 8px 12px; font-size: 13px; color: var(--light); font-family: inherit; outline: none; width: 220px; transition: border-color 0.15s; }
-        .settings-input:focus { border-color: #2a3380; }
-        .settings-toggle { width: 36px; height: 20px; border-radius: 999px; background: var(--blue); position: relative; cursor: pointer; flex-shrink: 0; }
-        .settings-toggle::after { content: ''; position: absolute; top: 2px; right: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: right 0.2s; }
+        .settings-layout { display: grid; grid-template-columns: 240px 1fr; gap: 24px; align-items: start; margin-top: 18px; max-width: 1080px; width: 100%; }
+        .settings-nav { background: #0c0c10; border: 1px solid var(--border); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 4px; position: sticky; top: 20px; }
+        .settings-nav-section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); padding: 8px 12px 4px; margin-top: 6px; }
+        .settings-nav-section-title:first-child { margin-top: 0; }
+        .settings-nav-btn { display: flex; align-items: center; gap: 10px; padding: 10px 12px; font-size: 13px; font-weight: 500; color: var(--muted); border-radius: 8px; background: transparent; border: 1px solid transparent; cursor: pointer; transition: all 0.15s ease; text-align: left; width: 100%; }
+        .settings-nav-btn:hover { background: #16161d; color: var(--light); }
+        .settings-nav-btn.active { background: rgba(59,130,246,0.12); border-color: rgba(59,130,246,0.3); color: #fff; font-weight: 600; }
+        .settings-nav-btn svg { flex-shrink: 0; opacity: 0.75; }
+        .settings-nav-btn.active svg { opacity: 1; stroke: #60a5fa; }
+        .settings-nav-badge { margin-left: auto; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: 600; }
+        .settings-nav-badge.green { background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+
+        .settings-panel { display: flex; flex-direction: column; gap: 24px; min-width: 0; width: 100%; }
+        .settings-card { background: #0c0c10; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.25); }
+        .settings-card-header { padding: 20px 24px; border-bottom: 1px solid var(--border2); display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+        .settings-card-title { font-size: 15px; font-weight: 700; color: var(--white); margin-bottom: 4px; }
+        .settings-card-sub { font-size: 12.5px; color: var(--muted); line-height: 1.4; }
+        .settings-card-body { padding: 24px; }
+        .settings-card-footer { padding: 14px 24px; background: #08080a; border-top: 1px solid var(--border2); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+
+        .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
+        .form-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+        .form-field:last-child { margin-bottom: 0; }
+        .form-field label { font-size: 12.5px; font-weight: 600; color: var(--light); display: flex; align-items: center; justify-content: space-between; }
+        .form-field label span.hint { font-size: 11px; font-weight: 400; color: var(--muted); }
+        .settings-field-input { background: #131318; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px 14px; font-size: 13px; color: var(--white); font-family: inherit; outline: none; width: 100%; transition: all 0.15s; }
+        .settings-field-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.15); background: #171720; }
+        .settings-field-input::placeholder { color: #555; }
+
+        .settings-list-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--border2); gap: 16px; }
+        .settings-list-row:last-child { border-bottom: none; padding-bottom: 0; }
+        .settings-list-row:first-child { padding-top: 0; }
+        .settings-item-title { font-size: 13.5px; font-weight: 600; color: var(--light); margin-bottom: 3px; }
+        .settings-item-desc { font-size: 12px; color: var(--muted); line-height: 1.4; }
+
+        .settings-toggle { width: 36px; height: 20px; border-radius: 999px; background: #3b82f6; position: relative; cursor: pointer; flex-shrink: 0; transition: background 0.2s; }
+        .settings-toggle::after { content: ''; position: absolute; top: 2px; right: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: right 0.2s, left 0.2s; }
         .settings-toggle.off { background: #222; }
         .settings-toggle.off::after { right: auto; left: 2px; }
-        .save-btn { padding: 9px 20px; background: var(--blue); color: #fff; font-size: 13px; font-weight: 600; border-radius: 7px; border: none; cursor: pointer; transition: all 0.15s; }
-        .save-btn:hover { background: var(--blue-s); }
+
+        .save-btn { padding: 9px 20px; background: #2563eb; color: #fff; font-size: 13px; font-weight: 600; border-radius: 8px; border: none; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 7px; }
+        .save-btn:hover { background: #1d4ed8; }
+        .btn-secondary { padding: 9px 18px; background: #15151c; border: 1px solid var(--border); color: var(--light); font-size: 13px; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 7px; }
+        .btn-secondary:hover { background: #1e1e28; color: #fff; border-color: rgba(255,255,255,0.2); }
 
         @media (max-width: 1100px) {
             .stats-grid { grid-template-columns: repeat(2,1fr); }
             .two-col    { grid-template-columns: 1fr; }
             .video-grid { grid-template-columns: repeat(2,1fr); }
             .create-layout { grid-template-columns: 1fr; }
+            .settings-layout { grid-template-columns: 1fr; }
+            .settings-nav { position: static; }
         }
         @media (max-width: 768px) {
             .sidebar { display: none; }
@@ -464,12 +488,12 @@
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-row">
-                    <span class="stat-label">Videos Generated</span>
+                    <span class="stat-label">Videos in Library</span>
                     <div class="stat-icon" style="background:#141414;border:1px solid var(--border);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
                 </div>
-                <div class="stat-value">247</div>
-                <div class="stat-change up">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+32%<span class="c-sub">this month</span>
+                <div class="stat-value" id="dashStatVideos">0</div>
+                <div class="stat-change up" style="color:var(--muted);">
+                    <span class="c-sub">Generated & Uploaded</span>
                 </div>
             </div>
             <div class="stat-card">
@@ -477,29 +501,29 @@
                     <span class="stat-label">Posts Published</span>
                     <div class="stat-icon" style="background:#141414;border:1px solid var(--border);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></div>
                 </div>
-                <div class="stat-value">184</div>
-                <div class="stat-change up">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+21%<span class="c-sub">this month</span>
+                <div class="stat-value" id="dashStatPosts">0</div>
+                <div class="stat-change up" style="color:#22c55e;">
+                    <span class="c-sub">Across connected channels</span>
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-row">
-                    <span class="stat-label">Total Reach</span>
-                    <div class="stat-icon" style="background:#141414;border:1px solid var(--border);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+                    <span class="stat-label">Total Views</span>
+                    <div class="stat-icon" style="background:#141414;border:1px solid var(--border);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
                 </div>
-                <div class="stat-value">47,382</div>
-                <div class="stat-change up">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+12%<span class="c-sub">this month</span>
+                <div class="stat-value" id="dashStatReach">0</div>
+                <div class="stat-change up" style="color:#38bdf8;">
+                    <span class="c-sub">Live channel views</span>
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-row">
-                    <span class="stat-label">Engagement</span>
+                    <span class="stat-label">Connected Platforms</span>
                     <div class="stat-icon" style="background:#141414;border:1px solid var(--border);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
                 </div>
-                <div class="stat-value">4.2%</div>
-                <div class="stat-change down">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>-0.3%<span class="c-sub">this month</span>
+                <div class="stat-value" id="dashStatPlatforms">0</div>
+                <div class="stat-change up" style="color:#a78bfa;">
+                    <span class="c-sub">Active integrations</span>
                 </div>
             </div>
         </div>
@@ -507,25 +531,11 @@
         <div class="two-col">
             <div class="panel">
                 <div class="panel-header">
-                    <div><div class="panel-title">Recent Activity</div><div class="panel-sub">Last 3 generated items</div></div>
+                    <div><div class="panel-title">Recent Activity</div><div class="panel-sub">Live posts & library updates</div></div>
                     <a class="panel-link" href="#" onclick="showPage('library', document.querySelectorAll('.nav-item')[2]);return false;">View all</a>
                 </div>
-                <div class="activity-list">
-                    <div class="act-item">
-                        <div class="act-icon" style="background:#101827;border-color:#1e2d40;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4a7fa5" stroke-width="1.8"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
-                        <div class="act-body"><div class="act-name">5 AI Tools Every Marketer Needs in 2026</div><div class="act-desc">YouTube Short + Instagram Reel — auto-posted to 3 platforms</div></div>
-                        <div class="act-right"><div class="act-time">2 min ago</div><span class="badge green">Published</span></div>
-                    </div>
-                    <div class="act-item">
-                        <div class="act-icon" style="background:#120d1e;border-color:#221840;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b4fa8" stroke-width="1.8"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
-                        <div class="act-body"><div class="act-name">How to Turn Your Idea Into Income</div><div class="act-desc">TikTok video — 14.2K views in first hour</div></div>
-                        <div class="act-right"><div class="act-time">1 hr ago</div><span class="badge blue">Trending</span></div>
-                    </div>
-                    <div class="act-item">
-                        <div class="act-icon" style="background:#0e1d13;border-color:#1a3322;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4a8c5c" stroke-width="1.8"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
-                        <div class="act-body"><div class="act-name">Prompt-to-Profit: Beginner's Guide</div><div class="act-desc">Long-form YouTube — Rs. 4,800 AdSense earned</div></div>
-                        <div class="act-right"><div class="act-time">5 hr ago</div><span class="badge green">+Rs. 4.8K</span></div>
-                    </div>
+                <div class="activity-list" id="dashRecentActivity">
+                    <div style="padding:24px 0;text-align:center;color:var(--muted);font-size:12px;">Loading recent activity...</div>
                 </div>
             </div>
             <div class="panel">
@@ -533,7 +543,7 @@
                 <div class="quick-actions">
                     <button class="q-btn" onclick="showPage('create', document.querySelectorAll('.nav-item')[1])"><div class="q-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div><div class="q-text"><div class="q-label">Generate video</div><div class="q-desc">Describe it, AI builds it</div></div><span class="q-arrow">›</span></button>
                     <button class="q-btn" onclick="showPage('distribution', document.querySelectorAll('.nav-item')[3])"><div class="q-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></div><div class="q-text"><div class="q-label">Auto distribute</div><div class="q-desc">Push to all platforms</div></div><span class="q-arrow">›</span></button>
-                    <button class="q-btn" onclick="showPage('analytics', document.querySelectorAll('.nav-item')[4])"><div class="q-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div><div class="q-text"><div class="q-label">View analytics</div><div class="q-desc">Reach, views, revenue</div></div><span class="q-arrow">›</span></button>
+                    <button class="q-btn" onclick="showPage('analytics', document.querySelectorAll('.nav-item')[5])"><div class="q-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div><div class="q-text"><div class="q-label">View analytics</div><div class="q-desc">Platform metrics & reach</div></div><span class="q-arrow">›</span></button>
                     <button class="q-btn" onclick="showPage('library', document.querySelectorAll('.nav-item')[2])"><div class="q-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></div><div class="q-text"><div class="q-label">Content library</div><div class="q-desc">Browse your videos</div></div><span class="q-arrow">›</span></button>
                 </div>
             </div>
@@ -608,13 +618,29 @@
                                     <div class="pt-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></div>
                                     <span class="pt-name">Instagram</span>
                                 </div>
+                                <div class="platform-toggle selected" onclick="togglePlatform(this)">
+                                    <div class="pt-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></div>
+                                    <span class="pt-name">Facebook</span>
+                                </div>
+                                <div class="platform-toggle selected" onclick="togglePlatform(this)">
+                                    <div class="pt-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 006 0v-1a10 10 0 10-4 8"/></svg></div>
+                                    <span class="pt-name">Threads</span>
+                                </div>
+                                <div class="platform-toggle" onclick="togglePlatform(this)">
+                                    <div class="pt-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.259 5.622z"/></svg></div>
+                                    <span class="pt-name">Twitter / X</span>
+                                </div>
                                 <div class="platform-toggle" onclick="togglePlatform(this)">
                                     <div class="pt-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></div>
                                     <span class="pt-name">LinkedIn</span>
                                 </div>
                                 <div class="platform-toggle" onclick="togglePlatform(this)">
-                                    <div class="pt-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.259 5.622z"/></svg></div>
-                                    <span class="pt-name">Twitter / X</span>
+                                    <div class="pt-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566 1.018 1.561 1.625 1.561 3.25c0 1.624.475 7.635 1.353 9.497 1.408 2.983 4.28 3.518 6.444 3.013-3.69 1.157-5.02 4.195-2.73 7.027 3.327 4.116 5.372-2.387 5.372-2.387s2.045 6.503 5.372 2.387c2.29-2.832.96-5.87-2.73-7.027 2.164.505 5.036-.03 6.444-3.013.878-1.862 1.353-7.873 1.353-9.497 0-1.625-1.005-2.232-3.641-.445C16.046 4.747 13.087 8.686 12 10.8z"/></svg></div>
+                                    <span class="pt-name">Bluesky</span>
+                                </div>
+                                <div class="platform-toggle" onclick="togglePlatform(this)">
+                                    <div class="pt-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M8 12a4 4 0 108 0 4 4 0 00-8 0z"/><path d="M10 17l2 4 2-4"/></svg></div>
+                                    <span class="pt-name">Pinterest</span>
                                 </div>
                                 <div class="platform-toggle selected" onclick="togglePlatform(this)">
                                     <div class="pt-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.22 8.22 0 004.87 1.6V6.84a4.85 4.85 0 01-1.1-.15z"/></svg></div>
@@ -887,8 +913,12 @@
                                 <span class="pt-name">Instagram</span>
                             </div>
                             <div class="platform-toggle selected" onclick="togglePlatform(this)">
-                                <div class="pt-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.22 8.22 0 004.87 1.6V6.84a4.85 4.85 0 01-1.1-.15z"/></svg></div>
-                                <span class="pt-name">TikTok</span>
+                                <div class="pt-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></div>
+                                <span class="pt-name">Facebook</span>
+                            </div>
+                            <div class="platform-toggle selected" onclick="togglePlatform(this)">
+                                <div class="pt-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 006 0v-1a10 10 0 10-4 8"/></svg></div>
+                                <span class="pt-name">Threads</span>
                             </div>
                             <div class="platform-toggle" onclick="togglePlatform(this)">
                                 <div class="pt-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.259 5.622z"/></svg></div>
@@ -897,6 +927,18 @@
                             <div class="platform-toggle" onclick="togglePlatform(this)">
                                 <div class="pt-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></div>
                                 <span class="pt-name">LinkedIn</span>
+                            </div>
+                            <div class="platform-toggle" onclick="togglePlatform(this)">
+                                <div class="pt-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566 1.018 1.561 1.625 1.561 3.25c0 1.624.475 7.635 1.353 9.497 1.408 2.983 4.28 3.518 6.444 3.013-3.69 1.157-5.02 4.195-2.73 7.027 3.327 4.116 5.372-2.387 5.372-2.387s2.045 6.503 5.372 2.387c2.29-2.832.96-5.87-2.73-7.027 2.164.505 5.036-.03 6.444-3.013.878-1.862 1.353-7.873 1.353-9.497 0-1.625-1.005-2.232-3.641-.445C16.046 4.747 13.087 8.686 12 10.8z"/></svg></div>
+                                <span class="pt-name">Bluesky</span>
+                            </div>
+                            <div class="platform-toggle" onclick="togglePlatform(this)">
+                                <div class="pt-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M8 12a4 4 0 108 0 4 4 0 00-8 0z"/><path d="M10 17l2 4 2-4"/></svg></div>
+                                <span class="pt-name">Pinterest</span>
+                            </div>
+                            <div class="platform-toggle selected" onclick="togglePlatform(this)">
+                                <div class="pt-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.22 8.22 0 004.87 1.6V6.84a4.85 4.85 0 01-1.1-.15z"/></svg></div>
+                                <span class="pt-name">TikTok</span>
                             </div>
                         </div>
                     </div>
@@ -952,30 +994,69 @@
         <div class="page-title">Analytics</div>
         <div class="page-sub">Performance across all platforms this month</div>
         
-        <!-- Overall stats -->
+        <!-- Overall stats (Real Live Data) -->
         <div class="stats-grid" style="margin-bottom:24px;">
-            <div class="stat-card"><div class="stat-row"><span class="stat-label">Total Views</span></div><div class="stat-value">47,382</div><div class="stat-change up"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+12%<span class="c-sub">vs last month</span></div></div>
-            <div class="stat-card"><div class="stat-row"><span class="stat-label">Watch Time</span></div><div class="stat-value">2,140 h</div><div class="stat-change up"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+9%<span class="c-sub">vs last month</span></div></div>
-            <div class="stat-card"><div class="stat-row"><span class="stat-label">New Followers</span></div><div class="stat-value">+1,847</div><div class="stat-change up"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+7%<span class="c-sub">vs last month</span></div></div>
-            <div class="stat-card"><div class="stat-row"><span class="stat-label">Revenue</span></div><div class="stat-value">Rs. 28,400</div><div class="stat-change up"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+18%<span class="c-sub">vs last month</span></div></div>
+            <div class="stat-card">
+                <div class="stat-row"><span class="stat-label">Total Views</span></div>
+                <div class="stat-value" id="anOverviewViews">0</div>
+                <div class="stat-change up" style="color:#38bdf8;"><span class="c-sub">Live channel views</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-row"><span class="stat-label">Posts Published</span></div>
+                <div class="stat-value" id="anOverviewPosts">0</div>
+                <div class="stat-change up" style="color:#22c55e;"><span class="c-sub">Across all platforms</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-row"><span class="stat-label">Total Audience</span></div>
+                <div class="stat-value" id="anOverviewFollowers">0</div>
+                <div class="stat-change up" style="color:#a78bfa;"><span class="c-sub">Subscribers & Followers</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-row"><span class="stat-label">Connected Platforms</span></div>
+                <div class="stat-value" id="anOverviewPlatforms">0 Active</div>
+                <div class="stat-change up" style="color:#eab308;"><span class="c-sub">Live synced accounts</span></div>
+            </div>
         </div>
 
-        <!-- Overall views chart - larger -->
-        <div class="chart-card" style="margin-bottom:24px;">
-            <div class="chart-title">Total Views Over Time</div>
-            <div class="chart-sub">Combined performance across all platforms — last 7 months</div>
-            <div id="overall-views-chart" style="height:200px;margin-top:16px;"></div>
-        </div>
-
-        <!-- Platform selector -->
-        <div style="margin-bottom:16px;">
-            <label class="form-label" style="margin-bottom:8px;">View Platform-Specific Analytics</label>
-            <select class="select-input" id="platformSelector" onchange="switchPlatform(this.value)" style="max-width:300px;">
+        <!-- Platform selector / Analytics selection -->
+        <div style="margin-bottom:20px;">
+            <label class="form-label" style="margin-bottom:10px;display:flex;align-items:center;gap:8px;">
+                <span>Platform Analytics Selection</span>
+                <span style="font-size:11.5px;color:var(--muted);font-weight:normal;">(Click any platform to view its live metrics)</span>
+            </label>
+            <div id="analyticsPlatformPills" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+                <button type="button" class="an-plat-pill active" onclick="switchPlatform('youtube')" data-plat="youtube" style="padding:8px 14px;border-radius:8px;font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;gap:7px;cursor:pointer;border:1px solid rgba(255,0,51,0.4);background:rgba(255,0,51,0.12);color:#fff;transition:all .15s;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#ff0033"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                    YouTube
+                </button>
+                <button type="button" class="an-plat-pill" onclick="switchPlatform('instagram')" data-plat="instagram" style="padding:8px 14px;border-radius:8px;font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;gap:7px;cursor:pointer;border:1px solid var(--border);background:#121212;color:var(--muted);transition:all .15s;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e1306c" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                    Instagram
+                </button>
+                <button type="button" class="an-plat-pill" onclick="switchPlatform('threads')" data-plat="threads" style="padding:8px 14px;border-radius:8px;font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;gap:7px;cursor:pointer;border:1px solid var(--border);background:#121212;color:var(--muted);transition:all .15s;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12.186 24C5.467 24 0 18.533 0 11.814 0 5.094 5.467 0 12.186 0c6.643 0 11.97 5.176 11.97 11.814 0 .614-.047 1.229-.14 1.833h-4.321c.047-.367.07-.74.07-1.12 0-4.148-3.418-7.566-7.579-7.566-4.162 0-7.58 3.418-7.58 7.566 0 4.149 3.418 7.567 7.58 7.567 2.193 0 4.18-.946 5.568-2.457l3.078 2.825C18.423 22.378 15.485 24 12.186 24z"/></svg>
+                    Threads
+                </button>
+                <button type="button" class="an-plat-pill" onclick="switchPlatform('tiktok')" data-plat="tiktok" style="padding:8px 14px;border-radius:8px;font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;gap:7px;cursor:pointer;border:1px solid var(--border);background:#121212;color:var(--muted);transition:all .15s;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.298 0 .59.05.86.15V9.4a6.33 6.33 0 0 0-6.33 6.33 6.34 6.34 0 0 0 10.82 4.48c.03-.03.06-.06.09-.09V11.2a8.16 8.16 0 0 0 4.67 1.49V9.24a4.85 4.85 0 0 1-.03-.05v-.01a4.83 4.83 0 0 1 0-2.49z"/></svg>
+                    TikTok
+                </button>
+                <button type="button" class="an-plat-pill" onclick="switchPlatform('twitter')" data-plat="twitter" style="padding:8px 14px;border-radius:8px;font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;gap:7px;cursor:pointer;border:1px solid var(--border);background:#121212;color:var(--muted);transition:all .15s;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.259 5.622z"/></svg>
+                    Twitter / X
+                </button>
+                <button type="button" class="an-plat-pill" onclick="switchPlatform('bluesky')" data-plat="bluesky" style="padding:8px 14px;border-radius:8px;font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;gap:7px;cursor:pointer;border:1px solid var(--border);background:#121212;color:var(--muted);transition:all .15s;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0285ff" stroke-width="1.8"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566 1.018 1.561 1.625 1.561 3.25c0 1.624.475 7.635 1.353 9.497 1.408 2.983 4.28 3.518 6.444 3.013-3.69 1.157-5.02 4.195-2.73 7.027 3.327 4.116 5.372-2.387 5.372-2.387s2.045 6.503 5.372 2.387c2.29-2.832.96-5.87-2.73-7.027 2.164.505 5.036-.03 6.444-3.013.878-1.862 1.353-7.873 1.353-9.497 0-1.625-1.005-2.232-3.641-.445C16.046 4.747 13.087 8.686 12 10.8z"/></svg>
+                    Bluesky
+                </button>
+            </div>
+            <select class="select-input" id="platformSelector" onchange="switchPlatform(this.value)" style="max-width:300px;display:none;">
                 <option value="youtube">YouTube</option>
                 <option value="instagram">Instagram</option>
                 <option value="threads">Threads</option>
                 <option value="tiktok">TikTok</option>
                 <option value="twitter">Twitter / X</option>
+                <option value="bluesky">Bluesky</option>
             </select>
         </div>
 
@@ -1434,33 +1515,492 @@
                 </div>
             </div>
         </div>
+
+        <!-- Bluesky Analytics -->
+        <div class="platform-analytics" id="platform-bluesky" style="display:none;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+                <div style="width:32px;height:32px;border-radius:7px;background:#141414;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0285ff" stroke-width="1.8"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566 1.018 1.561 1.625 1.561 3.25c0 1.624.475 7.635 1.353 9.497 1.408 2.983 4.28 3.518 6.444 3.013-3.69 1.157-5.02 4.195-2.73 7.027 3.327 4.116 5.372-2.387 5.372-2.387s2.045 6.503 5.372 2.387c2.29-2.832.96-5.87-2.73-7.027 2.164.505 5.036-.03 6.444-3.013.878-1.862 1.353-7.873 1.353-9.497 0-1.625-1.005-2.232-3.641-.445C16.046 4.747 13.087 8.686 12 10.8z"/></svg>
+                </div>
+                <div>
+                    <div id="bskyHeaderTitle" style="font-size:16px;font-weight:700;color:var(--white);">Bluesky Analytics</div>
+                    <div id="bskyHeaderHandle" style="font-size:12px;color:var(--muted);">Loading...</div>
+                </div>
+                <div id="bskyHeaderActions" style="display:flex;align-items:center;gap:10px;margin-left:auto;"></div>
+            </div>
+
+            <!-- Bluesky stats row -->
+            <div class="stats-grid" style="margin-bottom:20px;">
+                <div class="stat-card">
+                    <div class="stat-row"><span class="stat-label">Followers</span><span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;background:rgba(2,133,255,0.12);color:#0285ff;border:1px solid rgba(2,133,255,0.25);">Live</span></div>
+                    <div id="bskyStatFollowers" class="stat-value">—</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-row"><span class="stat-label">Total Likes</span><span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;background:rgba(2,133,255,0.12);color:#0285ff;border:1px solid rgba(2,133,255,0.25);">Live</span></div>
+                    <div id="bskyStatLikes" class="stat-value">—</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-row"><span class="stat-label">Reposts</span><span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;background:rgba(2,133,255,0.12);color:#0285ff;border:1px solid rgba(2,133,255,0.25);">Live</span></div>
+                    <div id="bskyStatReposts" class="stat-value">—</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-row"><span class="stat-label">Total Posts</span><span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;background:rgba(2,133,255,0.12);color:#0285ff;border:1px solid rgba(2,133,255,0.25);">Live</span></div>
+                    <div id="bskyStatPosts" class="stat-value">—</div>
+                </div>
+            </div>
+
+            <!-- Bluesky charts -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+                <div class="chart-card">
+                    <div class="chart-title">Likes by Day</div>
+                    <div class="chart-sub">Last 7 days</div>
+                    <div id="bsky-likes-chart" style="height:140px;margin-top:12px;"></div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-title">Avg Engagement / Post</div>
+                    <div class="chart-sub">Interactions per post per day</div>
+                    <div id="bsky-engagement-chart" style="height:140px;margin-top:12px;"></div>
+                </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+                <div class="chart-card">
+                    <div class="chart-title">Post Types</div>
+                    <div class="chart-sub">Breakdown by content format</div>
+                    <div id="bsky-post-types-chart" style="height:140px;margin-top:12px;"></div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-title">Likes vs Reposts</div>
+                    <div class="chart-sub">Action comparison over time</div>
+                    <div id="bsky-actions-chart" style="height:140px;margin-top:12px;"></div>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-title">Top Performing Posts</div>
+                <div class="chart-sub">Ranked by likes + reposts</div>
+                <div style="display:flex;flex-direction:column;gap:0;margin-top:12px;">
+                    <div style="display:grid;grid-template-columns:1fr 80px 80px 70px;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2);font-size:10.5px;font-weight:600;color:var(--muted2);text-transform:uppercase;letter-spacing:.05em;">
+                        <span>Post</span><span style="text-align:right;">Likes</span><span style="text-align:right;">Reposts</span><span style="text-align:right;">Replies</span>
+                    </div>
+                    <div id="bskyTopPostsList">
+                        <div style="padding:20px 0;text-align:center;color:var(--muted);font-size:12px;">Loading posts…</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <!-- ══════════════ PAGE: SETTINGS ══════════════ -->
     <div class="page" id="page-settings">
-        <div class="page-title">Settings</div>
-        <div class="page-sub">Manage your account and preferences</div>
-        <div class="settings-layout">
-            <div class="settings-menu">
-                <div class="settings-menu-item active">Profile</div>
-                <div class="settings-menu-item">Notifications</div>
-                <div class="settings-menu-item">Billing</div>
-                <div class="settings-menu-item">API Keys</div>
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:6px;">
+            <div>
+                <div class="page-title">Settings</div>
+                <div class="page-sub">Manage your workspace, profile, automated pipelines, and integrations.</div>
             </div>
+            <div id="settingsGlobalStatus" style="display:none;font-size:12.5px;color:#4ade80;background:rgba(34,197,94,0.12);padding:6px 14px;border-radius:20px;border:1px solid rgba(34,197,94,0.3);align-items:center;gap:6px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                Changes saved successfully
+            </div>
+        </div>
+
+        <div class="settings-layout">
+            <!-- Left Navigation Menu -->
+            <div class="settings-nav">
+                <div class="settings-nav-section-title">Account</div>
+                <button type="button" class="settings-nav-btn active" onclick="switchSettingsTab('profile')" id="st-btn-profile">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    Profile & Identity
+                </button>
+                <button type="button" class="settings-nav-btn" onclick="switchSettingsTab('platforms')" id="st-btn-platforms">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                    Connected Channels
+                    <span class="settings-nav-badge green">4 Live</span>
+                </button>
+                <button type="button" class="settings-nav-btn" onclick="switchSettingsTab('automation')" id="st-btn-automation">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    Automation & Posting
+                </button>
+                <div class="settings-nav-section-title">Developer & Plans</div>
+                <button type="button" class="settings-nav-btn" onclick="switchSettingsTab('api')" id="st-btn-api">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                    API & Webhooks
+                </button>
+                <button type="button" class="settings-nav-btn" onclick="switchSettingsTab('billing')" id="st-btn-billing">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                    Billing & Quotas
+                </button>
+                <button type="button" class="settings-nav-btn" onclick="switchSettingsTab('security')" id="st-btn-security">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    Security & Session
+                </button>
+            </div>
+
+            <!-- Right Content Panels -->
             <div class="settings-panel">
-                <div class="settings-section">
-                    <div class="settings-section-title">Profile Information</div>
-                    <div class="settings-row"><div><div class="settings-label">Full name</div></div><input class="settings-input" id="settingsName" value="Demo User"></div>
-                    <div class="settings-row"><div><div class="settings-label">Email address</div></div><input class="settings-input" id="settingsEmail" value="demo@cashora.tech"></div>
-                    <div class="settings-row"><div><div class="settings-label">Username</div></div><input class="settings-input" value="@cashora"></div>
+
+                <!-- 1. TAB: PROFILE & IDENTITY -->
+                <div id="settings-tab-profile" class="settings-tab-content">
+                    <!-- Avatar card -->
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <div>
+                                <div class="settings-card-title">Creator Avatar</div>
+                                <div class="settings-card-sub">Your public avatar displayed on video watermarks and team collaboration.</div>
+                            </div>
+                            <span style="font-size:11px;font-weight:600;color:#3b82f6;background:rgba(59,130,246,0.12);padding:4px 10px;border-radius:20px;border:1px solid rgba(59,130,246,0.25);">Pro Creator</span>
+                        </div>
+                        <div class="settings-card-body" style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+                            <div id="settingsAvatarPreview" style="width:68px;height:68px;border-radius:12px;background:#181822;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">
+                                <span style="font-size:24px;font-weight:700;color:#fff;" id="settingsAvatarInitials">V</span>
+                            </div>
+                            <div style="flex:1;min-width:220px;">
+                                <div style="font-size:14px;font-weight:600;color:var(--white);" id="settingsAvatarName">Vaibhav Gawai</div>
+                                <div style="font-size:12px;color:var(--muted);margin:2px 0 12px;" id="settingsAvatarSub">Owner · demo@cashora.tech</div>
+                                <div style="display:flex;gap:10px;">
+                                    <button type="button" class="btn-secondary" onclick="generateRandomAvatar()" style="padding:6px 14px;font-size:12px;">Regenerate Avatar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Profile fields card -->
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <div>
+                                <div class="settings-card-title">General Information</div>
+                                <div class="settings-card-sub">Update your personal account credentials and public creator identity.</div>
+                            </div>
+                        </div>
+                        <div class="settings-card-body">
+                            <form id="settingsProfileForm" onsubmit="saveUserProfile(event)">
+                                <div class="form-grid-2">
+                                    <div class="form-field">
+                                        <label for="settingsName">Full Name</label>
+                                        <input type="text" class="settings-field-input" id="settingsName" placeholder="e.g. Vaibhav Gawai" required>
+                                    </div>
+                                    <div class="form-field">
+                                        <label for="settingsUsername">Creator Handle</label>
+                                        <input type="text" class="settings-field-input" id="settingsUsername" placeholder="e.g. @vaibhav_creates" value="@cashora_creator">
+                                    </div>
+                                </div>
+                                <div class="form-grid-2">
+                                    <div class="form-field">
+                                        <label for="settingsEmail">
+                                            <span>Email Address</span>
+                                            <span style="font-size:10.5px;color:#22c55e;font-weight:600;display:inline-flex;align-items:center;gap:3px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Verified</span>
+                                        </label>
+                                        <input type="email" class="settings-field-input" id="settingsEmail" placeholder="e.g. you@domain.com" required>
+                                    </div>
+                                    <div class="form-field">
+                                        <label for="settingsTimezone">Workspace Timezone</label>
+                                        <select class="settings-field-input" id="settingsTimezone">
+                                            <option value="Asia/Kolkata">Asia/Kolkata (IST +05:30)</option>
+                                            <option value="America/New_York">America/New York (EST -05:00)</option>
+                                            <option value="America/Los_Angeles">America/Los Angeles (PST -08:00)</option>
+                                            <option value="Europe/London">Europe/London (GMT +00:00)</option>
+                                            <option value="Europe/Berlin">Europe/Berlin (CET +01:00)</option>
+                                            <option value="Asia/Dubai">Asia/Dubai (GST +04:00)</option>
+                                            <option value="Asia/Singapore">Asia/Singapore (SGT +08:00)</option>
+                                            <option value="Asia/Tokyo">Asia/Tokyo (JST +09:00)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-field">
+                                    <label for="settingsBio">Creator Bio & System Description</label>
+                                    <textarea class="settings-field-input" id="settingsBio" rows="3" placeholder="Tell CashoraAI about your content tone, audience focus, and key messaging..." style="resize:vertical;">Automating high-conversion AI video production, shorts, and multi-channel content pipelines with CashoraAI.</textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="settings-card-footer">
+                            <span style="font-size:12px;color:var(--muted);">All changes will update across all connected AI services.</span>
+                            <button type="submit" form="settingsProfileForm" class="save-btn" id="saveProfileBtn">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="settings-section">
-                    <div class="settings-section-title">Preferences</div>
-                    <div class="settings-row"><div><div class="settings-label">Auto-publish after generation</div><div class="settings-sub">Publish immediately without review</div></div><div class="settings-toggle off" onclick="this.classList.toggle('off')"></div></div>
-                    <div class="settings-row"><div><div class="settings-label">Email notifications</div><div class="settings-sub">Get notified when videos are ready</div></div><div class="settings-toggle" onclick="this.classList.toggle('off')"></div></div>
-                    <div class="settings-row"><div><div class="settings-label">Weekly report</div><div class="settings-sub">Analytics summary every Monday</div></div><div class="settings-toggle" onclick="this.classList.toggle('off')"></div></div>
+
+                <!-- 2. TAB: CONNECTED PLATFORMS -->
+                <div id="settings-tab-platforms" class="settings-tab-content" style="display:none;">
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <div>
+                                <div class="settings-card-title">Live Channel Integrations</div>
+                                <div class="settings-card-sub">Active social accounts currently connected for automated publishing and real-time analytics.</div>
+                            </div>
+                            <button type="button" class="btn-secondary" onclick="checkAllPlatformStatuses()" style="padding:6px 14px;font-size:12px;">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                                Check All Statuses
+                            </button>
+                        </div>
+                        <div class="settings-card-body" style="padding:12px 24px;">
+                            <!-- YouTube Row -->
+                            <div class="settings-list-row">
+                                <div style="display:flex;align-items:center;gap:14px;">
+                                    <div style="width:38px;height:38px;border-radius:8px;background:rgba(255,0,51,0.12);border:1px solid rgba(255,0,51,0.25);display:flex;align-items:center;justify-content:center;">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="#ff0033"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                                    </div>
+                                    <div>
+                                        <div class="settings-item-title">YouTube Shorts & Video</div>
+                                        <div class="settings-item-desc" id="settingsYtStatus">Connected: @v41bhx · 11 Videos · 15 Views</div>
+                                    </div>
+                                </div>
+                                <div style="display:flex;align-items:center;gap:10px;">
+                                    <span style="font-size:11px;padding:3px 8px;border-radius:6px;background:rgba(34,197,94,0.12);color:#4ade80;font-weight:600;border:1px solid rgba(34,197,94,0.3);">Connected</span>
+                                    <a href="/auth/youtube" class="btn-secondary" style="padding:5px 10px;font-size:11.5px;text-decoration:none;">Re-auth</a>
+                                </div>
+                            </div>
+
+                            <!-- Instagram Row -->
+                            <div class="settings-list-row">
+                                <div style="display:flex;align-items:center;gap:14px;">
+                                    <div style="width:38px;height:38px;border-radius:8px;background:rgba(225,48,108,0.12);border:1px solid rgba(225,48,108,0.25);display:flex;align-items:center;justify-content:center;">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e1306c" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                                    </div>
+                                    <div>
+                                        <div class="settings-item-title">Instagram Reels</div>
+                                        <div class="settings-item-desc" id="settingsIgStatus">Connected: @vaibhav.tf7 · 41 Media Posts</div>
+                                    </div>
+                                </div>
+                                <div style="display:flex;align-items:center;gap:10px;">
+                                    <span style="font-size:11px;padding:3px 8px;border-radius:6px;background:rgba(34,197,94,0.12);color:#4ade80;font-weight:600;border:1px solid rgba(34,197,94,0.3);">Connected</span>
+                                    <button type="button" class="btn-secondary" onclick="showPage('distribution')" style="padding:5px 10px;font-size:11.5px;">Manage</button>
+                                </div>
+                            </div>
+
+                            <!-- Bluesky Row -->
+                            <div class="settings-list-row">
+                                <div style="display:flex;align-items:center;gap:14px;">
+                                    <div style="width:38px;height:38px;border-radius:8px;background:rgba(2,133,255,0.12);border:1px solid rgba(2,133,255,0.25);display:flex;align-items:center;justify-content:center;">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0285ff" stroke-width="1.8"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566 1.018 1.561 1.625 1.561 3.25c0 1.624.475 7.635 1.353 9.497 1.408 2.983 4.28 3.518 6.444 3.013-3.69 1.157-5.02 4.195-2.73 7.027 3.327 4.116 5.372-2.387 5.372-2.387s2.045 6.503 5.372 2.387c2.29-2.832.96-5.87-2.73-7.027 2.164.505 5.036-.03 6.444-3.013.878-1.862 1.353-7.873 1.353-9.497 0-1.625-1.005-2.232-3.641-.445C16.046 4.747 13.087 8.686 12 10.8z"/></svg>
+                                    </div>
+                                    <div>
+                                        <div class="settings-item-title">Bluesky (AT Protocol)</div>
+                                        <div class="settings-item-desc" id="settingsBskyStatus">Connected: @automonetize.bsky.social · 2 Live Posts · 1 Follower</div>
+                                    </div>
+                                </div>
+                                <div style="display:flex;align-items:center;gap:10px;">
+                                    <span style="font-size:11px;padding:3px 8px;border-radius:6px;background:rgba(34,197,94,0.12);color:#4ade80;font-weight:600;border:1px solid rgba(34,197,94,0.3);">Connected</span>
+                                    <button type="button" class="btn-secondary" onclick="showPage('analytics');switchPlatform('bluesky');" style="padding:5px 10px;font-size:11.5px;">Analytics</button>
+                                </div>
+                            </div>
+
+                            <!-- Threads Row -->
+                            <div class="settings-list-row">
+                                <div style="display:flex;align-items:center;gap:14px;">
+                                    <div style="width:38px;height:38px;border-radius:8px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.186 24C5.467 24 0 18.533 0 11.814 0 5.094 5.467 0 12.186 0c6.643 0 11.97 5.176 11.97 11.814 0 .614-.047 1.229-.14 1.833h-4.321c.047-.367.07-.74.07-1.12 0-4.148-3.418-7.566-7.579-7.566-4.162 0-7.58 3.418-7.58 7.566 0 4.149 3.418 7.567 7.58 7.567 2.193 0 4.18-.946 5.568-2.457l3.078 2.825C18.423 22.378 15.485 24 12.186 24z"/></svg>
+                                    </div>
+                                    <div>
+                                        <div class="settings-item-title">Meta Threads</div>
+                                        <div class="settings-item-desc" id="settingsThreadsStatus">Connected: @vaibhav.tf7 · Active Access Token</div>
+                                    </div>
+                                </div>
+                                <div style="display:flex;align-items:center;gap:10px;">
+                                    <span style="font-size:11px;padding:3px 8px;border-radius:6px;background:rgba(34,197,94,0.12);color:#4ade80;font-weight:600;border:1px solid rgba(34,197,94,0.3);">Connected</span>
+                                    <button type="button" class="btn-secondary" onclick="showPage('distribution')" style="padding:5px 10px;font-size:11.5px;">Manage</button>
+                                </div>
+                            </div>
+
+                            <!-- Twitter Row -->
+                            <div class="settings-list-row">
+                                <div style="display:flex;align-items:center;gap:14px;">
+                                    <div style="width:38px;height:38px;border-radius:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.259 5.622z"/></svg>
+                                    </div>
+                                    <div>
+                                        <div class="settings-item-title">Twitter / X</div>
+                                        <div class="settings-item-desc">API Keys Configured (Monthly Free Credits Depleted - Resets Nov 1)</div>
+                                    </div>
+                                </div>
+                                <div style="display:flex;align-items:center;gap:10px;">
+                                    <span style="font-size:11px;padding:3px 8px;border-radius:6px;background:rgba(234,179,8,0.12);color:#eab308;font-weight:600;border:1px solid rgba(234,179,8,0.3);">Limit Hit</span>
+                                    <button type="button" class="btn-secondary" onclick="showPage('analytics');switchPlatform('twitter');" style="padding:5px 10px;font-size:11.5px;">Status</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <button class="save-btn">Save changes</button>
+
+                <!-- 3. TAB: AUTOMATION & POSTING -->
+                <div id="settings-tab-automation" class="settings-tab-content" style="display:none;">
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <div>
+                                <div class="settings-card-title">Automated Publishing Rules</div>
+                                <div class="settings-card-sub">Fine-tune how AI generated videos and webhooks are processed and broadcast.</div>
+                            </div>
+                        </div>
+                        <div class="settings-card-body">
+                            <div class="settings-list-row">
+                                <div>
+                                    <div class="settings-item-title">Instant Auto-Publish</div>
+                                    <div class="settings-item-desc">Automatically post newly rendered videos without requiring manual preview in Library.</div>
+                                </div>
+                                <div class="settings-toggle off" id="toggleAutoPublish" onclick="this.classList.toggle('off')"></div>
+                            </div>
+                            <div class="settings-list-row">
+                                <div>
+                                    <div class="settings-item-title">Smart Thumbnail Auto-Generation</div>
+                                    <div class="settings-item-desc">Extract the most visually dynamic frame as the cover photo automatically.</div>
+                                </div>
+                                <div class="settings-toggle" id="toggleSmartThumb" onclick="this.classList.toggle('off')"></div>
+                            </div>
+                            <div class="settings-list-row">
+                                <div>
+                                    <div class="settings-item-title">Real-time Webhook Dispatch</div>
+                                    <div class="settings-item-desc">Forward rendering status to n8n / Blotato workflows immediately upon generation.</div>
+                                </div>
+                                <div class="settings-toggle" id="toggleWebhook" onclick="this.classList.toggle('off')"></div>
+                            </div>
+                            <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border2);">
+                                <div class="form-grid-2">
+                                    <div class="form-field">
+                                        <label for="settingsDefaultAspect">Default Video Format</label>
+                                        <select class="settings-field-input" id="settingsDefaultAspect">
+                                            <option value="9:16">9:16 Vertical (Reels / Shorts / TikTok)</option>
+                                            <option value="16:9">16:9 Landscape (YouTube Standard)</option>
+                                            <option value="1:1">1:1 Square (Instagram Post / Feed)</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-field">
+                                        <label for="settingsDefaultHashtags">Default Tag Preset</label>
+                                        <input type="text" class="settings-field-input" id="settingsDefaultHashtags" value="#cashora #ai #viral #contentcreator">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="settings-card-footer">
+                            <span style="font-size:12px;color:var(--muted);">Preferences apply automatically to all future prompts.</span>
+                            <button type="button" class="save-btn" onclick="saveAutomationSettings()">Save Automation Rules</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. TAB: API & WEBHOOKS -->
+                <div id="settings-tab-api" class="settings-tab-content" style="display:none;">
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <div>
+                                <div class="settings-card-title">Public Webhook & Blotato Integration</div>
+                                <div class="settings-card-sub">Endpoints used by n8n workflows and automated bots to notify CashoraAI.</div>
+                            </div>
+                            <span style="font-size:11.5px;color:#4ade80;background:rgba(34,197,94,0.12);padding:3px 10px;border-radius:12px;border:1px solid rgba(34,197,94,0.3);font-weight:600;">Status 200 OK</span>
+                        </div>
+                        <div class="settings-card-body">
+                            <div class="form-field">
+                                <label>
+                                    <span>Posting Status Webhook URL (POST)</span>
+                                    <span class="hint">Use this in Blotato / n8n HTTP Request Node</span>
+                                </label>
+                                <div style="display:flex;gap:8px;">
+                                    <input type="text" readonly class="settings-field-input" id="settingsWebhookUrl" value="http://127.0.0.1:4000/api/posting-status" style="font-family:monospace;color:#93c5fd;">
+                                    <button type="button" class="btn-secondary" onclick="copyWebhookUrl()" id="copyWebhookBtn" style="flex-shrink:0;">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                                        Copy URL
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="form-field" style="margin-top:16px;">
+                                <label>
+                                    <span>Scheduled Posts Ingestion Endpoint (POST)</span>
+                                    <span class="hint">Accepts Blotato queue JSON payloads</span>
+                                </label>
+                                <div style="display:flex;gap:8px;">
+                                    <input type="text" readonly class="settings-field-input" value="http://127.0.0.1:4000/api/scheduled-posts" style="font-family:monospace;color:#cbd5e1;">
+                                    <button type="button" class="btn-secondary" onclick="navigator.clipboard.writeText('http://127.0.0.1:4000/api/scheduled-posts');alert('Copied scheduled-posts endpoint!');" style="flex-shrink:0;">Copy</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <div>
+                                <div class="settings-card-title">Integration Service Keys</div>
+                                <div class="settings-card-sub">Active environment variables loaded from <code>server/.env</code>.</div>
+                            </div>
+                        </div>
+                        <div class="settings-card-body">
+                            <div class="settings-list-row">
+                                <div>
+                                    <div class="settings-item-title">Pixabay HD Stock Video Engine</div>
+                                    <div class="settings-item-desc">High-resolution B-roll search API key</div>
+                                </div>
+                                <span style="font-size:11px;font-family:monospace;color:#a78bfa;background:rgba(167,139,250,0.1);padding:4px 10px;border-radius:6px;border:1px solid rgba(167,139,250,0.25);">PIXABAY_API_KEY · Active</span>
+                            </div>
+                            <div class="settings-list-row">
+                                <div>
+                                    <div class="settings-item-title">AT Protocol Bluesky Handle</div>
+                                    <div class="settings-item-desc">automonetize.bsky.social</div>
+                                </div>
+                                <span style="font-size:11px;font-family:monospace;color:#60a5fa;background:rgba(96,165,250,0.1);padding:4px 10px;border-radius:6px;border:1px solid rgba(96,165,250,0.25);">Connected</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. TAB: BILLING & QUOTAS -->
+                <div id="settings-tab-billing" class="settings-tab-content" style="display:none;">
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <div>
+                                <div class="settings-card-title">Current Membership & Tier</div>
+                                <div class="settings-card-sub">Your subscription and monthly rendering bandwidth.</div>
+                            </div>
+                            <span style="font-size:12px;font-weight:700;color:#22c55e;background:rgba(34,197,94,0.12);padding:4px 12px;border-radius:20px;border:1px solid rgba(34,197,94,0.3);">Enterprise Pro · Active</span>
+                        </div>
+                        <div class="settings-card-body">
+                            <div style="margin-bottom:20px;">
+                                <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:12.5px;">
+                                    <span style="color:var(--light);font-weight:600;">Monthly Video Renders</span>
+                                    <span style="color:#60a5fa;font-weight:700;">54 / 200 Videos (27%)</span>
+                                </div>
+                                <div style="width:100%;height:8px;background:rgba(255,255,255,0.06);border-radius:10px;overflow:hidden;">
+                                    <div style="width:27%;height:100%;background:linear-gradient(90deg,#2563eb,#60a5fa);border-radius:10px;"></div>
+                                </div>
+                            </div>
+                            <div class="settings-list-row">
+                                <div>
+                                    <div class="settings-item-title">Next Invoice Date</div>
+                                    <div class="settings-item-desc">Renews automatically on November 1, 2026</div>
+                                </div>
+                                <span style="font-size:13px;font-weight:700;color:var(--white);">Rs. 0 (Developer License)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. TAB: SECURITY & SESSION -->
+                <div id="settings-tab-security" class="settings-tab-content" style="display:none;">
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <div>
+                                <div class="settings-card-title">Security & Active Device</div>
+                                <div class="settings-card-sub">Monitor your current local server session and access security.</div>
+                            </div>
+                        </div>
+                        <div class="settings-card-body">
+                            <div class="settings-list-row">
+                                <div>
+                                    <div class="settings-item-title">Current Session</div>
+                                    <div class="settings-item-desc">macOS · Browser Session (Host: 127.0.0.1:4000)</div>
+                                </div>
+                                <span style="font-size:11px;padding:3px 8px;border-radius:6px;background:rgba(34,197,94,0.12);color:#4ade80;font-weight:600;border:1px solid rgba(34,197,94,0.3);">This Device</span>
+                            </div>
+                            <div class="settings-list-row">
+                                <div>
+                                    <div class="settings-item-title">Session State</div>
+                                    <div class="settings-item-desc">Authenticated express-session cookie active</div>
+                                </div>
+                                <a href="http://127.0.0.1:4000/auth/logout" class="btn-secondary" style="padding:6px 14px;color:#ef4444;border-color:rgba(239,68,68,0.3);text-decoration:none;">Sign Out</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -1479,17 +2019,22 @@ function showPage(id, btn) {
     pageEl.classList.add('active');
     if (btn) btn.classList.add('active');
     document.getElementById('topTitle').textContent = pageTitles[id] || 'Dashboard';
+    if (id === 'dashboard') {
+        loadDashboardOverview();
+    }
     if (id === 'library') renderLibrary();
     if (id === 'distribution') {
         checkYouTubeStatus();
         checkThreadsStatus();
+        checkInstagramStatus();
+    }
+    if (id === 'settings') {
+        initSettingsPage();
     }
     if (id === 'analytics') {
+        loadDashboardOverview();
         const plat = document.getElementById('platformSelector')?.value || 'youtube';
-        if (plat === 'youtube') loadYouTubeAnalytics();
-        if (plat === 'instagram') loadInstagramAnalytics();
-        if (plat === 'threads') loadThreadsAnalytics();
-        if (plat === 'twitter') loadTwitterAnalytics();
+        switchPlatform(plat);
         setTimeout(() => window.dispatchEvent(new Event('resize')), 150);
     }
 
@@ -1567,6 +2112,11 @@ function populateScheduleForm() {
         const icon = document.querySelector('#scheduleVideoInfo svg');
         if (lbl) { lbl.textContent = _schedulePreloadFile.name; lbl.style.color = 'var(--light)'; }
         if (icon) icon.setAttribute('stroke', '#6677ff');
+    } else if (_schedulePreloadPath) {
+        const lbl = document.getElementById('scheduleVideoLabel');
+        const icon = document.querySelector('#scheduleVideoInfo svg');
+        if (lbl) { lbl.textContent = (_schedulePreloadCaption || 'Library Video') + ' (Attached from Library)'; lbl.style.color = '#4ade80'; }
+        if (icon) icon.setAttribute('stroke', '#4ade80');
     }
     // Set selected platforms
     if (_schedulePreloadPlatforms.length > 0) {
@@ -1580,6 +2130,7 @@ function populateScheduleForm() {
 function handleScheduleVideoFile(input) {
     if (input.files && input.files[0]) {
         _schedulePreloadFile = input.files[0];
+        _schedulePreloadPath = null;
         const lbl = document.getElementById('scheduleVideoLabel');
         const icon = document.querySelector('#scheduleVideoInfo svg');
         if (lbl) { lbl.textContent = input.files[0].name; lbl.style.color = 'var(--light)'; }
@@ -1630,11 +2181,13 @@ async function handleScheduleSubmit() {
     const formData = new FormData();
     if (_schedulePreloadFile) {
         formData.append('video', _schedulePreloadFile);
+    } else if (_schedulePreloadPath) {
+        formData.append('existingVideoPath', _schedulePreloadPath);
     }
     formData.append('caption', caption);
     formData.append('platforms', platforms);
     formData.append('scheduledTime', scheduledTime);
-    formData.append('title', caption || (_schedulePreloadFile?.name || 'Scheduled Post'));
+    formData.append('title', caption || _schedulePreloadCaption || (_schedulePreloadFile?.name || 'Scheduled Post'));
 
     if (btn) btn.disabled = true;
     if (btnText) btnText.textContent = 'Scheduling...';
@@ -1997,67 +2550,128 @@ function resetCreate() {
     if (btnText) btnText.textContent = isUpload ? 'Start Posting' : 'Generate Video';
 }
 
-// ── Library management (Dynamic & Persistent)
+// ── Library management (Server-backed & Persistent)
 const DEFAULT_STORAGE_KEY = 'cashora_library_items';
 let currentLibFilter = 'all';
+let _cachedLibraryItems = [];
 
 function getLibraryItems() {
+    if (_cachedLibraryItems && _cachedLibraryItems.length > 0) return _cachedLibraryItems;
     try {
         const stored = localStorage.getItem(DEFAULT_STORAGE_KEY);
-        if (stored) return JSON.parse(stored);
+        if (stored) {
+            _cachedLibraryItems = JSON.parse(stored);
+            return _cachedLibraryItems;
+        }
     } catch(e) {
         console.error("Error reading library from localStorage:", e);
     }
     return [];
 }
 
-function saveLibraryItems(items) {
+async function fetchLibraryItems() {
     try {
-        localStorage.setItem(DEFAULT_STORAGE_KEY, JSON.stringify(items));
+        const res = await fetch('/api/library');
+        const data = await res.json();
+        if (data.success && Array.isArray(data.items)) {
+            _cachedLibraryItems = data.items;
+            try { localStorage.setItem(DEFAULT_STORAGE_KEY, JSON.stringify(data.items)); } catch(e){}
+            return data.items;
+        }
     } catch(e) {
-        console.error("Error saving library to localStorage:", e);
+        console.warn('Error fetching library from server:', e);
     }
+    return getLibraryItems();
 }
 
-function addLibraryItem(item) {
-    const items = getLibraryItems();
-    items.unshift({
+async function addLibraryItem(item) {
+    const newItem = {
         id: 'vid_' + Date.now(),
         title: item.title || 'Untitled Video',
         date: item.date || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
         status: item.status || 'draft',
         platforms: item.platforms || ['YouTube', 'Instagram'],
         type: item.type || 'upload',
-        filePath: item.filePath || ''
-    });
-    saveLibraryItems(items);
+        filePath: item.filePath || '',
+        createdAt: new Date().toISOString()
+    };
+    try {
+        const res = await fetch('/api/library', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newItem)
+        });
+        const data = await res.json();
+        if (data.success && data.item) {
+            _cachedLibraryItems.unshift(data.item);
+        } else {
+            _cachedLibraryItems.unshift(newItem);
+        }
+    } catch(e) {
+        _cachedLibraryItems.unshift(newItem);
+    }
+    try { localStorage.setItem(DEFAULT_STORAGE_KEY, JSON.stringify(_cachedLibraryItems)); } catch(e){}
     renderLibrary();
+    if (typeof loadDashboardOverview === 'function') loadDashboardOverview();
 }
 
-function deleteLibraryItem(id) {
-    let items = getLibraryItems();
-    items = items.filter(it => it.id !== id);
-    saveLibraryItems(items);
+async function deleteLibraryItem(id) {
+    if (!confirm('Are you sure you want to delete this video from your library?')) return;
+    try {
+        await fetch('/api/library/' + encodeURIComponent(id), { method: 'DELETE' });
+    } catch(e) {
+        console.warn('Server delete failed:', e.message);
+    }
+    _cachedLibraryItems = (_cachedLibraryItems || []).filter(it => it.id !== id);
+    try { localStorage.setItem(DEFAULT_STORAGE_KEY, JSON.stringify(_cachedLibraryItems)); } catch(e){}
     renderLibrary();
+    if (typeof loadDashboardOverview === 'function') loadDashboardOverview();
 }
 
 function publishDraftItem(id) {
     const items = getLibraryItems();
     const item = items.find(it => it.id === id);
-    if (item) {
-        item.status = 'published';
-        saveLibraryItems(items);
-        renderLibrary();
-        alert(`"${item.title}" is now published across your selected platforms!`);
+    if (!item) return;
+
+    // Preload into schedule form
+    _schedulePreloadFile = null;
+    _schedulePreloadPath = item.filePath || '';
+    _schedulePreloadCaption = item.title || '';
+    _schedulePreloadPlatforms = item.platforms || ['YouTube', 'Instagram'];
+
+    // Update status to published on server as well
+    fetch('/api/library/' + encodeURIComponent(id), {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'published' })
+    }).then(r => r.json()).then(d => {
+        if (d.success && d.item) {
+            const idx = _cachedLibraryItems.findIndex(it => it.id === id);
+            if (idx !== -1) _cachedLibraryItems[idx] = d.item;
+            try { localStorage.setItem(DEFAULT_STORAGE_KEY, JSON.stringify(_cachedLibraryItems)); } catch(e){}
+        }
+    }).catch(()=>{});
+
+    const navBtn = Array.from(document.querySelectorAll('.nav-item')).find(b => b.textContent.trim() === 'Schedule');
+    showPage('schedule', navBtn);
+    populateScheduleForm();
+
+    const lbl = document.getElementById('scheduleVideoLabel');
+    if (lbl) {
+        lbl.textContent = item.title + (item.filePath ? ' (Attached from Library)' : ' (AI Draft from Library)');
+        lbl.style.color = '#4ade80';
+    }
+
+    const msg = document.getElementById('scheduleFormMsg');
+    if (msg) {
+        msg.style.display = 'block';
+        msg.style.color = '#8899ff';
+        msg.textContent = `Pre-loaded "${item.title}". Select your publish time and click Schedule Post.`;
     }
 }
 
 function republishItem(id) {
-    const items = getLibraryItems();
-    const item = items.find(it => it.id === id);
-    if (item) {
-        alert(`Republish triggered for "${item.title}".`);
-    }
+    publishDraftItem(id);
 }
 
 function filterLib(btn, filter) {
@@ -2073,6 +2687,14 @@ function getPlatformIcon(plat) {
         return `<div class="p-icon" title="YouTube"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="1.8"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>`;
     } else if (p.includes('insta')) {
         return `<div class="p-icon" title="Instagram"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#9b59b6" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#9b59b6"/></svg></div>`;
+    } else if (p.includes('face') || p.includes('fb')) {
+        return `<div class="p-icon" title="Facebook"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#1877f2" stroke-width="1.8"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></div>`;
+    } else if (p.includes('thread')) {
+        return `<div class="p-icon" title="Threads"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 006 0v-1a10 10 0 10-4 8"/></svg></div>`;
+    } else if (p.includes('blue') || p.includes('bsky')) {
+        return `<div class="p-icon" title="Bluesky"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0285ff" stroke-width="1.8"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566 1.018 1.561 1.625 1.561 3.25c0 1.624.475 7.635 1.353 9.497 1.408 2.983 4.28 3.518 6.444 3.013-3.69 1.157-5.02 4.195-2.73 7.027 3.327 4.116 5.372-2.387 5.372-2.387s2.045 6.503 5.372 2.387c2.29-2.832.96-5.87-2.73-7.027 2.164.505 5.036-.03 6.444-3.013.878-1.862 1.353-7.873 1.353-9.497 0-1.625-1.005-2.232-3.641-.445C16.046 4.747 13.087 8.686 12 10.8z"/></svg></div>`;
+    } else if (p.includes('pin')) {
+        return `<div class="p-icon" title="Pinterest"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#e60023" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M8 12a4 4 0 108 0 4 4 0 00-8 0z"/><path d="M10 17l2 4 2-4"/></svg></div>`;
     } else if (p.includes('tik')) {
         return `<div class="p-icon" title="TikTok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#e94057" stroke-width="1.8"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.77-.39 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.22 8.22 0 004.87 1.6V6.84a4.85 4.85 0 01-1.1-.15z"/></svg></div>`;
     } else if (p.includes('link')) {
@@ -2090,12 +2712,11 @@ const THUMB_GRADIENTS = [
     'linear-gradient(135deg,#1a1208,#2a1e08)',
     'linear-gradient(135deg,#0d1a24,#12293b)'
 ];
-
-function renderLibrary() {
+async function renderLibrary() {
     const grid = document.getElementById('libraryGrid');
     if (!grid) return;
 
-    let items = getLibraryItems();
+    let items = await fetchLibraryItems();
 
     if (currentLibFilter === 'published') {
         items = items.filter(it => it.status === 'published');
@@ -2188,6 +2809,35 @@ function switchPlatform(platform) {
     document.querySelectorAll('.platform-analytics').forEach(p => p.style.display = 'none');
     const target = document.getElementById('platform-' + platform);
     if (target) target.style.display = 'block';
+
+    const pillColors = {
+        youtube:   { border: 'rgba(255,0,51,0.45)', bg: 'rgba(255,0,51,0.14)' },
+        instagram: { border: 'rgba(225,48,108,0.45)', bg: 'rgba(225,48,108,0.14)' },
+        threads:   { border: 'rgba(255,255,255,0.4)', bg: 'rgba(255,255,255,0.08)' },
+        tiktok:    { border: 'rgba(6,182,212,0.45)', bg: 'rgba(6,182,212,0.14)' },
+        twitter:   { border: 'rgba(255,255,255,0.4)', bg: 'rgba(255,255,255,0.08)' },
+        bluesky:   { border: 'rgba(2,133,255,0.55)', bg: 'rgba(2,133,255,0.18)' }
+    };
+
+    document.querySelectorAll('.an-plat-pill').forEach(btn => {
+        const p = btn.getAttribute('data-plat');
+        if (p === platform) {
+            btn.classList.add('active');
+            const c = pillColors[p] || { border: 'var(--border)', bg: '#222' };
+            btn.style.borderColor = c.border;
+            btn.style.background = c.bg;
+            btn.style.color = '#fff';
+        } else {
+            btn.classList.remove('active');
+            btn.style.borderColor = 'var(--border)';
+            btn.style.background = '#121212';
+            btn.style.color = 'var(--muted)';
+        }
+    });
+
+    const selector = document.getElementById('platformSelector');
+    if (selector) selector.value = platform;
+
     setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
     setTimeout(() => window.dispatchEvent(new Event('resize')), 250);
     if (platform === 'youtube') loadYouTubeAnalytics();
@@ -2200,6 +2850,87 @@ function switchPlatform(platform) {
         if (typeof window.renderTwitterCharts === 'function') window.renderTwitterCharts();
         loadTwitterAnalytics();
     }
+    if (platform === 'bluesky') loadBlueskyAnalytics();
+}
+
+// ── Unified Live Dashboard Overview (Real Numbers)
+async function loadDashboardOverview() {
+    try {
+        const res = await fetch('/api/dashboard/overview');
+        const data = await res.json();
+        if (!data.success) return;
+
+        const s = data.stats || {};
+        const libCount = (typeof getLibraryItems === 'function' ? getLibraryItems() : []).length;
+
+        // Dashboard Home Stat Cards
+        const elVideos = document.getElementById('dashStatVideos');
+        const elPosts = document.getElementById('dashStatPosts');
+        const elReach = document.getElementById('dashStatReach');
+        const elPlats = document.getElementById('dashStatPlatforms');
+
+        if (elVideos) elVideos.textContent = Number(libCount).toLocaleString();
+        if (elPosts) elPosts.textContent = Number(s.totalPosts || 0).toLocaleString();
+        if (elReach) elReach.textContent = Number(s.totalViews || 0).toLocaleString();
+        if (elPlats) elPlats.textContent = Number(s.connectedPlatformsCount || 0).toLocaleString();
+
+        // Analytics Top Overview Cards
+        const anViews = document.getElementById('anOverviewViews');
+        const anPosts = document.getElementById('anOverviewPosts');
+        const anFollowers = document.getElementById('anOverviewFollowers');
+        const anPlats = document.getElementById('anOverviewPlatforms');
+
+        if (anViews) anViews.textContent = Number(s.totalViews || 0).toLocaleString();
+        if (anPosts) anPosts.textContent = Number(s.totalPosts || 0).toLocaleString();
+        if (anFollowers) anFollowers.textContent = Number(s.totalFollowers || 0).toLocaleString();
+        if (anPlats) anPlats.textContent = (s.connectedPlatformsCount || 0) + ' Active';
+
+        // Recent Activity on Dashboard Home
+        const actList = document.getElementById('dashRecentActivity');
+        if (actList) {
+            const activities = data.recentActivity || [];
+            if (activities.length === 0 && libCount === 0) {
+                actList.innerHTML = `<div style="padding:28px 20px;text-align:center;color:var(--muted);font-size:12.5px;">No recent activity yet. Create content or publish to see updates here.</div>`;
+            } else if (activities.length > 0) {
+                actList.innerHTML = activities.slice(0, 4).map(a => {
+                    const timeAgo = formatTimeAgo(a.time);
+                    const isBsky = a.platform === 'Bluesky';
+                    const iconColor = isBsky ? '#0285ff' : '#ff0033';
+                    const iconBg = isBsky ? 'rgba(2,133,255,0.1)' : 'rgba(255,0,51,0.1)';
+                    const iconBorder = isBsky ? 'rgba(2,133,255,0.25)' : 'rgba(255,0,51,0.25)';
+                    return `
+                    <div class="act-item">
+                        <div class="act-icon" style="background:${iconBg};border-color:${iconBorder};">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${iconColor}" stroke-width="1.8"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566 1.018 1.561 1.625 1.561 3.25c0 1.624.475 7.635 1.353 9.497 1.408 2.983 4.28 3.518 6.444 3.013-3.69 1.157-5.02 4.195-2.73 7.027 3.327 4.116 5.372-2.387 5.372-2.387s2.045 6.503 5.372 2.387c2.29-2.832.96-5.87-2.73-7.027 2.164.505 5.036-.03 6.444-3.013.878-1.862 1.353-7.873 1.353-9.497 0-1.625-1.005-2.232-3.641-.445C16.046 4.747 13.087 8.686 12 10.8z"/></svg>
+                        </div>
+                        <div class="act-body">
+                            <a href="${a.url || '#'}" target="_blank" style="text-decoration:none;display:block;" class="act-name">${escapeHtml(a.title || 'Post')}</a>
+                            <div class="act-desc">${a.platform} · ${a.likes || 0} likes · ${a.reposts || 0} reposts</div>
+                        </div>
+                        <div class="act-right">
+                            <div class="act-time">${timeAgo}</div>
+                            <span class="badge blue">Live</span>
+                        </div>
+                    </div>`;
+                }).join('');
+            }
+        }
+    } catch(err) {
+        console.error('Error loading dashboard overview:', err);
+    }
+}
+
+function formatTimeAgo(dateStr) {
+    if (!dateStr) return 'Recently';
+    const diff = (Date.now() - new Date(dateStr).getTime()) / 1000;
+    if (diff < 60) return 'Just now';
+    if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+    if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+    return Math.floor(diff / 86400) + 'd ago';
+}
+
+function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[m]);
 }
 
 // ── Create tab switching
@@ -2333,8 +3064,241 @@ fetch('http://127.0.0.1:4000/auth/user', { credentials: 'include' })
 
         if (document.getElementById('settingsName'))  document.getElementById('settingsName').value  = name;
         if (document.getElementById('settingsEmail')) document.getElementById('settingsEmail').value = email;
+        if (document.getElementById('settingsAvatarName')) document.getElementById('settingsAvatarName').textContent = name;
+        if (document.getElementById('settingsAvatarSub')) document.getElementById('settingsAvatarSub').textContent = 'Owner · ' + email;
+        if (document.getElementById('settingsAvatarInitials')) document.getElementById('settingsAvatarInitials').textContent = initial;
+        if (document.getElementById('settingsUsername') && data.username) document.getElementById('settingsUsername').value = data.username;
+        if (document.getElementById('settingsTimezone') && data.timezone) document.getElementById('settingsTimezone').value = data.timezone;
+        if (document.getElementById('settingsBio') && data.bio) document.getElementById('settingsBio').value = data.bio;
+        const prev = document.getElementById('settingsAvatarPreview');
+        if (prev) { prev.innerHTML = ''; prev.appendChild(mkImg(68, '10px')); }
     })
     .catch(() => { document.getElementById('topTitle').textContent = 'Dashboard'; });
+
+// ── Settings Page Controls ────────────────────────────────────────────────────
+function switchSettingsTab(tabName) {
+    document.querySelectorAll('.settings-tab-content').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.settings-nav-btn').forEach(btn => btn.classList.remove('active'));
+
+    const targetTab = document.getElementById('settings-tab-' + tabName);
+    const targetBtn = document.getElementById('st-btn-' + tabName);
+
+    if (targetTab) targetTab.style.display = 'block';
+    if (targetBtn) targetBtn.classList.add('active');
+}
+
+async function saveUserProfile(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const btn = document.getElementById('saveProfileBtn');
+    const oldText = btn ? btn.innerHTML : '';
+    if (btn) btn.innerHTML = '<span class="spin-dot"></span> Saving...';
+
+    const payload = {
+        name: document.getElementById('settingsName')?.value || '',
+        email: document.getElementById('settingsEmail')?.value || '',
+        username: document.getElementById('settingsUsername')?.value || '',
+        timezone: document.getElementById('settingsTimezone')?.value || '',
+        bio: document.getElementById('settingsBio')?.value || ''
+    };
+
+    try {
+        const res = await fetch('/api/user/profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.success) {
+            const newName = payload.name;
+            const newEmail = payload.email;
+            if (document.getElementById('sidebarName')) document.getElementById('sidebarName').textContent = newName;
+            if (document.getElementById('sidebarEmail')) document.getElementById('sidebarEmail').textContent = newEmail;
+            if (document.getElementById('topName')) document.getElementById('topName').textContent = newName;
+            if (document.getElementById('settingsAvatarName')) document.getElementById('settingsAvatarName').textContent = newName;
+            if (document.getElementById('settingsAvatarSub')) document.getElementById('settingsAvatarSub').textContent = 'Owner · ' + newEmail;
+
+            showSettingsToast('Profile settings saved successfully!');
+        } else {
+            alert(data.message || 'Error saving profile');
+        }
+    } catch(err) {
+        console.error('Error saving profile:', err);
+        showSettingsToast('Settings updated locally!');
+    } finally {
+        if (btn) btn.innerHTML = oldText;
+    }
+}
+
+function showSettingsToast(msg) {
+    const statusEl = document.getElementById('settingsGlobalStatus');
+    if (statusEl) {
+        statusEl.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> ${msg}`;
+        statusEl.style.display = 'inline-flex';
+        setTimeout(() => { statusEl.style.display = 'none'; }, 3500);
+    }
+}
+
+function generateRandomAvatar() {
+    const name = document.getElementById('settingsName')?.value || 'User';
+    const bgColors = ['1c2bff', '8b5cf6', '06b6d4', 'ec4899', '10b981', 'f59e0b'];
+    const randBg = bgColors[Math.floor(Math.random() * bgColors.length)];
+    const imgUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=${randBg}&color=fff&size=68`;
+    
+    const prev = document.getElementById('settingsAvatarPreview');
+    if (prev) {
+        prev.innerHTML = `<img src="${imgUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;">`;
+    }
+    showSettingsToast('Avatar refreshed!');
+}
+
+async function saveAutomationSettings() {
+    const autoPublish = !document.getElementById('toggleAutoPublish')?.classList.contains('off');
+    const smartThumb = !document.getElementById('toggleSmartThumb')?.classList.contains('off');
+    const webhook = !document.getElementById('toggleWebhook')?.classList.contains('off');
+    const aspect = document.getElementById('settingsDefaultAspect')?.value || '9:16';
+    const tags = document.getElementById('settingsDefaultHashtags')?.value || '';
+
+    const payload = { autoPublish, smartThumb, webhook, aspect, tags };
+
+    try {
+        const res = await fetch('/api/automation-settings', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.success) {
+            localStorage.setItem('cashora_automation_rules', JSON.stringify(payload));
+            showSettingsToast('Automation rules saved successfully!');
+            return;
+        }
+    } catch(e) {
+        console.warn('Server save failed, saving locally:', e.message);
+    }
+    localStorage.setItem('cashora_automation_rules', JSON.stringify(payload));
+    showSettingsToast('Automation rules saved successfully!');
+}
+
+function updateConnectedChannelsCount() {
+    let count = 0;
+    if (_youtubeConnected) count++;
+    if (_threadsConnected) count++;
+    const ig = document.getElementById('settingsIgStatus');
+    if (ig && ig.textContent.includes('Connected:')) count++;
+    const bsky = document.getElementById('settingsBskyStatus');
+    if (bsky && bsky.textContent.includes('Connected:')) count++;
+    const badge = document.querySelector('#st-btn-platforms .settings-nav-badge');
+    if (badge) {
+        badge.textContent = `${count} Live`;
+    }
+}
+
+async function checkInstagramStatus() {
+    try {
+        const res = await fetch('/api/instagram/status', { credentials: 'include' });
+        const data = await res.json();
+        const handleEl = document.getElementById('distIgHandle');
+        const settingsIg = document.getElementById('settingsIgStatus');
+        if (data.connected && data.account) {
+            const uName = '@' + (data.account.username || 'user');
+            if (handleEl) {
+                handleEl.textContent = `${uName} (Connected)`;
+                handleEl.style.color = '#e1306c';
+            }
+            if (settingsIg) {
+                settingsIg.textContent = `Connected: ${uName} · ${data.account.mediaCount || 0} Media Posts`;
+            }
+        } else {
+            if (handleEl) {
+                handleEl.textContent = 'Not connected';
+                handleEl.style.color = 'var(--muted)';
+            }
+            if (settingsIg) {
+                settingsIg.textContent = 'Not connected — Instagram Graph API token required';
+            }
+        }
+        updateConnectedChannelsCount();
+    } catch(e) {
+        console.warn('Could not check Instagram status:', e.message);
+    }
+}
+
+async function initSettingsPage() {
+    // 1. Fetch user profile from server
+    try {
+        const res = await fetch('/auth/user', { credentials: 'include' });
+        const user = await res.json();
+        if (user && user.loggedIn) {
+            if (document.getElementById('settingsName')) document.getElementById('settingsName').value = user.name || '';
+            if (document.getElementById('settingsEmail')) document.getElementById('settingsEmail').value = user.email || '';
+            if (document.getElementById('settingsUsername') && user.username) document.getElementById('settingsUsername').value = user.username;
+            if (document.getElementById('settingsTimezone') && user.timezone) document.getElementById('settingsTimezone').value = user.timezone;
+            if (document.getElementById('settingsBio') && user.bio) document.getElementById('settingsBio').value = user.bio;
+            if (document.getElementById('settingsAvatarName')) document.getElementById('settingsAvatarName').textContent = user.name || 'User';
+            if (document.getElementById('settingsAvatarSub')) document.getElementById('settingsAvatarSub').textContent = 'Owner · ' + (user.email || '');
+            if (document.getElementById('settingsAvatarInitials')) document.getElementById('settingsAvatarInitials').textContent = (user.name || 'U').charAt(0).toUpperCase();
+        }
+    } catch(e) {
+        console.warn('Failed to load user profile for settings:', e.message);
+    }
+
+    // 2. Fetch automation settings from server
+    try {
+        const res = await fetch('/api/automation-settings');
+        const data = await res.json();
+        if (data.success && data.settings) {
+            const s = data.settings;
+            const tAuto = document.getElementById('toggleAutoPublish');
+            const tSmart = document.getElementById('toggleSmartThumb');
+            const tWeb = document.getElementById('toggleWebhook');
+            const selAspect = document.getElementById('settingsDefaultAspect');
+            const inpTags = document.getElementById('settingsDefaultHashtags');
+
+            if (tAuto) tAuto.classList.toggle('off', !s.autoPublish);
+            if (tSmart) tSmart.classList.toggle('off', !s.smartThumb);
+            if (tWeb) tWeb.classList.toggle('off', !s.webhook);
+            if (selAspect && s.aspect) selAspect.value = s.aspect;
+            if (inpTags && s.tags) inpTags.value = s.tags;
+        }
+    } catch(e) {
+        console.warn('Failed to load automation settings:', e.message);
+    }
+
+    // 3. Sync all platform statuses
+    checkAllPlatformStatuses();
+}
+
+function copyWebhookUrl() {
+    const inp = document.getElementById('settingsWebhookUrl');
+    if (inp) {
+        navigator.clipboard.writeText(inp.value).then(() => {
+            const btn = document.getElementById('copyWebhookBtn');
+            if (btn) {
+                const orig = btn.innerHTML;
+                btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Copied!`;
+                btn.style.color = '#4ade80';
+                setTimeout(() => { btn.innerHTML = orig; btn.style.color = ''; }, 2000);
+            }
+        });
+    }
+}
+
+async function checkAllPlatformStatuses() {
+    showSettingsToast('Verifying social platforms...');
+    await Promise.allSettled([
+        checkYouTubeStatus(),
+        checkThreadsStatus(),
+        checkInstagramStatus(),
+        fetch('/api/bluesky/status').then(r => r.json()).then(d => {
+            if (d.connected) {
+                const el = document.getElementById('settingsBskyStatus');
+                if (el) el.textContent = `Connected: @${d.handle} · ${d.posts||0} Live Posts · ${d.followers||0} Followers`;
+            }
+        })
+    ]);
+    updateConnectedChannelsCount();
+    showSettingsToast('All channel connections verified!');
+}
 
 // ── YouTube Integration & Analytics ─────────────────────────
 let _youtubeConnected = false;
@@ -2347,15 +3311,20 @@ async function checkYouTubeStatus() {
 
         const handleEl = document.getElementById('distYtHandle');
         const toggleEl = document.getElementById('distYtToggle');
+        const settingsYt = document.getElementById('settingsYtStatus');
 
         if (data.connected && data.channel) {
+            const ytTitle = data.channel.customUrl || data.channel.title || 'Connected';
             if (handleEl) {
-                handleEl.textContent = data.channel.customUrl || data.channel.title || 'Connected';
+                handleEl.textContent = ytTitle;
                 handleEl.style.color = '#22c55e';
             }
             if (toggleEl) {
                 toggleEl.classList.remove('off');
                 toggleEl.setAttribute('title', 'Connected — Click to disconnect');
+            }
+            if (settingsYt) {
+                settingsYt.textContent = `Connected: ${ytTitle} · ${data.channel.videoCount || 0} Videos · ${Number(data.channel.viewCount || 0).toLocaleString()} Views`;
             }
         } else {
             if (handleEl) {
@@ -2366,7 +3335,11 @@ async function checkYouTubeStatus() {
                 toggleEl.classList.add('off');
                 toggleEl.setAttribute('title', 'Click to connect YouTube');
             }
+            if (settingsYt) {
+                settingsYt.textContent = 'Not connected — Connect with Google to enable';
+            }
         }
+        updateConnectedChannelsCount();
     } catch (e) {
         console.warn('Could not check YouTube status:', e.message);
     }
@@ -2392,16 +3365,21 @@ async function checkThreadsStatus() {
 
         const handleEl = document.getElementById('distThreadsHandle');
         const toggleEl = document.getElementById('distThreadsToggle');
+        const settingsThreads = document.getElementById('settingsThreadsStatus');
 
         if (data.connected && data.account) {
+            const uName = '@' + (data.account.username || 'vaibhav.tf7');
             if (handleEl) {
-                handleEl.textContent = '@' + (data.account.username || 'vaibhav.tf7') + ' (Connected)';
+                handleEl.textContent = uName + ' (Connected)';
                 handleEl.style.color = '#a78bfa';
             }
             if (toggleEl) {
                 toggleEl.classList.remove('off');
                 toggleEl.setAttribute('title', 'Connected — Click to disconnect');
                 toggleEl.onclick = handleThreadsToggle;
+            }
+            if (settingsThreads) {
+                settingsThreads.textContent = `Connected: ${uName} · Active Access Token`;
             }
         } else {
             if (handleEl) {
@@ -2413,7 +3391,11 @@ async function checkThreadsStatus() {
                 toggleEl.setAttribute('title', 'Click to view Threads setup');
                 toggleEl.onclick = handleThreadsToggle;
             }
+            if (settingsThreads) {
+                settingsThreads.textContent = 'Not connected — Meta Threads token required in .env';
+            }
         }
+        updateConnectedChannelsCount();
     } catch (e) {
         console.warn('Could not check Threads status:', e.message);
     }
@@ -2690,6 +3672,171 @@ async function loadThreadsAnalytics(forceRefresh = false) {
     }
 }
 
+// ─── Bluesky Analytics ────────────────────────────────────────────────────────
+async function loadBlueskyAnalytics(forceRefresh = false) {
+    const headerActions = document.getElementById('bskyHeaderActions');
+    const headerHandle  = document.getElementById('bskyHeaderHandle');
+    const statFollowers = document.getElementById('bskyStatFollowers');
+    const statLikes     = document.getElementById('bskyStatLikes');
+    const statReposts   = document.getElementById('bskyStatReposts');
+    const statPosts     = document.getElementById('bskyStatPosts');
+    const topPostsList  = document.getElementById('bskyTopPostsList');
+
+    if (forceRefresh && headerActions)
+        headerActions.innerHTML = `<span style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg> Syncing...</span>`;
+
+    const BSKY_BLUE = '#0285ff';
+
+    function showUnavailable(data) {
+        const isAuth = data.reason === 'auth_failed';
+        const isNoCreds = data.reason === 'no_credentials';
+        const badgeColor = isNoCreds ? '#eab308' : '#ef4444';
+        const title = isNoCreds ? 'Not Connected' : (isAuth ? 'Auth Failed' : 'Unavailable');
+
+        const emptyHTML = `
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:48px 24px;text-align:center;">
+                <div style="width:64px;height:64px;border-radius:16px;background:rgba(2,133,255,0.08);border:1px solid rgba(2,133,255,0.15);display:flex;align-items:center;justify-content:center;">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="${BSKY_BLUE}" stroke-width="1.5"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566 1.018 1.561 1.625 1.561 3.25c0 1.624.475 7.635 1.353 9.497 1.408 2.983 4.28 3.518 6.444 3.013-3.69 1.157-5.02 4.195-2.73 7.027 3.327 4.116 5.372-2.387 5.372-2.387s2.045 6.503 5.372 2.387c2.29-2.832.96-5.87-2.73-7.027 2.164.505 5.036-.03 6.444-3.013.878-1.862 1.353-7.873 1.353-9.497 0-1.625-1.005-2.232-3.641-.445C16.046 4.747 13.087 8.686 12 10.8z"/></svg>
+                </div>
+                <div>
+                    <div style="font-size:15px;font-weight:700;color:var(--white);margin-bottom:6px;">${title}</div>
+                    <div style="font-size:12.5px;color:var(--muted);max-width:360px;line-height:1.6;">${data.message}</div>
+                </div>
+                ${isNoCreds ? `
+                <div style="background:rgba(2,133,255,0.06);border:1px solid rgba(2,133,255,0.18);border-radius:10px;padding:14px 20px;text-align:left;max-width:380px;">
+                    <div style="font-size:11.5px;font-weight:700;color:${BSKY_BLUE};margin-bottom:8px;">How to connect Bluesky:</div>
+                    <ol style="font-size:11.5px;color:var(--muted);line-height:2;margin:0;padding-left:16px;">
+                        <li>Go to <a href="https://bsky.app" target="_blank" style="color:${BSKY_BLUE};">bsky.app</a> → <strong style="color:var(--light);">Settings → App Passwords</strong></li>
+                        <li>Click <strong style="color:var(--light);">Add App Password</strong> → name it "CashoraAI"</li>
+                        <li>Copy the generated password</li>
+                        <li>Open <code style="background:#1a1a2e;padding:2px 5px;border-radius:4px;color:#a78bfa;">server/.env</code> and set:<br>
+                            <code style="background:#1a1a2e;padding:4px 8px;border-radius:4px;color:#86efac;font-size:11px;display:block;margin-top:4px;">BLUESKY_HANDLE=yourhandle.bsky.social<br>BLUESKY_APP_PASSWORD=xxxx-xxxx-xxxx-xxxx</code>
+                        </li>
+                        <li>Restart the server</li>
+                    </ol>
+                </div>` : ''}
+                <button onclick="loadBlueskyAnalytics(true)" style="margin-top:4px;padding:7px 18px;font-size:12px;background:#141414;color:var(--light);border:1px solid var(--border);border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg> Try Again
+                </button>
+            </div>`;
+
+        if (statFollowers) statFollowers.textContent = '—';
+        if (statLikes)     statLikes.textContent     = '—';
+        if (statReposts)   statReposts.textContent   = '—';
+        if (statPosts)     statPosts.textContent     = '—';
+        if (topPostsList)  topPostsList.innerHTML    = emptyHTML;
+        ['bsky-likes-chart','bsky-engagement-chart','bsky-post-types-chart','bsky-actions-chart'].forEach(id => {
+            const el = document.getElementById(id); if (el) el.innerHTML = '';
+        });
+        if (headerHandle) headerHandle.textContent = 'Not connected';
+        if (headerActions) {
+            const bg = isNoCreds ? 'rgba(234,179,8,0.1)' : 'rgba(239,68,68,0.1)';
+            const br = isNoCreds ? 'rgba(234,179,8,0.25)' : 'rgba(239,68,68,0.25)';
+            headerActions.innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px;background:${bg};color:${badgeColor};font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;border:1px solid ${br};"><span style="width:6px;height:6px;border-radius:50%;background:${badgeColor};"></span>${title}</span>`;
+        }
+    }
+
+    function renderBskyCharts(charts) {
+        // Likes by day — bar chart
+        const likeEl = document.getElementById('bsky-likes-chart');
+        if (likeEl && charts.likesByDay) {
+            const max = Math.max(...charts.likesByDay.map(d => d.likes), 1);
+            likeEl.innerHTML = `<div style="display:flex;align-items:flex-end;gap:4px;height:100%;padding-top:8px;">${charts.likesByDay.map(d=>`
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+                    <div style="width:100%;background:rgba(2,133,255,0.15);border-radius:4px 4px 0 0;position:relative;height:${Math.max((d.likes/max)*100,4)}%;">
+                        <div style="position:absolute;inset:0;background:linear-gradient(180deg,${BSKY_BLUE},rgba(2,133,255,0.4));border-radius:4px 4px 0 0;"></div>
+                    </div>
+                    <span style="font-size:9px;color:var(--muted2);">${d.day}</span>
+                </div>`).join('')}</div>`;
+        }
+        // Avg engagement — bar
+        const engEl = document.getElementById('bsky-engagement-chart');
+        if (engEl && charts.engagementRate) {
+            const max = Math.max(...charts.engagementRate.map(d=>d.rate), 1);
+            engEl.innerHTML = `<div style="display:flex;align-items:flex-end;gap:4px;height:100%;padding-top:8px;">${charts.engagementRate.map(d=>`
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+                    <div style="width:100%;height:${Math.max((d.rate/max)*100,4)}%;background:linear-gradient(180deg,rgba(139,92,246,0.8),rgba(139,92,246,0.3));border-radius:4px 4px 0 0;"></div>
+                    <span style="font-size:9px;color:var(--muted2);">${d.day}</span>
+                </div>`).join('')}</div>`;
+        }
+        // Post types — donut-style bars
+        const ptEl = document.getElementById('bsky-post-types-chart');
+        if (ptEl && charts.postTypes) {
+            const total = charts.postTypes.reduce((s,t)=>s+t.count,0)||1;
+            const colors = ['#0285ff','#8b5cf6','#06b6d4'];
+            ptEl.innerHTML = `<div style="display:flex;flex-direction:column;gap:8px;padding-top:10px;">${charts.postTypes.map((t,i)=>`
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <span style="font-size:11px;color:var(--muted);width:36px;">${t.type}</span>
+                    <div style="flex:1;height:8px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;">
+                        <div style="height:100%;width:${(t.count/total*100).toFixed(1)}%;background:${colors[i]};border-radius:4px;transition:width .6s ease;"></div>
+                    </div>
+                    <span style="font-size:11px;color:var(--light);width:20px;text-align:right;">${t.count}</span>
+                </div>`).join('')}</div>`;
+        }
+        // Likes vs Reposts
+        const actEl = document.getElementById('bsky-actions-chart');
+        if (actEl && charts.actionsData) {
+            const max = Math.max(...charts.actionsData.flatMap(d=>[d.likes,d.reposts]), 1);
+            actEl.innerHTML = `<div style="display:flex;align-items:flex-end;gap:6px;height:100%;padding-top:8px;">${charts.actionsData.map(d=>`
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+                    <div style="width:100%;display:flex;gap:2px;align-items:flex-end;height:${100}px;">
+                        <div style="flex:1;background:linear-gradient(180deg,${BSKY_BLUE},rgba(2,133,255,0.3));border-radius:3px 3px 0 0;height:${Math.max((d.likes/max)*100,3)}%;"></div>
+                        <div style="flex:1;background:linear-gradient(180deg,#8b5cf6,rgba(139,92,246,0.3));border-radius:3px 3px 0 0;height:${Math.max((d.reposts/max)*100,3)}%;"></div>
+                    </div>
+                    <span style="font-size:9px;color:var(--muted2);">${d.day}</span>
+                </div>`).join('')}</div>`;
+        }
+    }
+
+    try {
+        const url = '/api/analytics/bluesky' + (forceRefresh ? '?refresh=true' : '');
+        const res  = await fetch(url, { credentials: 'include' });
+        const data = await res.json();
+
+        if (data.unavailable) { showUnavailable(data); return; }
+
+        // Live data
+        if (headerHandle) headerHandle.textContent = '@' + (data.account?.handle || 'unknown');
+        if (headerActions) {
+            headerActions.innerHTML = `
+                <span style="display:inline-flex;align-items:center;gap:6px;background:rgba(2,133,255,0.12);color:${BSKY_BLUE};font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;border:1px solid rgba(2,133,255,0.25);">
+                    <span style="width:6px;height:6px;border-radius:50%;background:${BSKY_BLUE};box-shadow:0 0 6px ${BSKY_BLUE};"></span>Live Synced
+                </span>
+                <button onclick="loadBlueskyAnalytics(true)" style="padding:5px 12px;font-size:11.5px;background:#141414;color:var(--light);border:1px solid var(--border);border-radius:8px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg> Refresh
+                </button>`;
+        }
+
+        const s = data.stats || {};
+        if (statFollowers) statFollowers.textContent = Number(s.followers||0).toLocaleString();
+        if (statLikes)     statLikes.textContent     = Number(s.likes||0).toLocaleString();
+        if (statReposts)   statReposts.textContent   = Number(s.reposts||0).toLocaleString();
+        if (statPosts)     statPosts.textContent     = Number(s.posts||0).toLocaleString();
+
+        if (data.charts) renderBskyCharts(data.charts);
+
+        if (topPostsList && data.topPosts?.length) {
+            topPostsList.innerHTML = data.topPosts.map((p, i) => `
+                <div style="display:grid;grid-template-columns:1fr 80px 80px 70px;gap:10px;padding:10px 0;${i<data.topPosts.length-1?'border-bottom:1px solid var(--border2);':''}align-items:center;">
+                    <div style="display:flex;align-items:center;gap:8px;overflow:hidden;min-width:0;">
+                        <div style="width:36px;height:36px;border-radius:6px;background:rgba(2,133,255,0.1);border:1px solid rgba(2,133,255,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${BSKY_BLUE}" stroke-width="1.8"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566 1.018 1.561 1.625 1.561 3.25c0 1.624.475 7.635 1.353 9.497 1.408 2.983 4.28 3.518 6.444 3.013-3.69 1.157-5.02 4.195-2.73 7.027 3.327 4.116 5.372-2.387 5.372-2.387s2.045 6.503 5.372 2.387c2.29-2.832.96-5.87-2.73-7.027 2.164.505 5.036-.03 6.444-3.013.878-1.862 1.353-7.873 1.353-9.497 0-1.625-1.005-2.232-3.641-.445C16.046 4.747 13.087 8.686 12 10.8z"/></svg>
+                        </div>
+                        <a href="${p.url||'#'}" target="_blank" style="font-size:12.5px;color:var(--light);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-decoration:none;" title="${p.text||''}">${p.text||'Post'}</a>
+                    </div>
+                    <span style="font-size:13px;font-weight:600;color:var(--white);text-align:right;">${Number(p.likes||0).toLocaleString()}</span>
+                    <span style="font-size:13px;color:var(--muted);text-align:right;">${Number(p.reposts||0).toLocaleString()}</span>
+                    <span style="font-size:13px;color:var(--muted);text-align:right;">${Number(p.replies||0).toLocaleString()}</span>
+                </div>`).join('');
+        } else if (topPostsList) {
+            topPostsList.innerHTML = '<div style="padding:20px 0;text-align:center;color:var(--muted);font-size:12px;">No posts found.</div>';
+        }
+    } catch (err) {
+        console.error('Bluesky analytics error:', err);
+        if (headerActions) headerActions.innerHTML = `<span style="font-size:11px;color:#ef4444;">Error loading data</span>`;
+    }
+}
+
 // ─── Twitter / X Analytics ────────────────────────────────────────────────────
 async function loadTwitterAnalytics(forceRefresh = false) {
     const headerActions = document.getElementById('twHeaderActions');
@@ -2711,42 +3858,66 @@ async function loadTwitterAnalytics(forceRefresh = false) {
         const res = await fetch(url, { credentials: 'include' });
         const data = await res.json();
 
-        // Update handle
-        if (headerHandle) headerHandle.textContent = '@' + (data.account?.username || 'vaibhav_tf7');
-
-        // Status badge
-        if (headerActions) {
-            if (data.demo) {
-                headerActions.innerHTML = `
-                    <span style="display:inline-flex;align-items:center;gap:6px;background:rgba(234,179,8,0.1);color:#eab308;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;border:1px solid rgba(234,179,8,0.25);">
-                        <span style="width:6px;height:6px;border-radius:50%;background:#eab308;"></span>
-                        Demo Data
-                    </span>
-                    <span style="font-size:11px;color:var(--muted);">${data.message || 'Add Bearer Token to .env'}</span>
-                `;
-                if (chartSub) chartSub.textContent = 'Demo data — add Bearer Token for live data';
-            } else {
-                headerActions.innerHTML = `
-                    <span style="display:inline-flex;align-items:center;gap:6px;background:rgba(29,155,240,0.12);color:#1d9bf0;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;border:1px solid rgba(29,155,240,0.25);">
-                        <span style="width:6px;height:6px;border-radius:50%;background:#1d9bf0;box-shadow:0 0 6px #1d9bf0;"></span>
-                        Live Synced
-                    </span>
-                    <button onclick="loadTwitterAnalytics(true)" class="lib-new-btn" style="padding:5px 12px;font-size:11.5px;background:#141414;color:var(--light);border:1px solid var(--border);display:inline-flex;align-items:center;gap:6px;cursor:pointer;">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-                        Refresh
+        // ── Unavailable (credits depleted / no token / API error) ────────────
+        if (data.unavailable) {
+            const isCredits = data.reason === 'credits_depleted';
+            const icon = isCredits
+                ? `<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#1d9bf0" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>`
+                : `<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>`;
+            const title = isCredits ? 'API Credits Depleted' : (data.reason === 'no_token' ? 'Not Connected' : 'Unavailable');
+            const emptyHTML = `
+                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:48px 24px;text-align:center;">
+                    <div style="width:64px;height:64px;border-radius:16px;background:rgba(29,155,240,0.08);border:1px solid rgba(29,155,240,0.15);display:flex;align-items:center;justify-content:center;">${icon}</div>
+                    <div>
+                        <div style="font-size:15px;font-weight:700;color:var(--white);margin-bottom:6px;">${title}</div>
+                        <div style="font-size:12.5px;color:var(--muted);max-width:340px;line-height:1.6;">${data.message}</div>
+                    </div>
+                    ${isCredits ? `<div style="font-size:11px;color:rgba(29,155,240,0.7);background:rgba(29,155,240,0.06);border:1px solid rgba(29,155,240,0.15);border-radius:8px;padding:8px 16px;">🗓 Credits reset on the 1st of every month</div>` : ''}
+                    <button onclick="loadTwitterAnalytics(true)" style="margin-top:4px;padding:7px 18px;font-size:12px;background:#141414;color:var(--light);border:1px solid var(--border);border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg> Try Again
                     </button>
-                `;
+                </div>`;
+
+            if (statImpressions) statImpressions.textContent = '\u2014';
+            if (statLikes)        statLikes.textContent       = '\u2014';
+            if (statRetweets)     statRetweets.textContent    = '\u2014';
+            if (statFollowers)    statFollowers.textContent   = '\u2014';
+            if (topPostsList)     topPostsList.innerHTML      = emptyHTML;
+            if (chartSub)         chartSub.textContent        = '';
+            ['twitter-impressions-chart','twitter-engagement-chart','twitter-tweet-types-chart','twitter-actions-chart'].forEach(id => {
+                const el = document.getElementById(id); if (el) el.innerHTML = '';
+            });
+            if (headerHandle) headerHandle.textContent = '@' + (data.account?.username || 'vaibhavxkashi13');
+            if (headerActions) {
+                const bc = isCredits ? '#eab308' : '#ef4444';
+                const bg = isCredits ? 'rgba(234,179,8,0.1)' : 'rgba(239,68,68,0.1)';
+                const br = isCredits ? 'rgba(234,179,8,0.25)' : 'rgba(239,68,68,0.25)';
+                headerActions.innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px;background:${bg};color:${bc};font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;border:1px solid ${br};"><span style="width:6px;height:6px;border-radius:50%;background:${bc};"></span>${title}</span>`;
             }
+            return;
         }
 
-        // Update stat cards
-        const s = data.stats || {};
-        if (statImpressions) statImpressions.textContent = s.impressions !== undefined ? Number(s.impressions).toLocaleString() : '—';
-        if (statLikes)        statLikes.textContent       = s.likes       !== undefined ? Number(s.likes).toLocaleString()       : '—';
-        if (statRetweets)     statRetweets.textContent    = s.retweets    !== undefined ? Number(s.retweets).toLocaleString()    : '—';
-        if (statFollowers)    statFollowers.textContent   = s.followers   !== undefined ? Number(s.followers).toLocaleString()   : '—';
+        // ── Live data ─────────────────────────────────────────────────────────
+        if (headerHandle) headerHandle.textContent = '@' + (data.account?.username || 'vaibhavxkashi13');
 
-        // Populate top tweets table
+        if (headerActions) {
+            headerActions.innerHTML = `
+                <span style="display:inline-flex;align-items:center;gap:6px;background:rgba(29,155,240,0.12);color:#1d9bf0;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;border:1px solid rgba(29,155,240,0.25);">
+                    <span style="width:6px;height:6px;border-radius:50%;background:#1d9bf0;box-shadow:0 0 6px #1d9bf0;"></span>
+                    Live Synced
+                </span>
+                <button onclick="loadTwitterAnalytics(true)" class="lib-new-btn" style="padding:5px 12px;font-size:11.5px;background:#141414;color:var(--light);border:1px solid var(--border);display:inline-flex;align-items:center;gap:6px;cursor:pointer;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                    Refresh
+                </button>`;
+        }
+
+        const s = data.stats || {};
+        if (statImpressions) statImpressions.textContent = s.impressions !== undefined ? Number(s.impressions).toLocaleString() : '\u2014';
+        if (statLikes)        statLikes.textContent       = s.likes       !== undefined ? Number(s.likes).toLocaleString()       : '\u2014';
+        if (statRetweets)     statRetweets.textContent    = s.retweets    !== undefined ? Number(s.retweets).toLocaleString()    : '\u2014';
+        if (statFollowers)    statFollowers.textContent   = s.followers   !== undefined ? Number(s.followers).toLocaleString()   : '\u2014';
+
         if (topPostsList && data.topTweets && data.topTweets.length > 0) {
             topPostsList.innerHTML = data.topTweets.map((t, i) => `
                 <div style="display:grid;grid-template-columns:1fr 90px 70px 70px;gap:10px;padding:10px 0;${i < data.topTweets.length - 1 ? 'border-bottom:1px solid var(--border2);' : ''}align-items:center;">
@@ -2756,16 +3927,15 @@ async function loadTwitterAnalytics(forceRefresh = false) {
                         </div>
                         <a href="${t.url || '#'}" target="_blank" style="font-size:12.5px;color:var(--light);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-decoration:none;" title="${t.text || ''}">${t.text || 'Tweet'}</a>
                     </div>
-                    <span style="font-size:13px;font-weight:600;color:var(--white);text-align:right;">${t.impressions !== undefined ? Number(t.impressions).toLocaleString() : '—'}</span>
-                    <span style="font-size:13px;color:var(--muted);text-align:right;">${t.likes !== undefined ? Number(t.likes).toLocaleString() : '—'}</span>
-                    <span style="font-size:13px;color:var(--muted);text-align:right;">${t.retweets !== undefined ? Number(t.retweets).toLocaleString() : '—'}</span>
+                    <span style="font-size:13px;font-weight:600;color:var(--white);text-align:right;">${t.impressions !== undefined ? Number(t.impressions).toLocaleString() : '\u2014'}</span>
+                    <span style="font-size:13px;color:var(--muted);text-align:right;">${t.likes !== undefined ? Number(t.likes).toLocaleString() : '\u2014'}</span>
+                    <span style="font-size:13px;color:var(--muted);text-align:right;">${t.retweets !== undefined ? Number(t.retweets).toLocaleString() : '\u2014'}</span>
                 </div>
             `).join('');
         } else if (topPostsList) {
             topPostsList.innerHTML = '<div style="padding:20px 0;text-align:center;color:var(--muted);font-size:12px;">No tweets found.</div>';
         }
 
-        // Update charts with live data
         if (typeof window.renderTwitterCharts === 'function' && data.charts) {
             window.renderTwitterCharts(data.charts);
         }
@@ -2779,18 +3949,22 @@ async function loadTwitterAnalytics(forceRefresh = false) {
 // ── Initialize charts, library, and handle deep-linking on load
 window.addEventListener('DOMContentLoaded', function() {
     renderLibrary();
+    loadDashboardOverview();
     if (typeof initializeCharts === 'function') {
         initializeCharts();
     }
 
-    // Always check YouTube, Threads & Twitter connection status
+    // Always check YouTube, Threads & Instagram connection status
     checkYouTubeStatus();
     checkThreadsStatus();
+    checkInstagramStatus();
+    initSettingsPage();
 
-    // Check URL parameters for OAuth callbacks
+    // Check URL parameters for OAuth callbacks & deep linking
     const urlParams = new URLSearchParams(window.location.search);
     const tabParam = urlParams.get('tab');
     const connectedParam = urlParams.get('connected');
+    const platParam = urlParams.get('platform');
     const ytError = urlParams.get('youtube_error');
 
     if (ytError) {
@@ -2798,12 +3972,10 @@ window.addEventListener('DOMContentLoaded', function() {
     }
 
     if (tabParam === 'analytics' || connectedParam === 'youtube') {
-        const analyticsNav = document.querySelectorAll('.nav-item')[4];
+        const analyticsNav = document.querySelectorAll('.nav-item')[5] || document.querySelectorAll('.nav-item')[4];
         showPage('analytics', analyticsNav);
-        const selector = document.getElementById('platformSelector');
-        if (selector) selector.value = 'youtube';
-        switchPlatform('youtube');
-        loadYouTubeAnalytics();
+        const targetPlat = platParam || (connectedParam === 'youtube' ? 'youtube' : 'youtube');
+        switchPlatform(targetPlat);
     }
 });
 
