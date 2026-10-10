@@ -523,6 +523,207 @@ app.post('/api/automation-settings', (req, res) => {
   res.json({ success: true, settings: automationSettings });
 });
 
+// ─── AI Caption Improvement (Level 1: Existing Caption → LLM → Improved Caption) ───
+async function improveCaptionWithLLM(originalCaption) {
+  const caption = (originalCaption || '').trim();
+  if (!caption) {
+    const err = new Error('Please enter a caption to improve.');
+    err.status = 400;
+    throw err;
+  }
+
+  // Determine available LLM provider
+  const openaiKey = process.env.OPENAI_API_KEY || process.env.LLM_API_KEY;
+  const groqKey = process.env.GROQ_API_KEY;
+  const geminiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_AI_API_KEY || process.env.GOOGLE_API_KEY;
+  const anthropicKey = process.env.ANTHROPIC_API_KEY;
+  const openrouterKey = process.env.OPENROUTER_API_KEY;
+
+  if (!openaiKey && !groqKey && !geminiKey && !anthropicKey && !openrouterKey) {
+    const err = new Error('Missing LLM API key. Please configure OPENAI_API_KEY (or GEMINI_API_KEY / GROQ_API_KEY) in server/.env');
+    err.status = 400;
+    throw err;
+  }
+
+  const systemPrompt = "You are a professional social media copywriter. Improve the provided social media caption to make it engaging, clear, and compelling while preserving the original message and intent. Do NOT add hashtags unless they were already present. Return ONLY the improved caption text, with no explanations, no quotation marks, and no extra commentary.";
+  const userPrompt = `Improve this caption:\n\n${caption}`;
+  const timeoutMs = 25000;
+
+  try {
+    if (openaiKey) {
+      const model = process.env.OPENAI_MODEL || 'gpt-4o-mini';
+      const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+        model,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt }
+        ],
+        temperature: 0.7,
+        max_tokens: 500
+      }, {
+        headers: {
+          'Authorization': `Bearer ${openaiKey}`,
+          'Content-Type': 'application/json'
+        },
+        timeout: timeoutMs
+      });
+
+      const improved = response.data?.choices?.[0]?.message?.content?.trim();
+      if (!improved) {
+        const err = new Error('LLM returned an empty response.');
+        err.status = 502;
+        throw err;
+      }
+      return improved;
+    } else if (groqKey) {
+      const model = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
+      const response = await axios.post('https://api.groq.com/openai/v1/chat/completions', {
+        model,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt }
+        ],
+        temperature: 0.7,
+        max_tokens: 500
+      }, {
+        headers: {
+          'Authorization': `Bearer ${groqKey}`,
+          'Content-Type': 'application/json'
+        },
+        timeout: timeoutMs
+      });
+
+      const improved = response.data?.choices?.[0]?.message?.content?.trim();
+      if (!improved) {
+        const err = new Error('LLM returned an empty response.');
+        err.status = 502;
+        throw err;
+      }
+      return improved;
+    } else if (geminiKey) {
+      const model = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiKey}`;
+      const response = await axios.post(url, {
+        contents: [
+          {
+            parts: [
+              { text: `${systemPrompt}\n\n${userPrompt}` }
+            ]
+          }
+        ]
+      }, {
+        headers: { 'Content-Type': 'application/json' },
+        timeout: timeoutMs
+      });
+
+      const text = response.data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+      if (!text) {
+        const err = new Error('LLM returned an empty response.');
+        err.status = 502;
+        throw err;
+      }
+      return text;
+    } else if (anthropicKey) {
+      const model = process.env.ANTHROPIC_MODEL || 'claude-3-5-haiku-20241022';
+      const response = await axios.post('https://api.anthropic.com/v1/messages', {
+        model,
+        max_tokens: 500,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userPrompt }]
+      }, {
+        headers: {
+          'x-api-key': anthropicKey,
+          'anthropic-version': '2023-06-01',
+          'Content-Type': 'application/json'
+        },
+        timeout: timeoutMs
+      });
+
+      const text = response.data?.content?.[0]?.text?.trim();
+      if (!text) {
+        const err = new Error('LLM returned an empty response.');
+        err.status = 502;
+        throw err;
+      }
+      return text;
+    } else if (openrouterKey) {
+      const model = process.env.OPENROUTER_MODEL || 'openai/gpt-4o-mini';
+      const response = await axios.post('https://openrouter.ai/api/v1/chat/completions', {
+        model,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt }
+        ]
+      }, {
+        headers: {
+          'Authorization': `Bearer ${openrouterKey}`,
+          'Content-Type': 'application/json'
+        },
+        timeout: timeoutMs
+      });
+
+      const text = response.data?.choices?.[0]?.message?.content?.trim();
+      if (!text) {
+        const err = new Error('LLM returned an empty response.');
+        err.status = 502;
+        throw err;
+      }
+      return text;
+    }
+  } catch (err) {
+    if (err.code === 'ECONNABORTED' || err.message?.includes('timeout')) {
+      const timeoutErr = new Error('LLM request timed out. Please try again.');
+      timeoutErr.status = 504;
+      throw timeoutErr;
+    }
+    if (err.response) {
+      const status = err.response.status;
+      if (status === 429) {
+        const rateErr = new Error('LLM rate limit reached. Please wait a moment and try again.');
+        rateErr.status = 429;
+        throw rateErr;
+      }
+      const apiMsg = err.response.data?.error?.message || err.response.data?.message || err.message;
+      const apiErr = new Error(`LLM API error (${status}): ${apiMsg}`);
+      apiErr.status = status >= 400 && status < 500 ? status : 502;
+      throw apiErr;
+    }
+    throw err;
+  }
+}
+
+app.post('/api/ai/improve-caption', async (req, res) => {
+  try {
+    const { caption } = req.body || {};
+    if (!caption || typeof caption !== 'string' || !caption.trim()) {
+      return res.status(400).json({
+        success: false,
+        error: 'Please enter a caption to improve.'
+      });
+    }
+
+    const improvedCaption = await improveCaptionWithLLM(caption);
+    if (!improvedCaption || typeof improvedCaption !== 'string') {
+      return res.status(502).json({
+        success: false,
+        error: 'Invalid response received from LLM.'
+      });
+    }
+
+    return res.json({
+      success: true,
+      improvedCaption: improvedCaption.trim()
+    });
+  } catch (err) {
+    const status = err.status || 500;
+    return res.status(status).json({
+      success: false,
+      error: err.message || 'Failed to improve caption with AI.'
+    });
+  }
+});
+
+
 // ═══════════════════════════════════════════════════════════
 // ─── YouTube OAuth & Real-time Analytics Integration ──────
 // ═══════════════════════════════════════════════════════════

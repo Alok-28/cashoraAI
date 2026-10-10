@@ -386,6 +386,42 @@
         .btn-secondary { padding: 9px 18px; background: #15151c; border: 1px solid var(--border); color: var(--light); font-size: 13px; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 7px; }
         .btn-secondary:hover { background: #1e1e28; color: #fff; border-color: rgba(255,255,255,0.2); }
 
+        /* AI Caption Improvement */
+        .ai-caption-btn {
+            background: #13183a;
+            border: 1px solid #232c66;
+            color: #8899ff;
+            padding: 5px 11px;
+            border-radius: 7px;
+            font-size: 11.5px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.15s ease;
+            user-select: none;
+        }
+        .ai-caption-btn:hover:not(:disabled) {
+            background: #1b2252;
+            border-color: #3b4ab0;
+            color: #a3b0ff;
+        }
+        .ai-caption-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: #101328;
+            border-color: #1a2040;
+            color: #606b99;
+        }
+        .ai-caption-spinner {
+            animation: ai-spin 1s linear infinite;
+        }
+        @keyframes ai-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
         @media (max-width: 1100px) {
             .stats-grid { grid-template-columns: repeat(2,1fr); }
             .two-col    { grid-template-columns: 1fr; }
@@ -597,10 +633,17 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Post Caption / Title <span style="font-weight:400;color:var(--muted);">(Optional)</span></label>
+                            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                                <label class="form-label" style="margin-bottom:0;">Post Caption / Title <span style="font-weight:400;color:var(--muted);">(Optional)</span></label>
+                                <button type="button" id="uploadAiCaptionBtn" class="ai-caption-btn" onclick="improveCaption('uploadCaptionInput', 'uploadAiCaptionBtn', 'uploadCaptionMsg')">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3z"/></svg>
+                                    <span class="ai-caption-btn-text">Improve with AI</span>
+                                </button>
+                            </div>
                             <div class="prompt-wrap">
                                 <textarea class="prompt-input" id="uploadCaptionInput" style="min-height:70px;" placeholder="Add a caption, title, or hashtags for your social media posts..."></textarea>
                             </div>
+                            <div id="uploadCaptionMsg" style="font-size:12px;margin-top:6px;display:none;"></div>
                         </div>
                     </div>
 
@@ -896,8 +939,15 @@
 
                     <!-- Caption -->
                     <div class="form-group">
-                        <label class="form-label">Caption / Title</label>
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                            <label class="form-label" style="margin-bottom:0;">Caption / Title</label>
+                            <button type="button" id="scheduleAiCaptionBtn" class="ai-caption-btn" onclick="improveCaption('scheduleCaptionInput', 'scheduleAiCaptionBtn', 'scheduleCaptionMsg')">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3z"/></svg>
+                                <span class="ai-caption-btn-text">Improve with AI</span>
+                            </button>
+                        </div>
                         <textarea class="prompt-input" id="scheduleCaptionInput" style="min-height:70px;" placeholder="Add a caption, hashtags, or description for this post..."></textarea>
+                        <div id="scheduleCaptionMsg" style="font-size:12px;margin-top:6px;display:none;"></div>
                     </div>
 
                     <!-- Platforms -->
@@ -2330,6 +2380,105 @@ function togglePlatform(el) { el.classList.toggle('selected'); }
 function updateCount(el) {
     document.getElementById('promptCount').textContent = el.value.length + ' / 500';
     if (el.value.length > 500) el.value = el.value.substring(0,500);
+}
+
+// ── AI Caption Improvement (Level 1: Existing Caption → LLM → Improved Caption) ──
+const _improvingCaptions = {};
+
+async function improveCaption(textareaId, btnId, msgId) {
+    if (_improvingCaptions[textareaId]) {
+        return; // Prevent duplicate requests
+    }
+
+    const textarea = document.getElementById(textareaId);
+    const btn = document.getElementById(btnId);
+    const msgEl = document.getElementById(msgId);
+    if (!textarea || !btn) return;
+
+    const currentCaption = textarea.value.trim();
+
+    // If user has not entered anything, show validation message instead of making LLM request
+    if (!currentCaption) {
+        if (msgEl) {
+            msgEl.style.display = 'block';
+            msgEl.style.color = '#f87171';
+            msgEl.textContent = 'Please enter a caption first to improve it.';
+            setTimeout(() => {
+                if (msgEl.textContent === 'Please enter a caption first to improve it.') {
+                    msgEl.style.display = 'none';
+                }
+            }, 4000);
+        }
+        textarea.focus();
+        return;
+    }
+
+    // Mark as in-flight and disable button
+    _improvingCaptions[textareaId] = true;
+    btn.disabled = true;
+
+    // Small loading state: "Improving..."
+    const originalBtnHtml = btn.innerHTML;
+    btn.innerHTML = `
+        <svg class="ai-caption-spinner" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" stroke-opacity="0.25"/>
+            <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"/>
+        </svg>
+        <span class="ai-caption-btn-text">Improving...</span>
+    `;
+
+    if (msgEl) {
+        msgEl.style.display = 'block';
+        msgEl.style.color = '#8899ff';
+        msgEl.textContent = 'Improving caption with AI...';
+    }
+
+    try {
+        const response = await fetch('/api/ai/improve-caption', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ caption: currentCaption })
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (response.ok && data.success && data.improvedCaption) {
+            // Replace existing caption with improved version
+            textarea.value = data.improvedCaption;
+            // Allow manual editing right away
+            textarea.dispatchEvent(new Event('input', { bubbles: true }));
+
+            if (msgEl) {
+                msgEl.style.display = 'block';
+                msgEl.style.color = '#4ade80';
+                msgEl.textContent = '✨ Caption improved! You can edit it manually.';
+                setTimeout(() => {
+                    if (msgEl.style.color === 'rgb(74, 222, 128)' || msgEl.style.color === '#4ade80') {
+                        msgEl.style.display = 'none';
+                    }
+                }, 5000);
+            }
+        } else {
+            // On failure, keep user's original caption untouched and show clear error message
+            const errorMsg = data.error || 'Failed to improve caption. Please try again.';
+            if (msgEl) {
+                msgEl.style.display = 'block';
+                msgEl.style.color = '#f87171';
+                msgEl.textContent = `⚠️ ${errorMsg}`;
+            }
+        }
+    } catch (err) {
+        // Network / timeout error: original caption untouched
+        if (msgEl) {
+            msgEl.style.display = 'block';
+            msgEl.style.color = '#f87171';
+            msgEl.textContent = `⚠️ Network error: ${err.message || 'Connection failed'}. Original caption preserved.`;
+        }
+    } finally {
+        _improvingCaptions[textareaId] = false;
+        btn.disabled = false;
+        btn.innerHTML = originalBtnHtml;
+    }
 }
 
 // ── Generate animation & pipeline steps
