@@ -1,5 +1,40 @@
 [
   {
+    "id": "vid_1791621646830",
+    "title": "heyyy new post!!!!",
+    "date": "Oct 10, 2026",
+    "status": "published",
+    "platforms": [
+      "YouTube",
+      "Instagram",
+      "Threads",
+      "Twitter / X",
+      "Bluesky"
+    ],
+    "type": "upload",
+    "filePath": "/server/uploads/video-1791621635385-475871091.mp4",
+    "caption": "",
+    "createdAt": "2026-10-10T08:40:46.834Z"
+  },
+  {
+    "id": "vid_1791618356113",
+    "title": "From Klickpin.com- 89 Trending Small Business Ideas for This Year-pin-id-463800461647405738",
+    "date": "Oct 10, 2026",
+    "status": "published",
+    "platforms": [
+      "YouTube",
+      "Instagram",
+      "Facebook",
+      "Threads",
+      "Twitter / X",
+      "Bluesky"
+    ],
+    "type": "upload",
+    "filePath": "/server/uploads/video-1791618346384-580760945.mp4",
+    "caption": "",
+    "createdAt": "2026-10-10T07:45:56.121Z"
+  },
+  {
     "id": "vid_1791574211365",
     "title": "WhatsApp Video 2026-10-09 at 12.16.50",
     "date": "Oct 10, 2026",
