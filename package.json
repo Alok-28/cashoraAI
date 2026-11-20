@@ -10,7 +10,7 @@
   },
   "keywords": ["video", "automation", "ai", "content"],
   "author": "",
-  "license": MIT",
+  "license": "MIT",
   "engines": {
     "node": "20.x"
   }
