@@ -2725,3 +2725,6 @@ try {
     // Port 2000 busy or unavailable, safely ignore
   });
 } catch (e) {}
+
+// Export for Vercel serverless functions
+module.exports = app;
