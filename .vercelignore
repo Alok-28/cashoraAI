@@ -1,29 +1,11 @@
-# Ignore documentation
-*.md
-*.txt
-
-# Ignore git
-.git
-.gitignore
-
-# Ignore node_modules at root (server has its own)
-node_modules
-
-# Ignore local files
-.DS_Store
-*.log
+vite.config.*
+.env
 .env.local
 .env.*.local
-
-# Ignore IDE
-.vscode
-.idea
-*.swp
-
-# Ignore build artifacts
+*.md
+*.txt
+node_modules
+.git
+.gitignore
 dist
 build
-
-# Ignore node_modules in subdirectories except we need server's
-**/node_modules/**
-!server/node_modules

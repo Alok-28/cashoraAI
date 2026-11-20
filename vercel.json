@@ -1,7 +1,7 @@
 {
   "version": 2,
   "buildCommand": "cd server && npm install",
-  "installCommand": "echo 'Install handled by buildCommand'",
+  "installCommand": "npm --version",
   "env": {
     "NODE_ENV": "production"
   },
@@ -43,7 +43,5 @@
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ],
-  "public": true,
-  "framework": "nodejs"
+  ]
 }
