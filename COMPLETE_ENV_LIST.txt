@@ -1,0 +1,459 @@
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                                                                                ║
+║                    COMPLETE ENVIRONMENT VARIABLES LIST                        ║
+║                                                                                ║
+║               All 27 Environment Variables Used in CashoraAI                  ║
+║                                                                                ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+📊 SUMMARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Total Variables:        27
+Currently Configured:   6 ✅
+Optional:              1 ⏳
+Pending Setup:         20 ⏳
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ CATEGORY 1: CORE SERVER CONFIGURATION (3 Variables)
+═══════════════════════════════════════════════════════════════════════════════
+
+1️⃣  SESSION_SECRET
+    Status:             ✅ CONFIGURED
+    Current Value:      your-super-secret-key-change-in-production-min-32-chars
+    Purpose:            Encrypts session cookies
+    Type:               String (minimum 32 characters)
+    Production:         MUST CHANGE!
+    Example:            abc123xyz789def456ghi789jkl012mno345pqr
+    Used In:            Session initialization
+    Line:               server/index.js:103
+
+2️⃣  PORT
+    Status:             ✅ CONFIGURED
+    Current Value:      4000
+    Purpose:            Server listening port
+    Type:               Number
+    Default:            4000
+    Example:            3000, 8080, 5000
+    Used In:            Express server startup
+    Line:               server/index.js:11
+
+3️⃣  NODE_ENV
+    Status:             ✅ CONFIGURED
+    Current Value:      development
+    Purpose:            Environment mode
+    Type:               String
+    Options:            development, production
+    Default:            development
+    Used In:            Configuration settings
+    Line:               Everywhere
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ CATEGORY 2: DATABASE CONFIGURATION (3 Variables)
+═══════════════════════════════════════════════════════════════════════════════
+
+4️⃣  SUPABASE_URL
+    Status:             ✅ CONFIGURED
+    Current Value:      https://jeyqjgmypryfspvrfcmm.supabase.co
+    Purpose:            PostgreSQL database connection URL
+    Type:               URL
+    Where to Get:       Supabase → Project Settings → API
+    Example:            https://[project-id].supabase.co
+    Used In:            Database client initialization
+    Line:               server/src/db.js:5
+
+5️⃣  SUPABASE_ANON_KEY
+    Status:             ✅ CONFIGURED
+    Current Value:      sb_publishable_AyCxOuxEZZnwwL1Cs5ydbA_aHe-DAkL
+    Purpose:            Anonymous key for client access
+    Type:               String (JWT Token)
+    Where to Get:       Supabase → Project Settings → API
+    Scope:              Public, limited access
+    Used In:            Database client authentication
+    Line:               server/src/db.js:6
+
+6️⃣  SUPABASE_SERVICE_KEY
+    Status:             ⏳ OPTIONAL (Recommended)
+    Current Value:      (not set)
+    Purpose:            Service role key (backend bypass RLS)
+    Type:               String (JWT Token)
+    Where to Get:       Supabase → Project Settings → API → Service Role Key
+    Scope:              Full database access, bypasses RLS
+    Warning:            Keep secure, use only on backend
+    Used In:            When needed for sensitive operations
+    Line:               server/src/db.js:6 (fallback)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ CATEGORY 3: AUTOMATION & WEBHOOKS (1 Variable)
+═══════════════════════════════════════════════════════════════════════════════
+
+7️⃣  N8N_WEBHOOK_URL
+    Status:             ⏳ OPTIONAL
+    Current Value:      (uses default)
+    Default:            https://felixfelix.app.n8n.cloud/webhook/89093ed9-...
+    Purpose:            n8n webhook for video automation
+    Type:               URL
+    Example:            https://your-n8n.com/webhook/webhook-id
+    Used In:            File upload forwarding, scheduled posts
+    Lines:              server/index.js:282, 366
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ CATEGORY 4: LLM APIS - CAPTION IMPROVEMENT (6 Variables - Choose ONE)
+═══════════════════════════════════════════════════════════════════════════════
+
+OPTION A: OpenAI (Recommended ⭐)
+
+8️⃣  OPENAI_API_KEY
+    Status:             ⏳ PENDING
+    Purpose:            OpenAI API authentication
+    Type:               String (starts with sk_)
+    Where to Get:       https://platform.openai.com/api-keys
+    Scope:              Full API access
+    Billing:            Pay-per-use
+    Cost:               ~$0.001 per 1K input tokens
+    Used In:            Caption improvement via gpt-4o-mini
+    Line:               server/index.js:758
+
+9️⃣  OPENAI_MODEL
+    Status:             ⏳ PENDING
+    Purpose:            Model selection
+    Type:               String
+    Default:            gpt-4o-mini
+    Options:            gpt-4o, gpt-4o-mini, gpt-3.5-turbo
+    Used In:            API call configuration
+    Line:               server/index.js:776
+
+
+OPTION B: Groq (Free & Fast)
+
+🔟  GROQ_API_KEY
+    Status:             ⏳ PENDING
+    Purpose:            Groq API authentication
+    Type:               String (starts with gsk_)
+    Where to Get:       https://console.groq.com/keys
+    Scope:              Full API access
+    Billing:            FREE tier available
+    Cost:               Free for reasonable usage
+    Used In:            Caption improvement via Llama
+    Line:               server/index.js:759
+
+1️⃣1️⃣  GROQ_MODEL
+    Status:             ⏳ PENDING
+    Purpose:            Model selection
+    Type:               String
+    Default:            llama-3.3-70b-versatile
+    Options:            llama-3.3-70b-versatile, mixtral-8x7b-32768
+    Used In:            API call configuration
+    Line:               server/index.js:801
+
+
+OPTION C: Google Gemini
+
+1️⃣2️⃣  GEMINI_API_KEY
+    Status:             ⏳ PENDING
+    Purpose:            Google Gemini API authentication
+    Type:               String
+    Where to Get:       https://aistudio.google.com/
+    Scope:              Full API access
+    Billing:            FREE tier available
+    Cost:               Free for reasonable usage
+    Aliases:            GOOGLE_AI_API_KEY, GOOGLE_API_KEY
+    Used In:            Caption improvement via Gemini
+    Line:               server/index.js:760
+
+1️⃣3️⃣  GEMINI_MODEL
+    Status:             ⏳ PENDING
+    Purpose:            Model selection
+    Type:               String
+    Default:            gemini-2.5-flash
+    Options:            gemini-2.5-flash, gemini-2.0-pro
+    Used In:            API call configuration
+    Line:               server/index.js:826
+
+
+OPTION D: Anthropic Claude
+
+1️⃣4️⃣  ANTHROPIC_API_KEY
+    Status:             ⏳ PENDING
+    Purpose:            Anthropic API authentication
+    Type:               String (starts with sk-ant_)
+    Where to Get:       https://console.anthropic.com/
+    Scope:              Full API access
+    Billing:            Pay-per-use
+    Cost:               ~$0.003 per 1K input tokens
+    Used In:            Caption improvement via Claude
+    Line:               server/index.js:761
+
+1️⃣5️⃣  ANTHROPIC_MODEL
+    Status:             ⏳ PENDING
+    Purpose:            Model selection
+    Type:               String
+    Default:            claude-3-5-haiku-20241022
+    Options:            claude-3-5-sonnet, claude-3-5-haiku
+    Used In:            API call configuration
+    Line:               server/index.js:849
+
+
+OPTION E: OpenRouter
+
+1️⃣6️⃣  OPENROUTER_API_KEY
+    Status:             ⏳ PENDING
+    Purpose:            OpenRouter API authentication
+    Type:               String (starts with sk-or_)
+    Where to Get:       https://openrouter.ai/keys
+    Scope:              Full API access
+    Billing:            Pay-per-use
+    Cost:               Varies by model
+    Used In:            Caption improvement via OpenRouter
+    Line:               server/index.js:762
+
+1️⃣7️⃣  OPENROUTER_MODEL
+    Status:             ⏳ PENDING
+    Purpose:            Model selection
+    Type:               String
+    Default:            openai/gpt-4o-mini
+    Options:            openai/gpt-4o, anthropic/claude-3.5-sonnet
+    Used In:            API call configuration
+    Line:               server/index.js:872
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ CATEGORY 5: YOUTUBE OAUTH (3 Variables)
+═══════════════════════════════════════════════════════════════════════════════
+
+1️⃣8️⃣  YOUTUBE_CLIENT_ID
+    Status:             ⏳ PENDING
+    Purpose:            YouTube OAuth client identification
+    Type:               String (ends with .apps.googleusercontent.com)
+    Where to Get:       https://console.cloud.google.com/ → OAuth 2.0 Credentials
+    Setup Steps:        
+        1. Create project
+        2. Enable YouTube Data API v3
+        3. Create OAuth 2.0 credentials (Desktop application)
+        4. Copy Client ID
+    Used In:            OAuth initialization
+    Line:               server/index.js:955
+
+1️⃣9️⃣  YOUTUBE_CLIENT_SECRET
+    Status:             ⏳ PENDING
+    Purpose:            YouTube OAuth client secret
+    Type:               String
+    Where to Get:       Same as YOUTUBE_CLIENT_ID (download JSON)
+    Warning:            Keep secret, never share
+    Used In:            OAuth token exchange
+    Line:               server/index.js:956
+
+2️⃣0️⃣  YOUTUBE_REDIRECT_URI
+    Status:             ⏳ PENDING (Has Default)
+    Default:            http://127.0.0.1:4000/auth/youtube/callback
+    Purpose:            OAuth callback URL
+    Type:               URL
+    Must Match:         Configured in Google Cloud Console
+    Example:            https://your-domain.com/auth/youtube/callback
+    Used In:            OAuth flow
+    Line:               server/index.js:957
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ CATEGORY 6: INSTAGRAM API (4 Variables)
+═══════════════════════════════════════════════════════════════════════════════
+
+2️⃣1️⃣  INSTAGRAM_ACCESS_TOKEN
+    Status:             ⏳ PENDING
+    Purpose:            Instagram API authentication
+    Type:               String (long token)
+    Where to Get:       https://developers.facebook.com/ → App Dashboard
+    Setup:              Create app, add Instagram Graph API product
+    Scope:              instagram_business_basic, instagram_business_content_publish
+    Expires:            May need refresh
+    Used In:            Instagram posting
+    Line:               server/index.js:1433
+
+2️⃣2️⃣  INSTAGRAM_ACCOUNT_ID
+    Status:             ⏳ PENDING (Has Default)
+    Default:            17841465212584814
+    Purpose:            Instagram Business Account ID
+    Type:               String (numeric)
+    Where to Get:       Facebook Business → Settings → Instagram Account
+    Used In:            API requests
+    Line:               server/index.js:1436
+
+2️⃣3️⃣  INSTAGRAM_APP_ID
+    Status:             ⏳ PENDING
+    Purpose:            Facebook App ID
+    Type:               String (numeric)
+    Where to Get:       https://developers.facebook.com/ → Settings → Basic
+    Used In:            App identification
+    Line:               server/index.js:1438
+
+2️⃣4️⃣  INSTAGRAM_APP_SECRET
+    Status:             ⏳ PENDING
+    Purpose:            Facebook App Secret
+    Type:               String
+    Where to Get:       https://developers.facebook.com/ → Settings → Basic
+    Warning:            Keep secret, never share
+    Used In:            Request signing
+    Line:               server/index.js:1439
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ CATEGORY 7: THREADS API (3 Variables)
+═══════════════════════════════════════════════════════════════════════════════
+
+2️⃣5️⃣  THREADS_ACCESS_TOKEN
+    Status:             ⏳ PENDING
+    Purpose:            Threads API authentication
+    Type:               String (long token)
+    Where to Get:       https://developers.meta.com/
+    Setup:              Create app, add Threads API product
+    Used In:            Threads posting
+    Line:               server/index.js:1726
+
+2️⃣6️⃣  THREADS_USER_ID
+    Status:             ⏳ PENDING
+    Purpose:            Your Threads User ID
+    Type:               String (numeric)
+    Where to Get:       Threads App Dashboard
+    Used In:            API requests
+    Line:               server/index.js:1729
+
+2️⃣7️⃣  THREADS_USERNAME
+    Status:             ⏳ PENDING (Has Default)
+    Default:            vaibhav.tf7
+    Purpose:            Your Threads username
+    Type:               String
+    Used In:            Display/identification
+    Line:               server/index.js:1730
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ CATEGORY 8: TWITTER/X API (5 Variables)
+═══════════════════════════════════━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+2️⃣8️⃣  TWITTER_API_KEY (or TWITTER_CONSUMER_KEY)
+    Status:             ⏳ PENDING
+    Purpose:            Twitter API authentication
+    Type:               String
+    Where to Get:       https://developer.twitter.com/ → Keys & Tokens
+    Aliases:            TWITTER_CONSUMER_KEY
+    Used In:            API requests
+    Line:               server/index.js:1982
+
+2️⃣9️⃣  TWITTER_API_SECRET (or TWITTER_CONSUMER_SECRET)
+    Status:             ⏳ PENDING
+    Purpose:            Twitter API secret
+    Type:               String
+    Where to Get:       https://developer.twitter.com/ → Keys & Tokens
+    Aliases:            TWITTER_CONSUMER_SECRET
+    Warning:            Keep secret
+    Used In:            Request signing
+    Line:               server/index.js:1983
+
+3️⃣0️⃣  TWITTER_ACCESS_TOKEN
+    Status:             ⏳ PENDING
+    Purpose:            Twitter user access token
+    Type:               String
+    Where to Get:       https://developer.twitter.com/ → Keys & Tokens
+    Used In:            User-level requests
+    Line:               server/index.js:1984
+
+3️⃣1️⃣  TWITTER_ACCESS_SECRET
+    Status:             ⏳ PENDING
+    Purpose:            Twitter access token secret
+    Type:               String
+    Where to Get:       https://developer.twitter.com/ → Keys & Tokens
+    Warning:            Keep secret
+    Used In:            Request signing
+    Line:               server/index.js:1985
+
+3️⃣2️⃣  TWITTER_BEARER_TOKEN
+    Status:             ⏳ PENDING
+    Purpose:            Twitter Bearer token
+    Type:               String (starts with AAAAAx...)
+    Where to Get:       https://developer.twitter.com/ → Keys & Tokens → Bearer Token
+    Scope:              Read/Write access
+    Used In:            API requests, monitoring
+    Line:               server/index.js:1986
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ CATEGORY 9: BLUESKY API (2 Variables)
+═══════════════════════════════════════━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+3️⃣3️⃣  BLUESKY_HANDLE
+    Status:             ⏳ PENDING
+    Purpose:            Bluesky account handle
+    Type:               String
+    Format:             username.bsky.social
+    Example:            alok.bsky.social
+    Where to Get:       Your Bluesky profile
+    Used In:            Account identification
+    Line:               server/index.js:2251
+
+3️⃣4️⃣  BLUESKY_APP_PASSWORD
+    Status:             ⏳ PENDING
+    Purpose:            Bluesky app-specific password
+    Type:               String
+    Where to Get:       Bluesky → Settings → Privacy & Security → App Passwords
+    Note:               Not your main password, special app password
+    Used In:            Authentication
+    Line:               server/index.js:2252
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ BONUS: OPTIONAL USERNAME (1 Variable)
+═══════════════════════════════════════════════════════════════════════════════
+
+3️⃣5️⃣  TWITTER_USERNAME
+    Status:             ⏳ OPTIONAL (Has Default)
+    Default:            vaibhavxkashi13
+    Purpose:            Twitter username for display
+    Type:               String
+    Used In:            Display/identification
+    Line:               server/index.js:1987
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ QUICK CHECKLIST
+═══════════════════════════════════════════════════════════════════════════════
+
+Essential Setup (DONE ✅)
+  ✅ SUPABASE_URL
+  ✅ SUPABASE_ANON_KEY
+  ✅ SESSION_SECRET
+  ✅ PORT
+  ✅ NODE_ENV
+
+Choose One LLM (PENDING)
+  □ OpenAI (recommended)
+  □ Groq (free)
+  □ Gemini (free)
+  □ Anthropic
+  □ OpenRouter
+
+API Tokens (PENDING)
+  □ YouTube (3 variables)
+  □ Instagram (4 variables)
+  □ Threads (3 variables)
+  □ Twitter (5 variables)
+  □ Bluesky (2 variables)
+
+
+📄 ENVIRONMENT VARIABLE FILE LOCATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+File: server/.env
+Edit: Open in text editor
+Save: Ctrl+S
+Restart: npm start
+
+
+✅ TOTAL COUNT: 35 Environment Variables Available
+   ✅ Configured: 6
+   ⏳ Optional: 1
+   ⏳ Pending: 28
+
