@@ -1,11 +1,48 @@
-vite.config.*
-.env
-.env.local
-.env.*.local
+# Documentation
 *.md
 *.txt
-node_modules
-.git
-.gitignore
+BUTTON_*.md
+COMPLETION_*.txt
+CURRENT_*.md
+ENDPOINTS.md
+FINAL_*.md
+FIX_*.md
+GITHUB_*.md
+IMPLEMENTATION_*.md
+LOGIN_*.md
+NEW_*.md
+PUSH_*.md
+QUICK_*.txt
+README_*.md
+READY_*.txt
+SERVER_*.md
+SETUP_*.md
+STATUS.txt
+TESTING_*.md
+VERCEL_*.md
+VERIFICATION_*.md
+VISUAL_*.txt
+YOU_ARE_*.txt
+BUILD_*.txt
+ALL_ENV_*.md
+COMPLETE_ENV_*.txt
+ENV_*.md
+ENV_*.txt
+00_START_*.md
+EVERYTHING_*.txt
+FINAL_SUMMARY_*.md
+
+# Local
+.env.local
+.env.*.local
+.DS_Store
+*.log
+
+# Build
 dist
 build
+
+# IDE
+.vscode
+.idea
+*.swp
